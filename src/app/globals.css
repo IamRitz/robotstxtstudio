@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (shadcn/ui-compatible CSS variables).
+ * Phase 10 wires shadcn primitives against these. Tailwind v4 reads them
+ * via the @theme inline mapping below.
+ */
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222 47% 11%);
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+  --border: hsl(214 32% 91%);
+  --primary: hsl(221 83% 53%);
+  --primary-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 72% 51%);
+  --warning: hsl(38 92% 50%);
+  --success: hsl(142 71% 45%);
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: hsl(222 47% 11%);
+    --foreground: hsl(210 40% 98%);
+    --muted: hsl(217 33% 17%);
+    --muted-foreground: hsl(215 20% 65%);
+    --border: hsl(217 33% 24%);
+    --primary: hsl(217 91% 60%);
+    --primary-foreground: hsl(222 47% 11%);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+}
