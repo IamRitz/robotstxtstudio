@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 10 — UI Integration (next) |
-| **Last Completed Commit** | `ac31675` — feat(analyzer) |
+| **Current Phase** | Phase 10B — Screen Assembly (next) |
+| **Last Completed Commit** | `45602c7` — feat(ui) design system & shared UI |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~69% (9 of 13 roadmap phases) |
+| **Overall Progress** | ~73% (9.5 of 13 roadmap phases; 10A done) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -28,7 +28,8 @@
 | Generator | ✅ Complete | `2562dd3` |
 | AI Manager | ✅ Complete | `484c026` |
 | Analyzer | ✅ Complete | `ac31675` |
-| UI Integration | ⏳ Next | |
+| UI Integration · 10A Design System & Shared UI | ✅ Complete | `45602c7` |
+| UI Integration · 10B Screen Assembly | ⏳ Next | |
 | Testing | ⏳ Pending | |
 | SEO Pages | ⏳ Pending | |
 | Deployment | ⏳ Pending | |
@@ -89,42 +90,39 @@ Commit: `ac31675`
 Delivered: strict fetch/analysis split — injectable `fetchRobots` (only IO; never throws; handles 404/redirect/invalid-type/too-large/timeout/network) + pure `buildAnalysisReport` composing Parser/Validator/Explainer/Tester into an `AnalysisReport` (visibility score, category breakdown, findings, deep-linked recommendations). ~98% coverage. No route handler yet (UI phase).
 See: [`ANALYZER.md`](./ANALYZER.md)
 
+## UI Integration — 10A Design System & Shared UI
+Commit: `45602c7`
+Delivered: OKLCH token migration (+ `--brand` + status tokens), Inter/Geist Mono fonts, shadcn-compatible primitives (button/card/badge/input/skeleton/separator/label), app shell (header + mobile bottom nav + footer), and shared components (HealthGauge, ScoreCard, MetricCard, StatusBadge, CrawlerBadge, IssueCard, RecommendationCard, CodePanel, InfoPanel, Callout, Empty/Loading/Error states, PageHeader/SectionHeader/Breadcrumb). `/dev` component library + screenshots. No feature pages, no domain changes.
+See: [`UI_INTEGRATION.md`](./UI_INTEGRATION.md), `docs/screenshots/`
+
 ---
 
 # Current Sprint
 
-**Goal:** UI Integration — wire the six features into the dashboard screens with the
-approved design system.
+**Goal:** Phase 10B — assemble the seven screens on the 10A foundation.
 
-**Scope:** Next.js App Router pages/routes (`/`, `/generate`, `/validate`,
-`/url-tester`, `/ai-crawlers`, `/analyze`, `/explain`), shadcn/ui primitives, and the
-design tokens. Migrate `globals.css` to the OKLCH neutral base + `--brand`/status
-tokens (tracked debt). Add the `app/api/analyze` route handler (validated by
-`analyzeRequestSchema`) calling `analyze()`. Components per the screen specs; reuse
-the pure feature APIs only via barrels.
+**Scope:** App Router pages (`/`, `/analyze`, `/generate`, `/validate`, `/url-tester`,
+`/ai-crawlers`, `/explain`) + `app/api/analyze` (and optional `/api/fetch-robots`)
+route handlers. Each screen consumes a feature barrel API (`analyze`,
+`generatePreview`, `validateRobots`, `testUrl`, `analyzePolicySet`, `explainRobots`)
+and ships empty/loading/error states. Re-enable `typedRoutes`. Build order:
+Home → Analyzer → Validator → AI Manager → Tester → Generator → Explainer.
 
-**Acceptance Criteria:** all approved screens functional; design-system fidelity
-(80/15/5 color rule, type scale, spacing); responsive; accessible; route handler thin;
-no domain logic in components.
+**Acceptance Criteria:** all approved screens functional and design-faithful;
+responsive; accessible; route handlers thin; no domain logic in components.
 
-**Dependencies:** all six features ✅, design system docs ✅, `generatePreview`/
-`analyze`/`analyzePolicySet` ✅ (all satisfied). Readiness reviewed —
-[`UI_INTEGRATION.md`](./UI_INTEGRATION.md) (no blockers; split into 10A tokens/shared
-UI, then 10B screen assembly).
+**Dependencies:** all six features ✅, 10A shared UI ✅ (all satisfied).
 
 ---
 
 # Next Recommended Phase
 
-**UI Integration (Phase 10).**
+**Phase 10B — Screen Assembly & Feature Integration** (then Phase 11 Testing).
 
-- **Why:** the pure + IO domain core is complete and fully tested; everything the
-  screens need is exposed via feature barrels (`generatePreview`, `analyze`,
-  `analyzePolicySet`, `testUrl`, `explainRobots`). This phase makes the product usable.
-- **Dependencies already satisfied:** all engines, the design system extraction
-  ([`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md)), screen specs (PRD §11), and the route map
-  (PRD §16).
-- **Note:** carries the design-token migration debt (Phase 1 `globals.css`).
+- **Why:** the design system, shared components, and all feature APIs are ready; 10B is
+  pure assembly + two thin route handlers.
+- **Dependencies already satisfied:** 10A foundation, feature barrels, screen specs
+  (PRD §11), route map (PRD §16), readiness review ([`UI_INTEGRATION.md`](./UI_INTEGRATION.md)).
 
 ---
 
