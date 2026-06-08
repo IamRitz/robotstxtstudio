@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 7 — Generator (next) |
-| **Last Completed Commit** | `92f321c` — feat(tester) |
+| **Current Phase** | Phase 8 — AI Manager (next) |
+| **Last Completed Commit** | `2562dd3` — feat(generator) |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~46% (6 of 13 roadmap phases) |
+| **Overall Progress** | ~54% (7 of 13 roadmap phases) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -25,8 +25,8 @@
 | Validator | ✅ Complete | `8ee2d5a` |
 | Explainer | ✅ Complete | `9ff36fb` |
 | URL Tester | ✅ Complete | `92f321c` |
-| Generator | ⏳ Next | |
-| AI Manager | ⏳ Pending | |
+| Generator | ✅ Complete | `2562dd3` |
+| AI Manager | ⏳ Next | |
 | Analyzer | ⏳ Pending | |
 | UI Integration | ⏳ Pending | |
 | Testing | ⏳ Pending | |
@@ -74,35 +74,41 @@ Commit: `92f321c`
 Delivered: canonical access-evaluation engine (group selection, longest-match + Allow-tie precedence, `*`/`$` wildcards); `testUrl` with trace + reason; trace-free `evaluateAccess`/`isAllowed` for reuse; ~99% coverage.
 See: [`TESTER.md`](./TESTER.md)
 
+## Generator
+Commit: `2562dd3`
+Delivered: canonical writer (config → RobotsFile → text); 20-crawler catalog (`src/config/crawlers.ts`); locked presets; `generatePreview` composing Validator/Explainer/Tester; full-AST round-trip with the parser; ~99% coverage.
+See: [`GENERATOR.md`](./GENERATOR.md)
+
 ---
 
 # Current Sprint
 
-**Goal:** Implement the Generator — turn a `GeneratorConfig` into a robots.txt.
+**Goal:** Implement the AI Crawler Manager — category-grouped allow/block control with
+presets and a live export block.
 
-**Scope:** `src/features/generator/` (pure domain). Map starter templates + per-crawler
-policies + disallow paths + sitemap/crawl-delay → a `RobotsFile`, then serialize to
-text. Reuse the Tester (`evaluateAccess`) for a live "what this blocks" preview. Unit
-tests + `docs/GENERATOR.md`.
+**Scope:** `src/features/crawler-manager/` (pure domain). Build on the crawler catalog
+(`src/config/crawlers.ts`) and the Generator: preset application (incl. "Block all AI
+crawlers"), per-crawler/category toggling, search/filter, impact preview, and an
+exportable robots.txt block via the Generator. Unit tests + `docs/AI-MANAGER.md`.
 
-**Acceptance Criteria:** consumes `GeneratorConfig`; produces a valid `RobotsFile` +
-serialized text; deterministic; round-trips through the parser; no React/Next;
-≥80% coverage.
+**Acceptance Criteria:** config-driven (no hardcoded UI data); presets set documented
+patterns; produces a `GeneratorConfig`/robots block via the Generator; reuses the
+Tester for impact previews; no React/Next; ≥80% coverage.
 
-**Dependencies:** Domain Models ✅, Parser ✅, Validator ✅, Tester ✅ (all satisfied).
+**Dependencies:** Crawler catalog ✅, Generator ✅, Tester ✅, Explainer ✅ (all satisfied).
 
 ---
 
 # Next Recommended Phase
 
-**Generator (Phase 7).**
+**AI Crawler Manager (Phase 8).**
 
-- **Why:** the first *producer* of a `RobotsFile`. It closes the loop — output can be
-  immediately validated, explained, and tested with the engines already built — and
-  unblocks the AI Manager (which composes generator output) and the Analyzer's
-  "Fix Issues" flow.
-- **Dependencies already satisfied:** `GeneratorConfig` model, the parser (for
-  round-trip verification), and the Validator/Tester (for previews) all exist.
+- **Why:** all its inputs now exist — the crawler catalog (Generator phase), the
+  Generator (to emit the block), and the Tester/Explainer (impact previews). It is the
+  product's headline differentiator and the last pure-domain feature before the
+  Analyzer introduces network IO.
+- **Dependencies already satisfied:** crawler catalog, `applyPreset`/`generatePreview`,
+  `getAiCrawlerStatuses`, and the Tester.
 
 ---
 
