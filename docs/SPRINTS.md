@@ -108,7 +108,9 @@ the pure feature APIs only via barrels.
 no domain logic in components.
 
 **Dependencies:** all six features ✅, design system docs ✅, `generatePreview`/
-`analyze`/`analyzePolicySet` ✅ (all satisfied).
+`analyze`/`analyzePolicySet` ✅ (all satisfied). Readiness reviewed —
+[`UI_INTEGRATION.md`](./UI_INTEGRATION.md) (no blockers; split into 10A tokens/shared
+UI, then 10B screen assembly).
 
 ---
 
