@@ -1,10 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-test("dashboard renders and lists all modules", async ({ page }) => {
+test("home renders the hero and tool grid", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Robots.txt Studio" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Who Can See Your Website?" }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Analyze My Site" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "AI Crawler Manager" })).toBeVisible();
+});
 
-  const modules = page.getByRole("region", { name: "Modules" }).getByRole("article");
-  await expect(modules).toHaveCount(6);
+test("home navigation reaches each tool", async ({ page }) => {
+  for (const path of ["/analyze", "/generate", "/validate", "/url-tester", "/ai-crawlers", "/explain"]) {
+    const res = await page.goto(path);
+    expect(res?.status()).toBeLessThan(400);
+  }
 });

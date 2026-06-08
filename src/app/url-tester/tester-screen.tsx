@@ -11,10 +11,10 @@ import { SectionHeader } from "@/components/section-header";
 import { STATUS_VISUALS, type StatusKey } from "@/components/severity";
 import { EmptyState } from "@/components/empty-state";
 import { Card } from "@/components/ui/card";
+import { RobotsSourceField } from "@/components/robots-source-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -57,8 +57,10 @@ export function TesterScreen() {
 
       <Card className="mb-6 grid gap-4 p-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <Label htmlFor="robots-src">robots.txt</Label>
-          <Textarea id="robots-src" value={source} onChange={(e) => setSource(e.target.value)} rows={8} className="mt-1.5" />
+          <Label>robots.txt</Label>
+          <div className="mt-1.5">
+            <RobotsSourceField value={source} onChange={setSource} rows={8} />
+          </div>
         </div>
         <div>
           <Label htmlFor="url">URL to test</Label>

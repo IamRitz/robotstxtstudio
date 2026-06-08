@@ -10,8 +10,8 @@ import { SectionHeader } from "@/components/section-header";
 import { StatusBadge } from "@/components/status-badge";
 import { InfoPanel } from "@/components/info-panel";
 import type { StatusKey } from "@/components/severity";
+import { RobotsSourceField } from "@/components/robots-source-field";
 import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 
 const SAMPLE = `User-agent: *
 Disallow: /admin/
@@ -46,7 +46,7 @@ export function ExplainerScreen() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-4">
           <SectionHeader className="mb-3">Your robots.txt</SectionHeader>
-          <Textarea value={text} onChange={(e) => setText(e.target.value)} rows={16} aria-label="robots.txt content" />
+          <RobotsSourceField value={text} onChange={setText} rows={16} />
         </Card>
 
         <div className="space-y-4">

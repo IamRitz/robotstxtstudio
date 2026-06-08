@@ -11,8 +11,8 @@ import { IssueCard } from "@/components/issue-card";
 import { Callout } from "@/components/callout";
 import { EmptyState } from "@/components/empty-state";
 import { Segmented } from "@/components/segmented";
+import { RobotsSourceField } from "@/components/robots-source-field";
 import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 
 const SAMPLE = `User-agent: *
 Allow: /
@@ -44,13 +44,7 @@ export function ValidatorScreen() {
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
         <Card className="p-4">
           <SectionHeader className="mb-3">robots.txt content</SectionHeader>
-          <Textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            aria-label="robots.txt content"
-            rows={16}
-            placeholder="Paste your robots.txt here…"
-          />
+          <RobotsSourceField value={text} onChange={setText} rows={16} />
         </Card>
 
         <ScoreCard

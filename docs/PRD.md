@@ -6,6 +6,7 @@
 > **Companion docs:** [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) (tokens, components),
 > [`SPRINTS.md`](./SPRINTS.md) (execution dashboard / status),
 > [`UI_INTEGRATION.md`](./UI_INTEGRATION.md) (Phase 10 readiness review & plan),
+> [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) (launch readiness audit),
 > `README.md` (developer quickstart).
 
 This document synthesizes the product brief, the architecture decisions from Phase 1,

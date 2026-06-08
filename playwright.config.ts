@@ -13,11 +13,25 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // Uses the system Chrome by default (no browser download). Override with
+  // PLAYWRIGHT_CHANNEL="" to use a Playwright-managed Chromium in CI.
+  projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: process.env.PLAYWRIGHT_CHANNEL ?? "chrome",
+      },
+    },
+  ],
+  // Run e2e against a production build (fast, no per-route dev compilation).
+  // Locally reuses an existing build via `pnpm start`; CI builds first.
   webServer: {
-    command: "pnpm dev",
+    command: process.env.CI
+      ? "node_modules/.bin/next build && node_modules/.bin/next start"
+      : "node_modules/.bin/next start",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
   },
 });
