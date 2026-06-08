@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 6 — URL Tester (next) |
-| **Last Completed Commit** | `9ff36fb` — feat(explainer) |
+| **Current Phase** | Phase 7 — Generator (next) |
+| **Last Completed Commit** | `92f321c` — feat(tester) |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~40% (5 of 13 roadmap phases) |
+| **Overall Progress** | ~46% (6 of 13 roadmap phases) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -24,8 +24,8 @@
 | Parser | ✅ Complete | `af00e06` |
 | Validator | ✅ Complete | `8ee2d5a` |
 | Explainer | ✅ Complete | `9ff36fb` |
-| URL Tester | ⏳ Next | |
-| Generator | ⏳ Pending | |
+| URL Tester | ✅ Complete | `92f321c` |
+| Generator | ⏳ Next | |
 | AI Manager | ⏳ Pending | |
 | Analyzer | ⏳ Pending | |
 | UI Integration | ⏳ Pending | |
@@ -69,34 +69,40 @@ Commit: `9ff36fb`
 Delivered: deterministic plain-English explanations (groups, AI crawlers, sitemaps, notes); reuses Validator AI statuses; ~98% coverage.
 See: [`EXPLAINER.md`](./EXPLAINER.md)
 
+## URL Tester
+Commit: `92f321c`
+Delivered: canonical access-evaluation engine (group selection, longest-match + Allow-tie precedence, `*`/`$` wildcards); `testUrl` with trace + reason; trace-free `evaluateAccess`/`isAllowed` for reuse; ~99% coverage.
+See: [`TESTER.md`](./TESTER.md)
+
 ---
 
 # Current Sprint
 
-**Goal:** Implement the URL Tester — precise per-URL × user-agent evaluation.
+**Goal:** Implement the Generator — turn a `GeneratorConfig` into a robots.txt.
 
-**Scope:** `src/features/tester/` (pure domain). Path matching with `Allow`/`Disallow`
-precedence (longest-match), `*` wildcards and `$` end-anchor, case-insensitive
-user-agent group selection; produce `UrlTestResult` with verdict, matched rule, and
-a step-by-step trace. Unit tests + `docs/TESTER.md`.
+**Scope:** `src/features/generator/` (pure domain). Map starter templates + per-crawler
+policies + disallow paths + sitemap/crawl-delay → a `RobotsFile`, then serialize to
+text. Reuse the Tester (`evaluateAccess`) for a live "what this blocks" preview. Unit
+tests + `docs/GENERATOR.md`.
 
-**Acceptance Criteria:** consumes `RobotsFile`; emits `UrlTestResult` only; correct
-precedence/wildcards per the matching spec; full trace; no React/Next; ≥80% coverage;
-reusable by the Analyzer.
+**Acceptance Criteria:** consumes `GeneratorConfig`; produces a valid `RobotsFile` +
+serialized text; deterministic; round-trips through the parser; no React/Next;
+≥80% coverage.
 
-**Dependencies:** Parser ✅, Domain Models ✅ (all satisfied).
+**Dependencies:** Domain Models ✅, Parser ✅, Validator ✅, Tester ✅ (all satisfied).
 
 ---
 
 # Next Recommended Phase
 
-**URL Tester (Phase 6).**
+**Generator (Phase 7).**
 
-- **Why:** last pure AST consumer; completes the verify/understand core. Its exact
-  matching engine sharpens what the Explainer approximates at group level, and the
-  Analyzer will reuse it for spot checks.
-- **Dependencies already satisfied:** the canonical AST (Parser) and `UrlTestResult`
-  model (Domain Models) exist; no new infrastructure needed.
+- **Why:** the first *producer* of a `RobotsFile`. It closes the loop — output can be
+  immediately validated, explained, and tested with the engines already built — and
+  unblocks the AI Manager (which composes generator output) and the Analyzer's
+  "Fix Issues" flow.
+- **Dependencies already satisfied:** `GeneratorConfig` model, the parser (for
+  round-trip verification), and the Validator/Tester (for previews) all exist.
 
 ---
 
