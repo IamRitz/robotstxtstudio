@@ -2,10 +2,11 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 11 — E2E Testing & Hardening (next) |
-| **Last Completed Commit** | `acd813c` — feat(ui) product screens |
+| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (next) |
+| **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~77% (10 of 13 roadmap phases) |
+| **Overall Progress** | ~85% (11 of 13 roadmap phases) |
+| **Launch readiness** | No product blockers — see [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -30,8 +31,8 @@
 | Analyzer | ✅ Complete | `ac31675` |
 | UI Integration · 10A Design System & Shared UI | ✅ Complete | `45602c7` |
 | UI Integration · 10B Screen Assembly | ✅ Complete | `acd813c` |
-| Testing | ⏳ Pending | |
-| SEO Pages | ⏳ Pending | |
+| Testing / Hardening | ✅ Complete | `b855e00` |
+| SEO Pages | ⏳ Next | |
 | Deployment | ⏳ Pending | |
 
 Also shipped: product documentation blueprint (`c76acbc`).
@@ -97,36 +98,42 @@ See: [`UI_INTEGRATION.md`](./UI_INTEGRATION.md), `docs/screenshots/`
 
 ## UI Integration — 10B Screen Assembly
 Commit: `acd813c`
-Delivered: all seven approved screens (`/`, `/analyze`, `/generate`, `/validate`, `/url-tester`, `/ai-crawlers`, `/explain`) wired to feature APIs (`analyze`/`generatePreview`/`validateRobots`/`testUrl`/`analyzePolicySet`/`explainRobots`); thin `app/api/analyze` route handler; empty/loading/error states; responsive + accessible; `typedRoutes` re-enabled. 12 routes build clean; 208 domain tests still green.
+Delivered: all seven approved screens wired to feature APIs; thin `app/api/analyze` route handler; empty/loading/error states; responsive + accessible; `typedRoutes` re-enabled. 12 routes build clean.
 See: `docs/screenshots/phase-10b-*`
+
+## Testing & Integration Hardening
+Commit: `b855e00`
+Delivered: fetch-from-URL (`app/api/fetch-robots` reusing the Analyzer fetch + shared `RobotsSourceField` in Validator/Tester/Explainer); Playwright e2e for all 6 journeys + smoke/nav + error states (12/12 pass, prod server via system Chrome); error-state audit; OG/Twitter metadata + favicon; `docs/LAUNCH_CHECKLIST.md`.
+See: [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md)
 
 ---
 
 # Current Sprint
 
-**Goal:** Phase 11 — E2E testing & integration hardening.
+**Goal:** Phase 12 — SEO pages & growth assets.
 
-**Scope:** Playwright e2e across the seven screens (install browsers; run the existing
-smoke spec + new flows: analyze a domain, validate, toggle AI crawlers, test a URL,
-generate + download, explain). Harden the `/api/analyze` boundary (bad input, fetch
-failures). Wire CI to run unit + e2e. Address the responsive/a11y polish gaps noted in
-10B (line-numbered editor, "fetch from URL" tabs).
+**Scope:** `app/sitemap.ts`, `app/robots.ts` (ship an exemplary robots.txt), dynamic
+`opengraph-image`, and keyword landing pages (`/robots-txt-generator`,
+`/robots-txt-tester`, `/robots-txt-validator`, `/gptbot-robots-txt`,
+`/claudebot-robots-txt`, `/perplexitybot-robots-txt`, `/wordpress-robots-txt`) that
+funnel into the tools, plus a Crawler Directory (`/crawlers`). Per-page canonical +
+metadata. Static/ISR; reuse existing components.
 
-**Acceptance Criteria:** e2e green for each screen's happy path + key error paths; unit
-suite stays green; coverage gate holds; accessibility checks pass.
+**Acceptance Criteria:** keyword routes render + funnel to tools; sitemap/robots/OG
+present; Lighthouse SEO pass; no domain changes.
 
-**Dependencies:** all screens ✅, Playwright config ✅ (from Phase 1), feature APIs ✅.
+**Dependencies:** all features + UI ✅, catalog ✅, metadata base ✅.
 
 ---
 
 # Next Recommended Phase
 
-**Phase 11 — E2E Testing & Integration Hardening** (then 12 SEO pages, 13 Deploy).
+**Phase 12 — SEO Pages & Growth Assets** (then Phase 13 Deployment).
 
-- **Why:** the product is feature-complete and builds; now lock behavior with e2e and
-  harden the one IO boundary before SEO/launch work.
-- **Dependencies already satisfied:** Playwright harness (Phase 1), all screens and
-  route handler (10B), pure unit suite (208 tests).
+- **Why:** product is feature-complete, tested, and launch-audited; SEO surfaces are the
+  remaining acquisition work before deploy.
+- **Dependencies already satisfied:** primary keywords (PRD), route map (PRD §16),
+  crawler catalog, and the shared component library.
 
 ---
 
