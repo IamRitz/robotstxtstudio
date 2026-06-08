@@ -36,3 +36,8 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# design reference build artifacts (keep screenshots + source, drop installs/builds)
+Screens/**/node_modules/
+Screens/**/dist/
+Screens/**/.vite/
