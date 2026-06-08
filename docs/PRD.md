@@ -11,9 +11,10 @@ the approved high-fidelity designs (`Screens/Screen 1–6.png`), the coded desig
 handoff (`Screens/design_spec_vite/`), and the roadmap. When this document and code
 disagree, **fix one of them deliberately** — do not let them drift.
 
-> **Naming:** the design mockups use the working brand **"RobotsKit."** The
-> canonical product name is **Robots.txt Studio.** This is an open item
-> (see §18) — until resolved, code and copy use "Robots.txt Studio."
+> **Naming (DECIDED):** the canonical product name is **Robots.txt Studio.**
+> "RobotsKit" was an earlier design-stage name only and must not appear in product
+> code or copy; any "RobotsKit" string in the mockups is a historical placeholder.
+> No logo work is required yet.
 
 ---
 
@@ -488,20 +489,52 @@ compositions (e.g. Rule Trace, Crawler Breakdown) live in the relevant feature's
 
 ## 15. Domain Models
 
-Defined in `src/types` (Phase 2). These are the shared vocabulary across all modules.
+Implemented in `src/types` (Phase 2) as pure TypeScript; boundary validation lives
+in `src/schemas` (Zod). These are the shared vocabulary across all modules. The
+names below reflect the implemented layer (refined from the original §15 draft — see
+the Phase 2 refinements A/B/C noted at the end of this section).
 
-- **Directive** — one line: `{ field: 'user-agent'|'allow'|'disallow'|'sitemap'|'crawl-delay'|'comment'|'unknown', value, raw, line }`.
-- **Rule** — an Allow/Disallow path rule: `{ type: 'allow'|'disallow', path, hasWildcard, hasEndAnchor }`.
-- **RuleGroup** — `{ userAgents: string[], rules: Rule[], crawlDelay?, lineRange }`.
-- **ParsedRobotsFile** — AST: `{ groups: RuleGroup[], sitemaps: string[], comments, directives: Directive[], errors }`.
-- **Crawler** — `{ id, name, owner, userAgent, category, description, defaultRecommendation, docsUrl }`.
-- **ValidationResult** — `{ severity: 'error'|'warning'|'info', code, message, line?, fix? }`.
-- **TestResult** — `{ verdict: 'allowed'|'blocked', matchedRule?, matchedGroup?, trace: TraceStep[] }`.
-- **ExplanationResult** — `{ summary, perGroup: GroupExplanation[] }`.
-- **AuditResult** (Live Checker) — `{ visibilityScore, breakdown, findings: ValidationResult[], categories: CategoryBreakdown[] }`.
+**Robots.txt AST (`robots.ts`) — the single canonical representation**
+- **Directive** — one source line: `{ field, value, raw, line }` where `field` ∈
+  `user-agent | allow | disallow | sitemap | crawl-delay | host | comment | blank | unknown`.
+- **CrawlRule** — an Allow/Disallow path rule: `{ type, path, hasWildcard, hasEndAnchor, raw, line }`.
+- **RobotsGroup** — `{ userAgents, rules, crawlDelay?, lineRange }`.
+- **RobotsFile** — the AST: `{ groups, sitemaps, host?, comments, unknownDirectives, lineCount, source? }`.
+  Produced by **both** the parser (from text) and the generator (from config).
 
-Models are **plain data**; pure functions in `src/parser` and feature `domain/`
-operate on them. No React/`next/*` imports in this layer.
+**Crawler (`crawler.ts`)**
+- **Crawler** — `{ id, name, owner, userAgent, category, description, defaultRecommendation, docsUrl? }`.
+- **CrawlerCategory** — `search-engine | ai-training | ai-search | seo | social | data`.
+- **CrawlPolicy** — `allow | block` (user intent); distinct from a rule's `allow | disallow`.
+
+**Scoring (`score.ts`)** — one banding rule shared by Validator + Analyzer
+- **Score / ScoreBand** + `scoreBand()` (80/60 thresholds), **HealthScore**, **VisibilityScore**.
+
+**Validation (`validation.ts`)**
+- **ValidationIssue** — one finding: `{ id, severity, code, title, message, line?, lineRange?, fix?, learnMoreUrl? }`.
+- **ValidationResult** — aggregate: `{ isValid, issues, health, counts }`.
+
+**Tester / Explainer / Analyzer**
+- **UrlTestResult** — `{ url, userAgent, decision, matchedRule?, matchedUserAgent?, reason, trace }`.
+- **ExplanationResult** — `{ summary, groups, sitemaps, notes }`.
+- **FetchResult** — `{ status, requestedUrl, finalUrl?, httpStatus?, contentType?, body?, robotsExists, redirected, error? }`.
+- **AnalysisReport** — composes the above: `{ domain, fetchedAt, fetch, file, validation, visibility, breakdown, findings, recommendations, explanation? }`.
+
+**Generator / Compare / Monitoring**
+- **GeneratorConfig** — `{ template?, crawlerPolicies, disallowPaths, sitemapUrl?, crawlDelay? }`.
+- **RobotsDiff / DiffChange** (Compare) and **MonitoredSite / MonitorSnapshot /
+  MonitorChangeEvent** (Monitoring) reuse `RobotsFile` and `AnalysisReport` — no new core concepts.
+
+Models are **plain data** + a few pure helpers (`scoreBand`, `compareSeverity`);
+pure functions in `src/parser` and feature `domain/` operate on them. No
+React/`next/*`/`zod` imports in this layer.
+
+> **Phase 2 refinements (vs. the original §15 draft):** (A) one `RobotsFile` AST
+> replaces the separate parse/generate shapes; (B) the parser emits **no**
+> `ValidationIssue`s — it preserves fidelity (`unknownDirectives`, line numbers) and
+> the Validator derives all judgements; (C) `ValidationResult` (aggregate) is split
+> from `ValidationIssue` (item), and Validator health + Analyzer visibility share one
+> `Score`/`scoreBand`.
 
 ---
 
@@ -518,6 +551,8 @@ Full rationale: Phase 1 commit + `README.md`. Essentials:
 - **Server-side fetch:** Live Checker / remote-fetch tools use Route Handlers to avoid
   browser CORS and to control redirects/timeouts/content-type.
 - **Config layer:** crawler DB + website-type presets + module registry as data.
+- **Domain vs. schemas:** pure models in `src/types` (no `zod`); boundary DTO
+  validation in `src/schemas` (the only `zod` importer) — keeps types dependency-free.
 - **Testing:** 80%+ coverage gate on `parser/` and feature `domain/`+`lib/`.
 
 ### Route Map

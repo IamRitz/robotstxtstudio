@@ -6,9 +6,10 @@
 > Phase 10 (UI integration). The product-level summary lives in
 > [`PRD.md` §13–14](./PRD.md).
 
-> **Brand note:** the design files use the working name **"RobotsKit."** The
-> canonical product name is **Robots.txt Studio** (see [PRD §1](./PRD.md)). Treat
-> any "RobotsKit" string in mockups as a placeholder.
+> **Brand note (DECIDED):** the canonical product name is **Robots.txt Studio**
+> (see [PRD §1](./PRD.md)). "RobotsKit" was an earlier design-stage name only — treat
+> any "RobotsKit" string in mockups as a historical placeholder; do not use it in
+> product code or copy. No logo work is required yet.
 
 ---
 

@@ -46,7 +46,8 @@ src/
     crawler-manager/
     live-checker/
   config/              # crawler DB, module registry, presets (data)
-  types/               # cross-cutting domain models
+  types/               # cross-cutting domain models (pure TS, no zod)
+  schemas/             # Zod boundary schemas (the only zod importer)
   lib/                 # generic utilities (cn, fetch helpers)
   components/ui/        # shadcn primitives
 tests-e2e/             # Playwright specs
@@ -54,6 +55,7 @@ tests-e2e/             # Playwright specs
 
 **Rules**
 - Domain logic is pure: no React, no `next/*` imports.
+- `src/types` is dependency-free; all `zod` validation lives in `src/schemas`.
 - Import features only via their barrel (`@/features/<name>`), enforced by ESLint.
 - The parser is shared, not owned by a feature (four consumers).
 

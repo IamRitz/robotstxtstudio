@@ -1,8 +1,39 @@
 /**
- * Cross-cutting domain models (Phase 2):
- * Directive, Rule, Crawler, ValidationResult, ParsedRobotsFile,
- * TestResult, ExplanationResult.
+ * Cross-cutting domain models — the shared vocabulary for every feature.
  *
- * Defined here so every feature shares one vocabulary.
+ * Pure data and pure helpers only: no React, no `next/*`, no `zod`. Boundary
+ * validation (Zod) lives in `src/schemas` so this layer stays framework- and
+ * dependency-independent (PRD §16, "Zod at boundaries only").
+ *
+ * Import via the barrel: `import { type RobotsFile, scoreBand } from "@/types"`.
  */
-export {};
+
+// Robots.txt AST — the single canonical representation.
+export * from "./robots";
+
+// Crawler catalog vocabulary.
+export * from "./crawler";
+
+// Scoring primitives (shared by Validator + Analyzer).
+export * from "./score";
+
+// Validation (issues + aggregate result).
+export * from "./validation";
+
+// URL Tester.
+export * from "./test";
+
+// Explainer.
+export * from "./explanation";
+
+// Live Analyzer (audit) + fetch boundary.
+export * from "./analysis";
+
+// Generator input config.
+export * from "./generator";
+
+// Compare (future).
+export * from "./compare";
+
+// Monitoring (future).
+export * from "./monitoring";
