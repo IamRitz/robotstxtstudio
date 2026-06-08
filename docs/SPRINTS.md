@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 8 — AI Manager (next) |
-| **Last Completed Commit** | `2562dd3` — feat(generator) |
+| **Current Phase** | Phase 9 — Analyzer (next) |
+| **Last Completed Commit** | `484c026` — feat(ai-manager) |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~54% (7 of 13 roadmap phases) |
+| **Overall Progress** | ~62% (8 of 13 roadmap phases) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -26,8 +26,8 @@
 | Explainer | ✅ Complete | `9ff36fb` |
 | URL Tester | ✅ Complete | `92f321c` |
 | Generator | ✅ Complete | `2562dd3` |
-| AI Manager | ⏳ Next | |
-| Analyzer | ⏳ Pending | |
+| AI Manager | ✅ Complete | `484c026` |
+| Analyzer | ⏳ Next | |
 | UI Integration | ⏳ Pending | |
 | Testing | ⏳ Pending | |
 | SEO Pages | ⏳ Pending | |
@@ -79,36 +79,42 @@ Commit: `2562dd3`
 Delivered: canonical writer (config → RobotsFile → text); 20-crawler catalog (`src/config/crawlers.ts`); locked presets; `generatePreview` composing Validator/Explainer/Tester; full-AST round-trip with the parser; ~99% coverage.
 See: [`GENERATOR.md`](./GENERATOR.md)
 
+## AI Crawler Manager
+Commit: `484c026`
+Delivered: intent model (Allow/Block/Inherit `PolicySet`); `toGeneratorConfig` (PolicyGenerator); `analyzePolicySet` impact engine composing Generator/Tester/Validator/Explainer; per-crawler summaries, category tallies, intent-driven recommendations. No robots.txt strings built here. ~99% coverage.
+See: [`AI_MANAGER.md`](./AI_MANAGER.md)
+
 ---
 
 # Current Sprint
 
-**Goal:** Implement the AI Crawler Manager — category-grouped allow/block control with
-presets and a live export block.
+**Goal:** Implement the Analyzer — fetch a live site's robots.txt and produce a
+visibility audit.
 
-**Scope:** `src/features/crawler-manager/` (pure domain). Build on the crawler catalog
-(`src/config/crawlers.ts`) and the Generator: preset application (incl. "Block all AI
-crawlers"), per-crawler/category toggling, search/filter, impact preview, and an
-exportable robots.txt block via the Generator. Unit tests + `docs/AI-MANAGER.md`.
+**Scope:** `src/features/live-checker/` + a Next.js Route Handler. Server-side fetch
+(handling 404/redirect/timeout/content-type/size), then compose Parser → Validator →
+Explainer → Tester/AI statuses into an `AnalysisReport` (visibility score, crawler
+breakdown, findings, recommendations). Unit tests for the pure pipeline; integration
+test for the fetch boundary. `docs/ANALYZER.md`.
 
-**Acceptance Criteria:** config-driven (no hardcoded UI data); presets set documented
-patterns; produces a `GeneratorConfig`/robots block via the Generator; reuses the
-Tester for impact previews; no React/Next; ≥80% coverage.
+**Acceptance Criteria:** robust `FetchResult` handling (missing ≠ error); pure
+report-building separated from IO; reuses all existing engines; `AnalysisReport`
+shape per the domain model; no new robots.txt logic.
 
-**Dependencies:** Crawler catalog ✅, Generator ✅, Tester ✅, Explainer ✅ (all satisfied).
+**Dependencies:** Parser ✅, Validator ✅, Explainer ✅, Tester ✅, catalog ✅
+(all satisfied). New: server-side fetch (Route Handler).
 
 ---
 
 # Next Recommended Phase
 
-**AI Crawler Manager (Phase 8).**
+**Analyzer / Live Checker (Phase 9).**
 
-- **Why:** all its inputs now exist — the crawler catalog (Generator phase), the
-  Generator (to emit the block), and the Tester/Explainer (impact previews). It is the
-  product's headline differentiator and the last pure-domain feature before the
-  Analyzer introduces network IO.
-- **Dependencies already satisfied:** crawler catalog, `applyPreset`/`generatePreview`,
-  `getAiCrawlerStatuses`, and the Tester.
+- **Why:** the last feature phase and the first to introduce **network IO**. All the
+  pure engines it composes are complete; the new surface is just a robust fetch layer
+  (Route Handler) feeding the existing pipeline.
+- **Dependencies already satisfied:** the full pure core (Parser/Validator/Explainer/
+  Tester) and the crawler catalog; `AnalysisReport`/`FetchResult` models exist.
 
 ---
 
