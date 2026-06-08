@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 9 — Analyzer (next) |
-| **Last Completed Commit** | `484c026` — feat(ai-manager) |
+| **Current Phase** | Phase 10 — UI Integration (next) |
+| **Last Completed Commit** | `ac31675` — feat(analyzer) |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~62% (8 of 13 roadmap phases) |
+| **Overall Progress** | ~69% (9 of 13 roadmap phases) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -27,8 +27,8 @@
 | URL Tester | ✅ Complete | `92f321c` |
 | Generator | ✅ Complete | `2562dd3` |
 | AI Manager | ✅ Complete | `484c026` |
-| Analyzer | ⏳ Next | |
-| UI Integration | ⏳ Pending | |
+| Analyzer | ✅ Complete | `ac31675` |
+| UI Integration | ⏳ Next | |
 | Testing | ⏳ Pending | |
 | SEO Pages | ⏳ Pending | |
 | Deployment | ⏳ Pending | |
@@ -84,37 +84,45 @@ Commit: `484c026`
 Delivered: intent model (Allow/Block/Inherit `PolicySet`); `toGeneratorConfig` (PolicyGenerator); `analyzePolicySet` impact engine composing Generator/Tester/Validator/Explainer; per-crawler summaries, category tallies, intent-driven recommendations. No robots.txt strings built here. ~99% coverage.
 See: [`AI_MANAGER.md`](./AI_MANAGER.md)
 
+## Analyzer / Live Checker
+Commit: `ac31675`
+Delivered: strict fetch/analysis split — injectable `fetchRobots` (only IO; never throws; handles 404/redirect/invalid-type/too-large/timeout/network) + pure `buildAnalysisReport` composing Parser/Validator/Explainer/Tester into an `AnalysisReport` (visibility score, category breakdown, findings, deep-linked recommendations). ~98% coverage. No route handler yet (UI phase).
+See: [`ANALYZER.md`](./ANALYZER.md)
+
 ---
 
 # Current Sprint
 
-**Goal:** Implement the Analyzer — fetch a live site's robots.txt and produce a
-visibility audit.
+**Goal:** UI Integration — wire the six features into the dashboard screens with the
+approved design system.
 
-**Scope:** `src/features/live-checker/` + a Next.js Route Handler. Server-side fetch
-(handling 404/redirect/timeout/content-type/size), then compose Parser → Validator →
-Explainer → Tester/AI statuses into an `AnalysisReport` (visibility score, crawler
-breakdown, findings, recommendations). Unit tests for the pure pipeline; integration
-test for the fetch boundary. `docs/ANALYZER.md`.
+**Scope:** Next.js App Router pages/routes (`/`, `/generate`, `/validate`,
+`/url-tester`, `/ai-crawlers`, `/analyze`, `/explain`), shadcn/ui primitives, and the
+design tokens. Migrate `globals.css` to the OKLCH neutral base + `--brand`/status
+tokens (tracked debt). Add the `app/api/analyze` route handler (validated by
+`analyzeRequestSchema`) calling `analyze()`. Components per the screen specs; reuse
+the pure feature APIs only via barrels.
 
-**Acceptance Criteria:** robust `FetchResult` handling (missing ≠ error); pure
-report-building separated from IO; reuses all existing engines; `AnalysisReport`
-shape per the domain model; no new robots.txt logic.
+**Acceptance Criteria:** all approved screens functional; design-system fidelity
+(80/15/5 color rule, type scale, spacing); responsive; accessible; route handler thin;
+no domain logic in components.
 
-**Dependencies:** Parser ✅, Validator ✅, Explainer ✅, Tester ✅, catalog ✅
-(all satisfied). New: server-side fetch (Route Handler).
+**Dependencies:** all six features ✅, design system docs ✅, `generatePreview`/
+`analyze`/`analyzePolicySet` ✅ (all satisfied).
 
 ---
 
 # Next Recommended Phase
 
-**Analyzer / Live Checker (Phase 9).**
+**UI Integration (Phase 10).**
 
-- **Why:** the last feature phase and the first to introduce **network IO**. All the
-  pure engines it composes are complete; the new surface is just a robust fetch layer
-  (Route Handler) feeding the existing pipeline.
-- **Dependencies already satisfied:** the full pure core (Parser/Validator/Explainer/
-  Tester) and the crawler catalog; `AnalysisReport`/`FetchResult` models exist.
+- **Why:** the pure + IO domain core is complete and fully tested; everything the
+  screens need is exposed via feature barrels (`generatePreview`, `analyze`,
+  `analyzePolicySet`, `testUrl`, `explainRobots`). This phase makes the product usable.
+- **Dependencies already satisfied:** all engines, the design system extraction
+  ([`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md)), screen specs (PRD §11), and the route map
+  (PRD §16).
+- **Note:** carries the design-token migration debt (Phase 1 `globals.css`).
 
 ---
 
