@@ -499,8 +499,11 @@ the Phase 2 refinements A/B/C noted at the end of this section).
   `user-agent | allow | disallow | sitemap | crawl-delay | host | comment | blank | unknown`.
 - **CrawlRule** — an Allow/Disallow path rule: `{ type, path, hasWildcard, hasEndAnchor, raw, line }`.
 - **RobotsGroup** — `{ userAgents, rules, crawlDelay?, lineRange }`.
-- **RobotsFile** — the AST: `{ groups, sitemaps, host?, comments, unknownDirectives, lineCount, source? }`.
+- **RobotsFile** — the AST: `{ directives, groups, sitemaps, host?, unknownDirectives, lineCount, source? }`.
   Produced by **both** the parser (from text) and the generator (from config).
+  `directives` is the lossless ordered backbone (one entry per source line);
+  `groups`/`sitemaps`/`unknownDirectives` are structured views over it. See
+  [`PARSER.md`](./PARSER.md).
 
 **Crawler (`crawler.ts`)**
 - **Crawler** — `{ id, name, owner, userAgent, category, description, defaultRecommendation, docsUrl? }`.
@@ -535,6 +538,11 @@ React/`next/*`/`zod` imports in this layer.
 > the Validator derives all judgements; (C) `ValidationResult` (aggregate) is split
 > from `ValidationIssue` (item), and Validator health + Analyzer visibility share one
 > `Score`/`scoreBand`.
+>
+> **Phase 3 refinement:** `RobotsFile` gained a lossless `directives` backbone (one
+> entry per source line) to meet the parser's fidelity requirements — preserve
+> ordering, duplicates, and unknown directives without discarding anything. The
+> unused `comments` field was removed (it's a trivial filter over `directives`).
 
 ---
 

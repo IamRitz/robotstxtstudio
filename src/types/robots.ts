@@ -91,26 +91,37 @@ export interface Sitemap {
 }
 
 /**
- * The full structured robots.txt file. Produced by the parser and the generator;
- * consumed by every other feature.
+ * The full structured robots.txt file. Produced by the parser (from text) and the
+ * generator (from config); consumed by every other feature.
+ *
+ * `directives` is the lossless, ordered backbone — every source line, in order,
+ * with line numbers. The other fields (`groups`, `sitemaps`, `host`,
+ * `unknownDirectives`) are structured views/indexes over those same lines, so the
+ * AST never discards information and round-trips:
+ * `directives.map((d) => d.raw).join("\n") === source`.
  */
 export interface RobotsFile {
+  /**
+   * Every source line as a {@link Directive}, in document order (including
+   * `blank`, `comment`, and `unknown` lines). The fidelity record — duplicates and
+   * ordering are fully preserved here.
+   */
+  readonly directives: readonly Directive[];
+  /** Semantic grouping view (a `User-agent` run and its rules). */
   readonly groups: readonly RobotsGroup[];
   /** File-level `Sitemap:` declarations. */
   readonly sitemaps: readonly Sitemap[];
-  /** `Host:` directive value, if present (non-standard but seen in the wild). */
+  /** First `Host:` directive value, if present (non-standard but seen in the wild). */
   readonly host?: string;
-  /** Standalone comment lines (not attached to a rule), for explain/round-trip. */
-  readonly comments: readonly Directive[];
   /**
-   * Lines the parser could not classify as a supported directive: unsupported
-   * fields, malformed lines (e.g. missing colon), or rules appearing before any
-   * `User-agent`. The validator turns these into {@link ValidationIssue}s; the
-   * parser itself emits no judgements (PRD §15, refinement B).
+   * Index of lines that need attention: unsupported/vendor fields, malformed lines
+   * (e.g. missing colon), and rules appearing before any `User-agent` (orphans).
+   * The validator turns these into {@link ValidationIssue}s; the parser itself
+   * emits no judgements (PRD §15, refinement B).
    */
   readonly unknownDirectives: readonly Directive[];
   /** Total number of source lines. */
   readonly lineCount: number;
-  /** The original source text, when available (omitted for generated files until serialized). */
+  /** The original source text, when available (omitted until a generated file is serialized). */
   readonly source?: string;
 }

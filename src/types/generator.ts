@@ -11,11 +11,12 @@
 import type { CrawlerPolicyMap } from "./crawler";
 
 /**
- * Starter templates offered in the Generator (Screen 3, approved design).
+ * Starter templates offered in the Generator (Screen 3).
  *
- * NOTE: the original product brief listed `news` and `portfolio`; the approved
- * designs use `publisher` and `documentation`. The approved design wins (PRD §11 S3).
- * This discrepancy is recorded in the Phase 2 PRD-adjustment review.
+ * LOCKED to the approved screen designs: Blog, SaaS, E-commerce, Publisher,
+ * Documentation. Earlier references to `news`/`portfolio` (from the original brief)
+ * are superseded and must not be reintroduced — the approved designs are the source
+ * of truth (PRD §11 S3).
  */
 export const STARTER_TEMPLATES = [
   "blog",
