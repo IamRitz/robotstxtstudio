@@ -2,10 +2,10 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 10B — Screen Assembly (next) |
-| **Last Completed Commit** | `45602c7` — feat(ui) design system & shared UI |
+| **Current Phase** | Phase 11 — E2E Testing & Hardening (next) |
+| **Last Completed Commit** | `acd813c` — feat(ui) product screens |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~73% (9.5 of 13 roadmap phases; 10A done) |
+| **Overall Progress** | ~77% (10 of 13 roadmap phases) |
 | **Last Updated** | 2026-06-08 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
@@ -29,7 +29,7 @@
 | AI Manager | ✅ Complete | `484c026` |
 | Analyzer | ✅ Complete | `ac31675` |
 | UI Integration · 10A Design System & Shared UI | ✅ Complete | `45602c7` |
-| UI Integration · 10B Screen Assembly | ⏳ Next | |
+| UI Integration · 10B Screen Assembly | ✅ Complete | `acd813c` |
 | Testing | ⏳ Pending | |
 | SEO Pages | ⏳ Pending | |
 | Deployment | ⏳ Pending | |
@@ -92,37 +92,41 @@ See: [`ANALYZER.md`](./ANALYZER.md)
 
 ## UI Integration — 10A Design System & Shared UI
 Commit: `45602c7`
-Delivered: OKLCH token migration (+ `--brand` + status tokens), Inter/Geist Mono fonts, shadcn-compatible primitives (button/card/badge/input/skeleton/separator/label), app shell (header + mobile bottom nav + footer), and shared components (HealthGauge, ScoreCard, MetricCard, StatusBadge, CrawlerBadge, IssueCard, RecommendationCard, CodePanel, InfoPanel, Callout, Empty/Loading/Error states, PageHeader/SectionHeader/Breadcrumb). `/dev` component library + screenshots. No feature pages, no domain changes.
+Delivered: OKLCH token migration (+ `--brand` + status tokens), Inter/Geist Mono fonts, shadcn-compatible primitives, app shell (header + mobile bottom nav + footer), and shared components (HealthGauge, ScoreCard, StatusBadge, CrawlerBadge, IssueCard, RecommendationCard, CodePanel, InfoPanel, Callout, Empty/Loading/Error states, PageHeader/SectionHeader/Breadcrumb). `/dev` component library + screenshots.
 See: [`UI_INTEGRATION.md`](./UI_INTEGRATION.md), `docs/screenshots/`
+
+## UI Integration — 10B Screen Assembly
+Commit: `acd813c`
+Delivered: all seven approved screens (`/`, `/analyze`, `/generate`, `/validate`, `/url-tester`, `/ai-crawlers`, `/explain`) wired to feature APIs (`analyze`/`generatePreview`/`validateRobots`/`testUrl`/`analyzePolicySet`/`explainRobots`); thin `app/api/analyze` route handler; empty/loading/error states; responsive + accessible; `typedRoutes` re-enabled. 12 routes build clean; 208 domain tests still green.
+See: `docs/screenshots/phase-10b-*`
 
 ---
 
 # Current Sprint
 
-**Goal:** Phase 10B — assemble the seven screens on the 10A foundation.
+**Goal:** Phase 11 — E2E testing & integration hardening.
 
-**Scope:** App Router pages (`/`, `/analyze`, `/generate`, `/validate`, `/url-tester`,
-`/ai-crawlers`, `/explain`) + `app/api/analyze` (and optional `/api/fetch-robots`)
-route handlers. Each screen consumes a feature barrel API (`analyze`,
-`generatePreview`, `validateRobots`, `testUrl`, `analyzePolicySet`, `explainRobots`)
-and ships empty/loading/error states. Re-enable `typedRoutes`. Build order:
-Home → Analyzer → Validator → AI Manager → Tester → Generator → Explainer.
+**Scope:** Playwright e2e across the seven screens (install browsers; run the existing
+smoke spec + new flows: analyze a domain, validate, toggle AI crawlers, test a URL,
+generate + download, explain). Harden the `/api/analyze` boundary (bad input, fetch
+failures). Wire CI to run unit + e2e. Address the responsive/a11y polish gaps noted in
+10B (line-numbered editor, "fetch from URL" tabs).
 
-**Acceptance Criteria:** all approved screens functional and design-faithful;
-responsive; accessible; route handlers thin; no domain logic in components.
+**Acceptance Criteria:** e2e green for each screen's happy path + key error paths; unit
+suite stays green; coverage gate holds; accessibility checks pass.
 
-**Dependencies:** all six features ✅, 10A shared UI ✅ (all satisfied).
+**Dependencies:** all screens ✅, Playwright config ✅ (from Phase 1), feature APIs ✅.
 
 ---
 
 # Next Recommended Phase
 
-**Phase 10B — Screen Assembly & Feature Integration** (then Phase 11 Testing).
+**Phase 11 — E2E Testing & Integration Hardening** (then 12 SEO pages, 13 Deploy).
 
-- **Why:** the design system, shared components, and all feature APIs are ready; 10B is
-  pure assembly + two thin route handlers.
-- **Dependencies already satisfied:** 10A foundation, feature barrels, screen specs
-  (PRD §11), route map (PRD §16), readiness review ([`UI_INTEGRATION.md`](./UI_INTEGRATION.md)).
+- **Why:** the product is feature-complete and builds; now lock behavior with e2e and
+  harden the one IO boundary before SEO/launch work.
+- **Dependencies already satisfied:** Playwright harness (Phase 1), all screens and
+  route handler (10B), pure unit suite (208 tests).
 
 ---
 
