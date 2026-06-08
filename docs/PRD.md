@@ -441,9 +441,9 @@ Tester, Explainer, and Live Checker. It must support: `User-agent`, `Allow`,
 structured AST. No third-party robots parser (own implementation, per brief).
 See [`PARSER.md`](./PARSER.md), [`VALIDATOR.md`](./VALIDATOR.md),
 [`EXPLAINER.md`](./EXPLAINER.md), [`TESTER.md`](./TESTER.md), and
-[`GENERATOR.md`](./GENERATOR.md) for the parser AST, validation rules / scoring, the
-plain-English explanation engine, the URL access evaluation engine, and the canonical
-writer.
+[`GENERATOR.md`](./GENERATOR.md), and [`AI_MANAGER.md`](./AI_MANAGER.md) for the
+parser AST, validation rules / scoring, the plain-English explanation engine, the URL
+access evaluation engine, the canonical writer, and the crawler-policy engine.
 
 **Crawler database (config layer).** Each crawler: `id`, `name`, `owner`,
 `userAgent`, `category` (search-engine | ai-training | ai-search | seo | social |

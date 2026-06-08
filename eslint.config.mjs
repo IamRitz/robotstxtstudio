@@ -21,6 +21,11 @@ const eslintConfig = [
   },
   {
     rules: {
+      // Allow intentional `_`-prefixed unused bindings (e.g. destructure-to-omit).
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
       // Enforce feature boundaries: import features via their barrel only.
       "no-restricted-imports": [
         "error",
