@@ -314,6 +314,12 @@ analysis always has a next action.
   - Raw Editor and visual controls stay in sync (editor is source-editable).
   - Presets set correct category defaults (e.g. E-commerce disallows /checkout/).
   - Sitemap and crawl-delay render in correct robots.txt positions.
+  - **Generation model (Phase 7 decision):** only *blocked* crawlers get explicit
+    `Disallow: /` groups; *allowed* crawlers inherit the `User-agent: *` baseline.
+    Giving an allowed crawler its own `Allow: /` group would let it bypass the global
+    path disallows, so the generated text intentionally diverges from the Screen 3
+    mock's literal per-crawler `Allow:` lines. The UI still shows per-crawler
+    allow/block state from the config. See [`GENERATOR.md`](./GENERATOR.md).
 
 ### S4 — Test a URL (Screen 4) — Tester
 
@@ -434,9 +440,10 @@ Tester, Explainer, and Live Checker. It must support: `User-agent`, `Allow`,
 `Disallow`, `Sitemap`, `Crawl-delay`, comments, and multiple groups; returning a
 structured AST. No third-party robots parser (own implementation, per brief).
 See [`PARSER.md`](./PARSER.md), [`VALIDATOR.md`](./VALIDATOR.md),
-[`EXPLAINER.md`](./EXPLAINER.md), and [`TESTER.md`](./TESTER.md) for the parser AST,
-validation rules / scoring, the plain-English explanation engine, and the URL access
-evaluation engine.
+[`EXPLAINER.md`](./EXPLAINER.md), [`TESTER.md`](./TESTER.md), and
+[`GENERATOR.md`](./GENERATOR.md) for the parser AST, validation rules / scoring, the
+plain-English explanation engine, the URL access evaluation engine, and the canonical
+writer.
 
 **Crawler database (config layer).** Each crawler: `id`, `name`, `owner`,
 `userAgent`, `category` (search-engine | ai-training | ai-search | seo | social |
