@@ -27,24 +27,28 @@ export function compareSeverity(a: Severity, b: Severity): number {
  * performs (PRD §11 S6 acceptance criteria). Extend this union as checks are added.
  */
 export type ValidationCode =
-  // Errors (syntax / correctness)
+  // Critical (error) — likely to cause crawler problems.
   | "missing-colon"
-  | "invalid-syntax"
-  | "empty-directive"
+  | "empty-user-agent"
   | "directive-before-user-agent"
+  | "invalid-crawl-delay"
   | "conflicting-rules"
+  | "invalid-sitemap-url"
+  // Warning — valid but potentially problematic.
   | "duplicate-rule"
-  // Warnings (best practice / AI config)
+  | "missing-sitemap"
+  | "overly-broad-disallow"
+  | "excessive-rules"
   | "unsupported-directive"
   | "crawl-delay-zero"
-  | "crawl-delay-unsupported"
-  | "missing-ai-crawler-config"
-  | "missing-wildcard-ai-rule"
-  | "overly-broad-disallow"
-  // Info (hygiene)
-  | "missing-sitemap"
+  // Recommendation (info) — best-practice guidance.
+  | "missing-ai-crawler-policy"
+  | "ai-crawler-inherits-default"
+  | "no-default-group"
+  | "no-crawler-specific-groups"
+  | "no-comments"
   | "sitemap-not-https"
-  | "no-comments";
+  | "crawl-delay-ignored-by-google";
 
 /** A concrete, deterministic edit suggestion attached to an issue ("Fix This"). */
 export interface SuggestedFix {
