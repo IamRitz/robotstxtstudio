@@ -433,9 +433,10 @@ analysis always has a next action.
 Tester, Explainer, and Live Checker. It must support: `User-agent`, `Allow`,
 `Disallow`, `Sitemap`, `Crawl-delay`, comments, and multiple groups; returning a
 structured AST. No third-party robots parser (own implementation, per brief).
-See [`PARSER.md`](./PARSER.md), [`VALIDATOR.md`](./VALIDATOR.md), and
-[`EXPLAINER.md`](./EXPLAINER.md) for the parser AST, validation rules / scoring, and
-the plain-English explanation engine.
+See [`PARSER.md`](./PARSER.md), [`VALIDATOR.md`](./VALIDATOR.md),
+[`EXPLAINER.md`](./EXPLAINER.md), and [`TESTER.md`](./TESTER.md) for the parser AST,
+validation rules / scoring, the plain-English explanation engine, and the URL access
+evaluation engine.
 
 **Crawler database (config layer).** Each crawler: `id`, `name`, `owner`,
 `userAgent`, `category` (search-engine | ai-training | ai-search | seo | social |
