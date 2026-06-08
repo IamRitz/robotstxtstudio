@@ -2,6 +2,7 @@
  * Primary navigation — the canonical routes (PRD §16). Used by the top nav and the
  * mobile bottom bar. Icons are lucide names resolved in the nav components.
  */
+import type { Route } from "next";
 import {
   Bot,
   FileText,
@@ -17,7 +18,7 @@ export interface NavItem {
   readonly label: string;
   /** Short label for the mobile bottom bar. */
   readonly shortLabel: string;
-  readonly href: string;
+  readonly href: Route;
   readonly icon: LucideIcon;
 }
 
