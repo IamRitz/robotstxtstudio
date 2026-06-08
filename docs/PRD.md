@@ -4,6 +4,7 @@
 > chat history and the marketing copy in `README.md`.
 > **Owner:** Product/Eng (this repo). **Last updated:** 2026-06-08.
 > **Companion docs:** [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) (tokens, components),
+> [`SPRINTS.md`](./SPRINTS.md) (execution dashboard / status),
 > `README.md` (developer quickstart).
 
 This document synthesizes the product brief, the architecture decisions from Phase 1,
