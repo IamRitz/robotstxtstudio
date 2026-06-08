@@ -69,6 +69,36 @@ export function breadcrumbSchema(items: readonly BreadcrumbItem[]): Record<strin
   };
 }
 
+export interface ArticleSchemaInput {
+  readonly title: string;
+  readonly description: string;
+  readonly path: string;
+  readonly datePublished: string;
+  readonly dateModified: string;
+  readonly authorName: string;
+}
+
+/** TechArticle schema for educational/guide pages. */
+export function articleSchema(input: ArticleSchemaInput): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: input.title,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    mainEntityOfPage: absoluteUrl(input.path),
+    datePublished: input.datePublished,
+    dateModified: input.dateModified,
+    author: { "@type": "Organization", name: input.authorName, url: SITE.url },
+    publisher: {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+      logo: { "@type": "ImageObject", url: absoluteUrl("/icon.svg") },
+    },
+  };
+}
+
 export interface FaqItem {
   readonly question: string;
   readonly answer: string;
