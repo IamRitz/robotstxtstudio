@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import { JsonLd } from "@/components/json-ld";
+import { SITE, organizationSchema, websiteSchema } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
-const SITE_URL = "https://robots-txt-studio.vercel.app";
+const SITE_URL = SITE.url;
 const TITLE = "Robots.txt Studio — Generate, Validate, Test & Explain robots.txt";
-const DESCRIPTION =
-  "A modern all-in-one robots.txt toolkit: generator, validator, tester, explainer, AI crawler manager, and live checker for GPTBot, ClaudeBot, PerplexityBot and more.";
+const DESCRIPTION = SITE.description;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -42,7 +43,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        <JsonLd data={organizationSchema()} />
+        <JsonLd data={websiteSchema()} />
+        {children}
+      </body>
     </html>
   );
 }
