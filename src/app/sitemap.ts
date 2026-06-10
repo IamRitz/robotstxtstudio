@@ -12,6 +12,7 @@ const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
   { path: "/url-tester", priority: 0.8 },
   { path: "/ai-crawlers", priority: 0.9 },
   { path: "/explain", priority: 0.8 },
+  { path: "/compare", priority: 0.7 },
   // Educational SEO cluster (Phase 12B) — kept in sync with the content registry.
   ...EDU_PAGES.map((p) => ({ path: eduPath(p.slug), priority: 0.7 })),
   // Transactional / programmatic SEO cluster (Phase 12C). The AI hub ranks highest.
