@@ -21,10 +21,10 @@ export function CodePanel({
   className?: string;
 }) {
   return (
-    <div className={cn("overflow-hidden rounded-xl bg-primary text-primary-foreground", className)}>
+    <div className={cn("overflow-hidden rounded-xl bg-surface-dark text-surface-dark-foreground", className)}>
       {(title || showCopy || actions) && (
-        <div className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-2">
-          <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/60">
+        <div className="flex items-center justify-between gap-2 border-b border-surface-dark-foreground/10 px-4 py-2">
+          <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-surface-dark-foreground/60">
             <Terminal className="size-3.5" aria-hidden />
             {title ?? "robots.txt"}
           </span>
@@ -35,7 +35,7 @@ export function CodePanel({
         </div>
       )}
       <pre className="overflow-x-auto p-4 text-xs leading-5">
-        <code className="font-mono text-white/90 whitespace-pre">{code}</code>
+        <code className="font-mono text-surface-dark-foreground/90 whitespace-pre">{code}</code>
       </pre>
     </div>
   );

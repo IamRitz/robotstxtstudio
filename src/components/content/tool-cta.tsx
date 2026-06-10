@@ -36,14 +36,14 @@ export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "f
   }
 
   return (
-    <Card className="flex flex-col items-start gap-4 bg-primary p-6 text-primary-foreground sm:flex-row sm:items-center sm:justify-between">
+    <Card className="flex flex-col items-start gap-4 bg-surface-dark p-6 text-surface-dark-foreground sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand text-brand-foreground">
           <Icon className="size-5" aria-hidden />
         </span>
         <div>
           <h2 className="text-base font-semibold">{t.title}</h2>
-          <p className="mt-0.5 text-sm text-white/70">{t.description}</p>
+          <p className="mt-0.5 text-sm text-surface-dark-foreground/70">{t.description}</p>
         </div>
       </div>
       <Link

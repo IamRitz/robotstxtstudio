@@ -33,6 +33,16 @@
   --brand-foreground: oklch(0.985 0 0);
   --brand-muted: oklch(0.97 0.014 254.604);
 
+  /*
+   * Permanently-dark surface (nav bar, code panels, featured/dark CTA cards).
+   * DESIGN_SYSTEM §2 specifies this as neutral-950. It must NOT invert in dark mode —
+   * these surfaces are dark in BOTH themes — so it is intentionally absent from the
+   * dark @media block below. Pairing always-light text with an always-dark surface is
+   * what fixes the "white-on-white nav" bug (text-primary-foreground used to flip).
+   */
+  --surface-dark: oklch(0.205 0 0);
+  --surface-dark-foreground: oklch(0.985 0 0);
+
   /* Destructive (shadcn) — red-600 surface with light text */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
@@ -76,6 +86,32 @@
     --ring: oklch(0.556 0 0);
     --brand: oklch(0.623 0.214 259.815);
     --brand-muted: oklch(0.282 0.066 254);
+
+    /* Destructive — brighter red for legibility on dark surfaces. */
+    --destructive: oklch(0.704 0.191 22.216);
+
+    /*
+     * Semantic status — retuned for dark mode (the light values are near-white tints
+     * with dark text, which are illegible / low-contrast on a dark page). Here the
+     * tint (`-bg`) is a dark, low-lightness wash; the text (`-fg`) is light; the solid
+     * dot/chart fill (`-dot`) stays vivid. Tuning these tokens fixes every status
+     * badge, callout, severity chip, chart bar, and gauge at once.
+     */
+    --status-allowed-fg: oklch(0.823 0.157 150);
+    --status-allowed-bg: oklch(0.27 0.06 152);
+    --status-allowed-dot: oklch(0.723 0.219 149.579);
+
+    --status-blocked-fg: oklch(0.78 0.13 22);
+    --status-blocked-bg: oklch(0.27 0.08 25);
+    --status-blocked-dot: oklch(0.704 0.191 22.216);
+
+    --status-warning-fg: oklch(0.86 0.15 86);
+    --status-warning-bg: oklch(0.30 0.06 70);
+    --status-warning-dot: oklch(0.769 0.188 70.08);
+
+    --status-info-fg: oklch(0.78 0.12 260);
+    --status-info-bg: oklch(0.28 0.07 264);
+    --status-info-dot: oklch(0.623 0.214 259.815);
   }
 }
 
@@ -96,6 +132,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-foreground: var(--surface-dark-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

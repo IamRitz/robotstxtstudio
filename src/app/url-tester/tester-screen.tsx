@@ -133,8 +133,8 @@ export function TesterScreen() {
           {result.matchedRule ? (
             <Card className="p-6">
               <SectionHeader className="mb-3">Matched rule</SectionHeader>
-              <div className="rounded-lg bg-primary p-4 font-mono text-xs text-primary-foreground">
-                <div className="text-white/60">User-agent: {result.matchedUserAgent}</div>
+              <div className="rounded-lg bg-surface-dark p-4 font-mono text-xs text-surface-dark-foreground">
+                <div className="text-surface-dark-foreground/60">User-agent: {result.matchedUserAgent}</div>
                 <div className="font-semibold">
                   {result.matchedRule.type === "allow" ? "Allow" : "Disallow"}: {result.matchedRule.path}
                 </div>

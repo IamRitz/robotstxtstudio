@@ -11,7 +11,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 bg-primary text-primary-foreground">
+    <header className="sticky top-0 z-40 border-b border-surface-dark-foreground/10 bg-surface-dark text-surface-dark-foreground">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex size-6 items-center justify-center rounded-md bg-brand text-brand-foreground">
@@ -30,7 +30,9 @@ export function SiteHeader() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
-                  active ? "bg-white/15 text-white" : "text-white/60 hover:text-white",
+                  active
+                    ? "bg-surface-dark-foreground/15 text-surface-dark-foreground"
+                    : "text-surface-dark-foreground/60 hover:text-surface-dark-foreground",
                 )}
               >
                 {item.label}

@@ -102,7 +102,7 @@ export default function HomePage() {
                   return (
                     <Link key={tool.href} href={tool.href} className="group">
                       <Card
-                        className={featured ? "h-full bg-primary p-5 text-primary-foreground" : "h-full p-5"}
+                        className={featured ? "h-full bg-surface-dark p-5 text-surface-dark-foreground" : "h-full p-5"}
                       >
                         <div className="flex items-center justify-between">
                           <span
@@ -117,7 +117,7 @@ export default function HomePage() {
                           {featured ? <Badge variant="brand">AI</Badge> : null}
                         </div>
                         <h3 className="mt-3 text-base font-semibold">{tool.title}</h3>
-                        <p className={featured ? "mt-1 text-sm text-white/70" : "mt-1 text-sm text-muted-foreground"}>
+                        <p className={featured ? "mt-1 text-sm text-surface-dark-foreground/70" : "mt-1 text-sm text-muted-foreground"}>
                           {tool.desc}
                         </p>
                         <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand">
