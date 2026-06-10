@@ -8,8 +8,12 @@
  * from anywhere, including the client bundle, with negligible weight.
  */
 
-/** Fallback when no NEXT_PUBLIC_SITE_URL is configured (e.g. local dev / preview). */
-const DEFAULT_SITE_URL = "https://robots-txt-studio.vercel.app";
+/**
+ * Canonical production origin. Used as the fallback when NEXT_PUBLIC_SITE_URL is not
+ * set (local dev / preview). Production (Vercel) sets NEXT_PUBLIC_SITE_URL explicitly,
+ * but this default matches the live domain so local builds and previews are correct too.
+ */
+const DEFAULT_SITE_URL = "https://robotstxtstudio.com";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
@@ -30,7 +34,7 @@ function readSiteUrl(): string {
 
 /** Validated public configuration. */
 export const env = {
-  /** Canonical site origin, e.g. https://robots-txt-studio.vercel.app. */
+  /** Canonical site origin, e.g. https://robotstxtstudio.com. */
   SITE_URL: readSiteUrl(),
   IS_PRODUCTION,
 } as const;

@@ -2,12 +2,12 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite + 13A + 13B (Analytics) done; deploy (set env, ship) next |
+| **Current Phase** | 🚀 Live in production at robotstxtstudio.com (Vercel + Cloudflare DNS). 12A–12D + 12H-Lite + 13A + 13B all shipped |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
-| **Overall Progress** | ~85% (11 of 13 roadmap phases) |
-| **Launch readiness** | No product blockers — see [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) |
-| **Last Updated** | 2026-06-08 |
+| **Overall Progress** | 100% of roadmap phases — live in production |
+| **Launch readiness** | 🚀 Deployed at [robotstxtstudio.com](https://robotstxtstudio.com) — see [`PRODUCTION_READINESS.md`](./PRODUCTION_READINESS.md) |
+| **Last Updated** | 2026-06-10 |
 
 > Execution dashboard only. Product/design/engineering detail lives in
 > [`PRD.md`](./PRD.md), [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md),
@@ -32,8 +32,11 @@
 | UI Integration · 10A Design System & Shared UI | ✅ Complete | `45602c7` |
 | UI Integration · 10B Screen Assembly | ✅ Complete | `acd813c` |
 | Testing / Hardening | ✅ Complete | `b855e00` |
-| SEO Pages | ⏳ Next | |
-| Deployment | ⏳ Pending | |
+| SEO Pages & Growth (12A–12D) | ✅ Complete | |
+| Trust/EEAT (12H-Lite) | ✅ Complete | |
+| Production Hardening (13A) | ✅ Complete | |
+| Analytics (13B) | ✅ Complete | |
+| Deployment | ✅ Live (robotstxtstudio.com) | |
 
 Also shipped: product documentation blueprint (`c76acbc`).
 

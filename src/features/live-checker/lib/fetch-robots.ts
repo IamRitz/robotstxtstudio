@@ -43,7 +43,7 @@ export async function fetchRobots(robotsUrl: string, options: FetchOptions = {})
     const response = await fetchFn(robotsUrl, {
       redirect: "follow",
       signal: controller.signal,
-      headers: { "user-agent": "RobotsTxtStudio/1.0 (+https://robots-txt-studio.vercel.app)" },
+      headers: { "user-agent": "RobotsTxtStudio/1.0 (+https://robotstxtstudio.com)" },
     });
     clearTimeout(timer);
 

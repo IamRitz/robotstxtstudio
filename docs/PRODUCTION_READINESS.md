@@ -7,11 +7,13 @@
 
 ## Verdict
 
-**No code blockers for deployment.** Security headers + a strict production CSP are
-enforced, error/404/500 boundaries exist, env config is validated, and build + 208
-unit + 12 e2e are green against the production server. The remaining items are
-operational (set up the Vercel project, choose a domain, optional rate limiting) and
-the 13B analytics layer.
+**Live in production at [robotstxtstudio.com](https://robotstxtstudio.com)** (Vercel,
+DNS via Cloudflare). Verified live: HTTP/2 200, strict production CSP + HSTS +
+X-Frame-Options + nosniff + Referrer-Policy headers, `robots.txt` and the 53-URL
+`sitemap.xml` emitting the production origin, canonical tags + dynamic OG images, and
+the dynamic `/crawlers/[id]` routes returning 200. `NEXT_PUBLIC_SITE_URL` is set in
+Vercel. Remaining items are optional/operational (rate limiting, full manual smoke +
+Lighthouse, consent posture).
 
 ---
 
@@ -71,16 +73,16 @@ few routes that need it. Tracked here; not a launch blocker.
 | Step | Status | Notes |
 | --- | --- | --- |
 | `next build` passes | ✅ | 76 routes; static where possible, `/analyze` + `/api/*` dynamic. |
-| Node version | ⬜ | Set Node 20+ on the Vercel project (framework auto-detected). |
-| `NEXT_PUBLIC_SITE_URL` | ⬜ | Set to the canonical production origin (custom domain or `*.vercel.app`). Drives canonical/sitemap/OG/JSON-LD. Invalid value now **fails the build** in production. |
+| Vercel project + Node | ✅ | Deployed on Vercel (served by `server: Vercel`, `x-vercel-cache` HIT). |
+| `NEXT_PUBLIC_SITE_URL` | ✅ | Set in Vercel; verified live — `robots.txt` Host + canonicals emit `https://robotstxtstudio.com`. |
 | Route-handler runtime | ✅ | `runtime = "nodejs"` on both API routes (need server fetch; not edge). |
-| Custom domain + HSTS | ⬜ | Point DNS, enable HTTPS (automatic on Vercel). HSTS is `preload`-ready — only submit to the preload list once the domain is final and HTTPS-stable. |
-| `robots.ts` / `sitemap.ts` host | 🟡 | Both derive from `SITE_URL`; verify they emit the production origin after `NEXT_PUBLIC_SITE_URL` is set. |
-| Security headers live | ✅ | Verified on the prod server: CSP/XFO/nosniff/Referrer/Permissions/HSTS present; no `X-Powered-By`. |
+| Custom domain + HTTPS + HSTS | ✅ | Live at `robotstxtstudio.com` (Cloudflare DNS); HTTPS + HSTS header verified in production. HSTS is `preload`-ready — submit to the preload list when ready. |
+| `robots.ts` / `sitemap.ts` host | ✅ | Verified live: `robots.txt` Host + the 53-URL `sitemap.xml` emit the production origin. |
+| Security headers live | ✅ | Verified in production: CSP (strict)/XFO/nosniff/Referrer/HSTS present; no `X-Powered-By`. |
 | Error pages | ✅ | 404 returns the custom page; error boundaries verified to compile + render. |
-| Rate limiting | ⬜ | Optional pre-launch; recommended before promotion (Vercel WAF / KV token bucket). |
-| Production smoke test | ⬜ | Post-deploy: analyze a real domain, generate + download, validate/test/explain, hit `/api/analyze` + `/api/fetch-robots`, run Lighthouse. |
-| Analytics / error tracking | ⬜ | Phase 13B (PostHog + Clarity hooks; `docs/ANALYTICS.md`). |
+| Rate limiting | ⬜ | Optional; recommended before heavy promotion (Vercel WAF / KV token bucket). |
+| Production smoke test | 🟡 | Verified live via HTTP: routes/headers/sitemap/canonical/OG/dynamic routes. Remaining manual: analyze a real domain, generate + download, run Lighthouse. |
+| Analytics | ✅ | Implemented (13B). Set `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_CLARITY_ID` in Vercel to enable; CSP auto-allows vendor origins. |
 
 ---
 

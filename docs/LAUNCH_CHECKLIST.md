@@ -4,6 +4,12 @@
 > Companion: [`PRD.md`](./PRD.md), [`SPRINTS.md`](./SPRINTS.md),
 > [`UI_INTEGRATION.md`](./UI_INTEGRATION.md).
 
+> **🚀 Shipped (2026-06): live at [robotstxtstudio.com](https://robotstxtstudio.com).**
+> The Phase-12/13 todos below (SEO assets, legal pages, analytics, deploy config) are
+> all done — see [`PRODUCTION_READINESS.md`](./PRODUCTION_READINESS.md) for the live,
+> verified deployment status and [`SPRINTS.md`](./SPRINTS.md) for the phase log. This
+> page is retained as the original Phase 11 snapshot.
+
 ## Verdict
 
 **No launch blockers in product functionality.** The seven screens work end-to-end,
