@@ -35,6 +35,41 @@ export interface Score {
   readonly band: ScoreBand;
 }
 
+/**
+ * Standardized health band (Phase 15B — Validator 2.0). Used consistently across the
+ * audit dashboard's overall score and all five category scores. Distinct from the
+ * legacy 3-band {@link ScoreBand} (kept for the Analyzer's gauges).
+ */
+export type HealthBand = "excellent" | "good" | "needs-attention" | "poor";
+
+/** Lower bounds (inclusive) for each health band. */
+export const HEALTH_THRESHOLDS = {
+  /** 95–100. */
+  excellent: 95,
+  /** 85–94. */
+  good: 85,
+  /** 70–84. */
+  "needs-attention": 70,
+  /** 0–69. */
+  poor: 0,
+} as const;
+
+/** Human-readable band labels (single source for UI). */
+export const HEALTH_BAND_LABEL: Record<HealthBand, string> = {
+  excellent: "Excellent",
+  good: "Good",
+  "needs-attention": "Needs Attention",
+  poor: "Poor",
+};
+
+/** Map a 0–100 score to its standardized health band. */
+export function healthBand(value: number): HealthBand {
+  if (value >= HEALTH_THRESHOLDS.excellent) return "excellent";
+  if (value >= HEALTH_THRESHOLDS.good) return "good";
+  if (value >= HEALTH_THRESHOLDS["needs-attention"]) return "needs-attention";
+  return "poor";
+}
+
 /** The Validator's health score with its three sub-scores (Screen 6). */
 export interface HealthScore extends Score {
   readonly subscores: {

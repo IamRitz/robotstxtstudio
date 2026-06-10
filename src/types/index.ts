@@ -20,6 +20,9 @@ export * from "./score";
 // Validation (issues + aggregate result).
 export * from "./validation";
 
+// Audit scoring (multi-dimensional health, Validator 2.0).
+export * from "./audit";
+
 // URL Tester.
 export * from "./test";
 

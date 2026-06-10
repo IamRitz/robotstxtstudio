@@ -6,6 +6,7 @@ import type { Rule } from "../context";
 import * as syntax from "./syntax";
 import * as best from "./best-practices";
 import * as ai from "./ai";
+import * as security from "./security";
 
 export const ALL_RULES: readonly Rule[] = [
   // Critical (error)
@@ -30,4 +31,6 @@ export const ALL_RULES: readonly Rule[] = [
   best.noComments,
   best.sitemapNotHttps,
   best.crawlDelayIgnoredByGoogle,
+  // Security (info)
+  security.sensitivePathDisclosure,
 ];

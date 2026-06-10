@@ -110,7 +110,48 @@ status via `getAiCrawlerStatuses()`:
 
 This status map is reused by the Analyzer (crawler breakdown) and Monitoring.
 
-## Scoring methodology
+## Audit scoring (Validator 2.0 — Phase 15B)
+
+The Validator screen scores a file across **five dimensions plus an overall**, using a
+deliberately simple, fully transparent **deduction model** — every lost point is
+traceable to a rule, so "why is this 72 and not 84?" always has a concrete answer. No
+learned/opaque numbers. Engine: `domain/audit.ts` (`buildAudit`), pure and tested.
+
+**Model.** Each dimension starts at 100. Every issue subtracts a fixed number of
+points (per occurrence) from one or more dimensions, per the `DEDUCTIONS` table. A
+dimension score is `clamp(100 − Σ points)`. The overall is a fixed weighted average:
+
+```
+Overall = 0.30·Syntax + 0.25·SEO + 0.20·AI + 0.15·Maintainability + 0.10·Security
+```
+
+**Deduction table** (per occurrence; the table IS the model — see `audit.ts`):
+
+| Dimension | Codes → points |
+| --- | --- |
+| **Syntax** | missing-colon 15 · empty-user-agent 15 · conflicting-rules 12 · directive-before-user-agent 10 · invalid-crawl-delay 8 · invalid-sitemap-url 8 |
+| **SEO** | overly-broad-disallow 25 · missing-sitemap 10 · invalid-sitemap-url 6 · sitemap-not-https 4 |
+| **AI** | missing-ai-crawler-policy 10 · ai-crawler-inherits-default 5 (each crawler) |
+| **Maintainability** | excessive-rules 10 · no-default-group 6 · duplicate-rule 5 · unsupported-directive 4 · crawl-delay-zero 4 · crawl-delay-ignored-by-google 3 · no-crawler-specific-groups 3 · no-comments 3 · missing-sitemap 2 |
+| **Security** | sensitive-path-disclosure 12 (each path) |
+
+A few codes deduct from two dimensions (e.g. `invalid-sitemap-url` is both a syntax
+error and an SEO problem; `missing-sitemap` also costs a little maintainability).
+
+**Health bands** (standardized, used for every score in the dashboard):
+`95–100 Excellent · 85–94 Good · 70–84 Needs Attention · 0–69 Poor` (`healthBand()`).
+
+**Potential vs. estimated.** Each dimension reports a `potential` = score after every
+*in-app* fix is applied; the summary's `estimatedAfterSafeFixes` = overall after only
+the one-click *safe* fixes. **Fix impact preview** (`fixImpact()`) reports the exact
+per-dimension and weighted-overall recovery for a single fix, read straight from the
+same table. The **Security** dimension is driven by `sensitive-path-disclosure`
+(robots.txt is public, so `Disallow`-ing admin/secret paths advertises them).
+
+## Legacy health score (Analyzer)
+
+> The Analyzer still uses the original 3-subscore `HealthScore` below; the Validator
+> 2.0 dashboard uses the audit model above. They are independent on purpose.
 
 `HealthScore = { value, band, subscores: { syntax, aiCrawlerConfig, bestPractices } }`,
 banded via the shared `scoreBand()` (80–100 good, 60–79 moderate, 0–59 poor).

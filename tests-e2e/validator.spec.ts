@@ -5,17 +5,18 @@ import { expect, test } from "@playwright/test";
 test("validate robots.txt and filter issues by severity", async ({ page }) => {
   await page.goto("/validate");
 
-  // Health score + issues from the default sample.
-  await expect(page.getByText("Health score", { exact: true })).toBeVisible();
-  await expect(page.getByText("Crawl-delay of 0")).toBeVisible(); // a warning
-  await expect(page.getByText("Sitemap uses HTTP")).toBeVisible(); // an info
+  // Audit dashboard + issues from the default sample.
+  await expect(page.getByText("Overall health", { exact: true })).toBeVisible();
+  const issues = page.getByTestId("issue-list");
+  await expect(issues.getByText("Crawl-delay of 0")).toBeVisible(); // a warning
+  await expect(issues.getByText("Sitemap uses HTTP")).toBeVisible(); // an info
 
-  // Severity counts + filtering.
+  // Severity counts + filtering (scoped to the issue list, not the summary).
   const warningsTab = page.getByRole("tab", { name: /Warnings/ });
   await expect(warningsTab).toBeVisible();
   await warningsTab.click();
-  await expect(page.getByText("Crawl-delay of 0")).toBeVisible();
-  await expect(page.getByText("Sitemap uses HTTP")).toBeHidden();
+  await expect(issues.getByText("Crawl-delay of 0")).toBeVisible();
+  await expect(issues.getByText("Sitemap uses HTTP")).toBeHidden();
 });
 
 // Phase 15A — Smart Fix engine edge cases.
@@ -71,7 +72,7 @@ test("a manual edit resets the fix session without losing the typed content", as
 
 test("a single Fix This shows a diff for just that issue", async ({ page }) => {
   await page.goto("/validate");
-  await expect(page.getByText("Sitemap uses HTTP")).toBeVisible();
+  await expect(page.getByTestId("issue-list").getByText("Sitemap uses HTTP")).toBeVisible();
   await page.getByRole("button", { name: /Fix this/ }).first().click();
   await expect(page.getByText("Before / After")).toBeVisible();
 });

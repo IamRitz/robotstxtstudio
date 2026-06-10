@@ -12,7 +12,7 @@ describe("validateRobots — valid files", () => {
   const clean = [
     "# example.com robots",
     "User-agent: *",
-    "Disallow: /admin/",
+    "Disallow: /drafts/",
     "Allow: /",
     "",
     "User-agent: GPTBot",

@@ -5,17 +5,19 @@ import { Download, FileText, Megaphone, Undo2, Wand2 } from "lucide-react";
 import { parseRobots } from "@/parser";
 import {
   applyTextEdits,
+  buildAudit,
   collectSafeEdits,
+  fixImpact,
   safelyFixableIssues,
   validateRobots,
 } from "@/features/validator";
-import type { Severity, TextEdit, ValidationIssue } from "@/types";
+import type { ScoreDimension, Severity, TextEdit, ValidationIssue } from "@/types";
 import { trackValidationCompleted } from "@/lib/analytics";
 import { takeHandoff } from "@/lib/handoff";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
-import { ScoreCard } from "@/components/score-card";
 import { IssueCard } from "@/components/issue-card";
+import { AuditDashboard } from "@/components/audit-dashboard";
 import { DiffView } from "@/components/diff-view";
 import { Callout } from "@/components/callout";
 import { EmptyState } from "@/components/empty-state";
@@ -37,6 +39,14 @@ Sitemap: http://example.com/sitemap.xml`;
 
 type Filter = "all" | Severity;
 
+const DIM_SHORT: Record<ScoreDimension, string> = {
+  syntax: "Syntax",
+  seo: "SEO",
+  ai: "AI",
+  maintainability: "Maint.",
+  security: "Security",
+};
+
 function downloadText(text: string, filename = "robots.txt") {
   const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
   const a = document.createElement("a");
@@ -46,6 +56,15 @@ function downloadText(text: string, filename = "robots.txt") {
   URL.revokeObjectURL(url);
 }
 
+/** "Recovers SEO +10 · Overall +3" for a fixable issue, else null. */
+function impactLabel(issue: ValidationIssue): string | null {
+  if (!(issue.fix?.edits?.length ?? 0)) return null;
+  const { dimensions, overall } = fixImpact(issue);
+  if (dimensions.length === 0) return null;
+  const parts = dimensions.map((h) => `${DIM_SHORT[h.dimension]} +${h.points}`);
+  return `Recovers ${parts.join(" · ")}${overall > 0 ? ` · Overall +${overall}` : ""}`;
+}
+
 export function ValidatorScreen() {
   const [text, setText] = useState(SAMPLE);
   const [filter, setFilter] = useState<Filter>("all");
@@ -53,8 +72,11 @@ export function ValidatorScreen() {
   const [undoStack, setUndoStack] = useState<string[]>([]);
   /** The most recent fix's before/after, shown as a diff until the next manual edit. */
   const [lastFix, setLastFix] = useState<{ before: string; after: string } | null>(null);
+  /** Overall scores across this session's fixes (e.g. 78 → 84 → 91). */
+  const [trend, setTrend] = useState<number[]>([]);
 
   const result = useMemo(() => validateRobots(parseRobots(text)), [text]);
+  const audit = useMemo(() => buildAudit(result.issues), [result]);
   const visible = result.issues.filter((i) => filter === "all" || i.severity === filter);
   const safeCount = safelyFixableIssues(result.issues).length;
 
@@ -69,14 +91,18 @@ export function ValidatorScreen() {
     setText(next);
     setUndoStack([]);
     setLastFix(null);
+    setTrend([]);
   }
 
-  /** Apply a batch of edits as one undoable operation, surfacing a diff. */
+  /** Apply a batch of edits as one undoable operation, surfacing a diff + trend. */
   function applyEdits(edits: readonly TextEdit[]) {
     const before = text;
     const after = applyTextEdits(before, edits);
     if (after === before) return;
+    const beforeOverall = audit.overall.value;
+    const afterOverall = buildAudit(validateRobots(parseRobots(after)).issues).overall.value;
     setUndoStack((s) => [...s, before]);
+    setTrend((t) => (t.length === 0 ? [beforeOverall, afterOverall] : [...t, afterOverall]));
     setText(after);
     setLastFix({ before, after });
   }
@@ -94,6 +120,7 @@ export function ValidatorScreen() {
     if (undoStack.length === 0) return;
     setText(undoStack[undoStack.length - 1]!);
     setUndoStack((s) => s.slice(0, -1));
+    setTrend((t) => t.slice(0, -1));
     setLastFix(null);
   };
 
@@ -127,7 +154,7 @@ export function ValidatorScreen() {
   useEffect(() => {
     const id = setTimeout(() => {
       trackValidationCompleted({
-        healthScore: result.health.value,
+        healthScore: audit.overall.value,
         healthBand: result.health.band,
         errorCount: result.counts.error,
         warningCount: result.counts.warning,
@@ -136,35 +163,26 @@ export function ValidatorScreen() {
       });
     }, 1500);
     return () => clearTimeout(id);
-  }, [result]);
+  }, [result, audit]);
 
   return (
     <div>
       <PageHeader
         breadcrumb={["Robots.txt Studio", "Validate"]}
         title="Validate robots.txt"
-        subtitle="Diagnose issues, apply one-click fixes, and get a health score."
+        subtitle="A full audit: multi-dimensional health, one-click fixes, and measurable improvement."
       />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <Card className="p-4">
-          <SectionHeader className="mb-3">robots.txt content</SectionHeader>
-          <RobotsSourceField value={text} onChange={editText} rows={16} />
-        </Card>
+      <Card className="p-4">
+        <SectionHeader className="mb-3">robots.txt content</SectionHeader>
+        <RobotsSourceField value={text} onChange={editText} rows={14} />
+      </Card>
 
-        <ScoreCard
-          eyebrow="Health score"
-          title={`Health ${result.health.band}`}
-          value={result.health.value}
-          metrics={[
-            { label: "Syntax", value: `${result.health.subscores.syntax}` },
-            { label: "AI config", value: `${result.health.subscores.aiCrawlerConfig}` },
-            { label: "Best practice", value: `${result.health.subscores.bestPractices}` },
-          ]}
-        />
+      <div className="mt-6">
+        <AuditDashboard report={audit} trend={trend} />
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-8 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionHeader>Issues</SectionHeader>
           <Segmented<Filter>
@@ -192,11 +210,6 @@ export function ValidatorScreen() {
           <Button variant="secondary" size="sm" onClick={() => downloadText(text)}>
             <Download aria-hidden /> Download robots.txt
           </Button>
-          {safeCount > 0 ? (
-            <span className="text-xs text-muted-foreground">
-              Safe fixes are deterministic; “review” fixes need a click each.
-            </span>
-          ) : null}
         </div>
 
         {lastFix ? (
@@ -225,9 +238,9 @@ export function ValidatorScreen() {
             }
           />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3" data-testid="issue-list">
             {visible.map((issue) => (
-              <IssueCard key={issue.id} issue={issue} onFix={onFix} />
+              <IssueCard key={issue.id} issue={issue} onFix={onFix} impact={impactLabel(issue)} />
             ))}
           </div>
         )}

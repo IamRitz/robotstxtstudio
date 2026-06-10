@@ -15,12 +15,15 @@ import { STATUS_VISUALS, severityToStatus } from "./severity";
 export function IssueCard({
   issue,
   onFix,
+  impact,
   actions,
   className,
 }: {
   issue: ValidationIssue;
   /** Apply this issue's fix. Only wired where edits can be applied (the Validator). */
   onFix?: (issue: ValidationIssue) => void;
+  /** Score-impact preview shown next to the fix (e.g. "Recovers SEO +10 · Overall +3"). */
+  impact?: ReactNode;
   actions?: ReactNode;
   className?: string;
 }) {
@@ -51,6 +54,7 @@ export function IssueCard({
                 )}
               </Button>
             ) : null}
+            {impact ? <span className="text-xs text-muted-foreground">{impact}</span> : null}
             {issue.learnMoreUrl ? (
               <a
                 href={issue.learnMoreUrl}

@@ -46,6 +46,32 @@ export const BROAD_DISALLOW_SENSITIVE_UAS = [
   "YandexBot",
 ];
 
+/**
+ * Path fragments that signal an administrative / secret resource. robots.txt is
+ * public, so `Disallow`-ing these advertises their existence to anyone (and to
+ * attackers) without actually protecting them — an information-disclosure smell that
+ * drives the Security score. Matched case-insensitively as substrings of the path.
+ */
+export const SENSITIVE_PATH_PATTERNS: readonly string[] = [
+  "admin",
+  "login",
+  "signin",
+  "wp-admin",
+  "wp-config",
+  "phpmyadmin",
+  "cgi-bin",
+  "backup",
+  "config",
+  "secret",
+  "private",
+  "password",
+  ".git",
+  ".env",
+  ".htaccess",
+  ".sql",
+  "database",
+];
+
 /** Optional "Learn more" links per code. */
 export const LEARN_MORE: Partial<Record<ValidationCode, string>> = {
   "missing-ai-crawler-policy": "https://platform.openai.com/docs/gptbot",

@@ -48,7 +48,9 @@ export type ValidationCode =
   | "no-crawler-specific-groups"
   | "no-comments"
   | "sitemap-not-https"
-  | "crawl-delay-ignored-by-google";
+  | "crawl-delay-ignored-by-google"
+  // Security (info) — robots.txt is public; flag information disclosure.
+  | "sensitive-path-disclosure";
 
 /** A concrete, deterministic edit suggestion attached to an issue ("Fix This"). */
 export interface SuggestedFix {

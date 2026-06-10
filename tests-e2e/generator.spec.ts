@@ -11,7 +11,7 @@ test("generate a robots.txt with validation and explanation", async ({ page }) =
   await expect(page.getByText(/health \d+\/100/i)).toBeVisible();
   // Explanation preview.
   await expect(page.getByText("What this file does")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Download" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download", exact: true })).toBeVisible();
 
   // Switching preset updates the output.
   await page.getByRole("button", { name: "E-commerce" }).click();
