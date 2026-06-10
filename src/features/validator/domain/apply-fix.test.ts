@@ -43,6 +43,19 @@ describe("applyTextEdits", () => {
       { line: 3, replacement: "C" },
     ];
     expect(applyTextEdits(src, edits)).toBe("b\nC");
+    // Same edits, reversed input order → identical result.
+    expect(applyTextEdits(src, [...edits].reverse())).toBe("b\nC");
+  });
+
+  it("is deterministic when two edits hit the same line: deletion wins, either order", () => {
+    const del = { line: 2, replacement: "" };
+    const rep = { line: 2, replacement: "B" };
+    expect(applyTextEdits(src, [rep, del])).toBe("a\nc");
+    expect(applyTextEdits(src, [del, rep])).toBe("a\nc");
+  });
+
+  it("keeps the first replacement when two non-delete edits hit the same line", () => {
+    expect(applyTextEdits(src, [{ line: 2, replacement: "X" }, { line: 2, replacement: "Y" }])).toBe("a\nX\nc");
   });
 });
 

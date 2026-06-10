@@ -18,11 +18,21 @@ export function applyTextEdits(source: string, edits: readonly TextEdit[]): stri
   if (edits.length === 0) return source;
   const lines = source.split("\n");
 
+  // Resolve edits to original line numbers. When two edits target the SAME line, the
+  // outcome is deterministic and independent of edit order: a deletion ("") always
+  // wins (the most conservative resolution — the offending line goes away), and among
+  // competing replacements the first one wins. In practice the rule set never emits
+  // conflicting edits for one line; this just guarantees a stable result if it ever does.
   const replacements = new Map<number, string>();
   const appends: string[] = [];
   for (const edit of edits) {
-    if (edit.line > lines.length) appends.push(edit.replacement);
-    else replacements.set(edit.line, edit.replacement);
+    if (edit.line > lines.length) {
+      appends.push(edit.replacement);
+      continue;
+    }
+    const existing = replacements.get(edit.line);
+    if (existing === undefined) replacements.set(edit.line, edit.replacement);
+    else if (existing !== "" && edit.replacement === "") replacements.set(edit.line, "");
   }
 
   const out: string[] = [];

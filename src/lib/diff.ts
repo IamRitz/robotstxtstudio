@@ -52,6 +52,46 @@ export function diffLines(before: string, after: string): DiffRow[] {
   return rows;
 }
 
+/** A collapsed run of unchanged lines, shown as a single "… N unchanged lines" row. */
+export interface DiffGap {
+  readonly type: "gap";
+  readonly count: number;
+}
+
+export type DiffSegment = DiffRow | DiffGap;
+
+/**
+ * Collapse long runs of unchanged lines, keeping `context` lines of context around
+ * each change — so a one-line fix in a 200-line file renders ~7 rows, not 200. Keeps
+ * the Before/After view usable on large robots.txt files and on mobile.
+ */
+export function collapseDiff(rows: readonly DiffRow[], context = 3): DiffSegment[] {
+  const keep = new Array<boolean>(rows.length).fill(false);
+  rows.forEach((row, i) => {
+    if (row.type === "same") return;
+    for (let j = Math.max(0, i - context); j <= Math.min(rows.length - 1, i + context); j++) {
+      keep[j] = true;
+    }
+  });
+
+  const out: DiffSegment[] = [];
+  let hidden = 0;
+  const flush = () => {
+    if (hidden > 0) out.push({ type: "gap", count: hidden });
+    hidden = 0;
+  };
+  for (let i = 0; i < rows.length; i++) {
+    if (keep[i]) {
+      flush();
+      out.push(rows[i]!);
+    } else {
+      hidden++;
+    }
+  }
+  flush();
+  return out;
+}
+
 /** Counts of changed rows, for a compact summary ("2 removed · 1 added"). */
 export function diffStats(rows: readonly DiffRow[]): { added: number; removed: number } {
   let added = 0;
