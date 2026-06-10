@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite (Trust/EEAT) done; Phase 13A (Production Hardening) next |
+| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite + 13A (Production Hardening) done; Phase 13B (Analytics & Observability) next |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -143,6 +143,22 @@ architecture). New `webPageSchema` builder. Footer gains a Company/legal row; si
 adds all 5. Build green (76 static pages), tsc/eslint clean, 208 unit + 12 e2e pass.
 Decisions captured: contact = X @robotstudio; operator = "Robots.txt Studio", no
 governing-law clause. No marketing pages added.
+
+## 13A Production Hardening
+Deployment readiness. New `src/lib/env.ts` validates `NEXT_PUBLIC_SITE_URL`
+(fail-fast in production) and feeds `SITE_URL` into `lib/seo.ts` (canonical/sitemap/
+OG/JSON-LD). `next.config.ts` now sets security headers on every response (CSP,
+X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, HSTS) and
+`poweredByHeader: false`; the CSP is phase-gated — strict in production
+(`upgrade-insecure-requests`, no `unsafe-eval`, `connect-src 'self'`), HMR-friendly in
+the dev server. Added `not-found.tsx` (custom 404 + tool links), `error.tsx`
+(segment boundary with retry), `global-error.tsx` (self-contained root fallback), and
+`analyze/loading.tsx` (route skeleton for the dynamic Analyzer); both API routes gain
+a last-resort `try/catch` → JSON 500. New `docs/PRODUCTION_READINESS.md` (deployment +
+security checklists, loading-state audit, risk assessment, remaining blockers). Build
+green (76 pages), prod CSP verified on the server, tsc/eslint clean, 208 unit + 12 e2e
+pass. No hard launch blockers in code; remaining items are operational (Vercel project,
+domain, optional rate limiting) + 13B analytics.
 
 ---
 

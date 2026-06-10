@@ -4,8 +4,10 @@
  * and per-page (Breadcrumb, FAQ).
  */
 
+import { SITE_URL } from "./env";
+
 export const SITE = {
-  url: "https://robots-txt-studio.vercel.app",
+  url: SITE_URL,
   name: "Robots.txt Studio",
   shortName: "Robots.txt Studio",
   description:

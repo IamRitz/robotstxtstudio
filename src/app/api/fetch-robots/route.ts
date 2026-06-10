@@ -29,13 +29,19 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "That doesn't look like a valid domain." }, { status: 400 });
   }
 
-  const result = await fetchRobots(target.robotsUrl);
-  const payload: FetchRobotsResponse = {
-    status: result.status,
-    robotsExists: result.robotsExists,
-    body: result.body ?? "",
-    finalUrl: result.finalUrl ?? target.robotsUrl,
-    ...(result.error ? { error: result.error } : {}),
-  };
-  return NextResponse.json(payload);
+  try {
+    const result = await fetchRobots(target.robotsUrl);
+    const payload: FetchRobotsResponse = {
+      status: result.status,
+      robotsExists: result.robotsExists,
+      body: result.body ?? "",
+      finalUrl: result.finalUrl ?? target.robotsUrl,
+      ...(result.error ? { error: result.error } : {}),
+    };
+    return NextResponse.json(payload);
+  } catch (error) {
+    // fetchRobots() is designed not to throw; last-resort guard for a JSON 500.
+    console.error("[api/fetch-robots] unexpected error", error);
+    return NextResponse.json({ error: "Could not fetch robots.txt. Please try again." }, { status: 500 });
+  }
 }
