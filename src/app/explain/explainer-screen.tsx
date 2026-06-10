@@ -1,16 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { FileText, ShieldCheck } from "lucide-react";
 import { parseRobots } from "@/parser";
 import { validateRobots } from "@/features/validator";
 import { explainRobots } from "@/features/explainer";
 import type { CrawlerAccess } from "@/types";
+import { takeHandoff } from "@/lib/handoff";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBadge } from "@/components/status-badge";
 import { InfoPanel } from "@/components/info-panel";
 import type { StatusKey } from "@/components/severity";
 import { RobotsSourceField } from "@/components/robots-source-field";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 import { Card } from "@/components/ui/card";
 
 const SAMPLE = `User-agent: *
@@ -34,6 +37,30 @@ export function ExplainerScreen() {
     const file = parseRobots(text);
     return explainRobots(file, { validation: validateRobots(file) });
   }, [text]);
+
+  // Load a robots.txt handed off from another tool ("Explain this").
+  useEffect(() => {
+    const handed = takeHandoff();
+    if (handed) setText(handed);
+  }, []);
+
+  const nextSteps: NextStep[] = [
+    {
+      kind: "handoff",
+      icon: ShieldCheck,
+      label: "Validate this file",
+      description: "Check it for syntax errors and best-practice warnings.",
+      href: "/validate",
+      text,
+    },
+    {
+      kind: "link",
+      icon: FileText,
+      label: "Edit in the Generator",
+      description: "Adjust crawler access with guided toggles, then export.",
+      href: "/generate",
+    },
+  ];
 
   return (
     <div>
@@ -106,6 +133,8 @@ export function ExplainerScreen() {
           </ul>
         </Card>
       )}
+
+      <NextSteps steps={nextSteps} />
     </div>
   );
 }

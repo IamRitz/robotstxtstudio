@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ShieldCheck, ShieldOff } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Megaphone, ShieldCheck, ShieldOff } from "lucide-react";
 import { parseRobots } from "@/parser";
 import { testUrl } from "@/features/tester";
 import { ALL_CRAWLERS } from "@/config/crawlers";
 import type { TestTraceStatus } from "@/types";
+import { takeHandoff } from "@/lib/handoff";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { STATUS_VISUALS, type StatusKey } from "@/components/severity";
 import { EmptyState } from "@/components/empty-state";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 import { Card } from "@/components/ui/card";
 import { RobotsSourceField } from "@/components/robots-source-field";
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,31 @@ export function TesterScreen() {
 
   const verdict: StatusKey = result?.decision === "blocked" ? "blocked" : "allowed";
   const VerdictIcon = result?.decision === "blocked" ? ShieldOff : ShieldCheck;
+
+  // Load a robots.txt handed off from another tool ("Test against this").
+  useEffect(() => {
+    const handed = takeHandoff();
+    if (handed) setSource(handed);
+  }, []);
+
+  const nextSteps: NextStep[] = [
+    {
+      kind: "handoff",
+      icon: ShieldCheck,
+      label: "Validate this robots.txt",
+      description: "Catch syntax errors and best-practice warnings.",
+      href: "/validate",
+      text: source,
+    },
+    {
+      kind: "handoff",
+      icon: Megaphone,
+      label: "Explain these rules",
+      description: "Read what the file does in plain English.",
+      href: "/explain",
+      text: source,
+    },
+  ];
 
   return (
     <div>
@@ -140,6 +167,8 @@ export function TesterScreen() {
           </Card>
         </div>
       )}
+
+      <NextSteps steps={nextSteps} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Globe, ScanSearch } from "lucide-react";
+import { Download, FileText, Globe, Megaphone, ScanSearch, ShieldCheck } from "lucide-react";
 import type { AnalysisReport } from "@/types";
 import { CATEGORY_LABELS } from "@/config/crawlers";
 import { PageHeader } from "@/components/page-header";
@@ -17,6 +17,7 @@ import { LoadingCard } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 import type { StatusKey } from "@/components/severity";
 import { trackAnalyzeCompleted, trackFetchRobots } from "@/lib/analytics";
 
@@ -112,7 +113,18 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
         <EmptyState
           icon={ScanSearch}
           title="No robots.txt analyzed yet"
-          description="Enter a domain above to fetch and analyze its robots.txt file."
+          description="Enter a domain above to fetch and audit its robots.txt — crawler visibility, AI access, and issues in one report."
+          action={
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setDomain("example.com");
+                void run("example.com");
+              }}
+            >
+              <Globe /> Try a sample (example.com)
+            </Button>
+          }
         />
       ) : null}
 
@@ -127,6 +139,43 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
 
 function Report({ report }: { report: AnalysisReport }) {
   const fetchInfo = FETCH_STATUS[report.fetch.status] ?? FETCH_STATUS["network-error"]!;
+  const source = report.file.source ?? report.fetch.body ?? "";
+
+  const steps: NextStep[] = [
+    {
+      kind: "handoff",
+      icon: ShieldCheck,
+      label: "Validate this robots.txt",
+      description: "Run a full syntax + best-practice check on the fetched file.",
+      href: "/validate",
+      text: source,
+    },
+    {
+      kind: "handoff",
+      icon: Megaphone,
+      label: "Explain the findings",
+      description: "See what every rule means in plain English.",
+      href: "/explain",
+      text: source,
+    },
+    {
+      kind: "link",
+      icon: FileText,
+      label: "Fix it in the Generator",
+      description: "Rebuild a clean robots.txt with guided toggles.",
+      href: "/generate",
+    },
+  ];
+  if (source.trim()) {
+    steps.push({
+      kind: "download",
+      icon: Download,
+      label: "Download robots.txt",
+      description: "Save the fetched file to edit or deploy.",
+      text: source,
+      filename: "robots.txt",
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -198,6 +247,8 @@ function Report({ report }: { report: AnalysisReport }) {
           <CodePanel code={report.file.source ?? report.fetch.body} title={`${report.domain}/robots.txt`} />
         </div>
       ) : null}
+
+      <NextSteps steps={steps} />
     </div>
   );
 }

@@ -22,7 +22,7 @@ export function SiteHeader() {
 
         <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
           {PRIMARY_NAV.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

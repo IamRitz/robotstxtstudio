@@ -136,3 +136,46 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/*
+ * Interaction affordances (Phase 14A — UX audit).
+ * Tailwind v4 Preflight resets buttons to `cursor: default`; restore the pointer
+ * affordance on every interactive element and make disabled/loading states obvious.
+ * This is the single source of truth so individual components don't have to repeat it.
+ */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="switch"]:not(:disabled),
+  [role="tab"]:not([aria-disabled="true"]),
+  label[for],
+  summary,
+  a[href] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"],
+  [aria-busy="true"] {
+    cursor: not-allowed;
+  }
+
+  /* Keyboard users always get a visible focus ring, even on bare links/cards. */
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: none;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--brand);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { FileText, Megaphone, Search, ShieldCheck } from "lucide-react";
 import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
 import { TEMPLATE_LABELS } from "@/features/generator";
 import {
@@ -23,6 +23,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { CodePanel } from "@/components/code-panel";
 import { InfoPanel } from "@/components/info-panel";
 import { RecommendationCard } from "@/components/recommendation-card";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -47,6 +48,32 @@ export function AiManagerScreen() {
 
   const allowedTotal = impact.categories.reduce((s, c) => s + c.allowed, 0);
   const blockedTotal = impact.categories.reduce((s, c) => s + c.blocked, 0);
+
+  const nextSteps: NextStep[] = [
+    {
+      kind: "handoff",
+      icon: ShieldCheck,
+      label: "Validate this robots.txt",
+      description: "Check the generated block for errors before you ship it.",
+      href: "/validate",
+      text: impact.text,
+    },
+    {
+      kind: "link",
+      icon: FileText,
+      label: "Open the full Generator",
+      description: "Add disallow paths, a sitemap, and search-engine rules.",
+      href: "/generate",
+    },
+    {
+      kind: "handoff",
+      icon: Megaphone,
+      label: "Explain these rules",
+      description: "See exactly what each crawler can and can't do.",
+      href: "/explain",
+      text: impact.text,
+    },
+  ];
 
   return (
     <div>
@@ -156,6 +183,8 @@ export function AiManagerScreen() {
           ) : null}
         </aside>
       </div>
+
+      <NextSteps steps={nextSteps} />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export function MobileNav() {
     >
       {MOBILE_NAV.map((item) => {
         const Icon = item.icon;
-        const active = pathname === item.href;
+        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}

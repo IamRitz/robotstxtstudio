@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { QuickAnalyze } from "@/components/quick-analyze";
 import { SectionHeader } from "@/components/section-header";
 import { EmptyState } from "@/components/empty-state";
-import { StatusBadge } from "@/components/status-badge";
+import { LockedReport } from "@/components/locked-report";
+import { buttonVariants } from "@/components/ui/button";
 
 const TOOL_GROUPS = [
   {
@@ -42,14 +43,6 @@ const LEARN_LINKS: ReadonlyArray<{ href: Route; title: string; desc: string }> =
   { href: "/why-robots-txt-is-important", title: "Why it matters", desc: "Crawl budget, AI access, and the cost of getting it wrong." },
 ];
 
-const PREVIEW_CRAWLERS = [
-  { name: "Google", status: "allowed" as const },
-  { name: "Bing", status: "allowed" as const },
-  { name: "GPTBot", status: "blocked" as const },
-  { name: "ClaudeBot", status: "blocked" as const },
-  { name: "PerplexityBot", status: "allowed" as const },
-];
-
 export default function HomePage() {
   return (
     <AppShell>
@@ -71,21 +64,22 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Crawler access preview */}
-      <Card className="mx-auto mt-12 max-w-3xl p-5">
-        <SectionHeader className="mb-3">Crawler access preview</SectionHeader>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-          {PREVIEW_CRAWLERS.map((c) => (
-            <div key={c.name} className="flex flex-col items-center gap-2 rounded-lg border border-border p-3">
-              <span className="text-xs font-semibold text-foreground">{c.name}</span>
-              <StatusBadge status={c.status} />
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-center text-xs text-muted-foreground">
-          Analyze your site to unlock the full report.
-        </p>
-      </Card>
+      {/* Locked report preview — premium locked state (Phase 14C) */}
+      <div className="mx-auto mt-12 max-w-3xl">
+        <SectionHeader className="mb-3">Your crawler report</SectionHeader>
+        <LockedReport
+          title="Unlock your full crawler report"
+          description="Run a free analysis to reveal your visibility score, AI-crawler access, and every robots.txt issue — no sign-up required."
+          action={
+            <>
+              <Link href="/analyze" className={buttonVariants({ variant: "brand", size: "lg" })}>
+                <ScanSearch /> Run free analysis
+              </Link>
+              <span className="text-xs text-muted-foreground">Takes about 5 seconds</span>
+            </>
+          }
+        />
+      </div>
 
       {/* Feature overview */}
       <section className="mt-16">
@@ -194,7 +188,12 @@ export default function HomePage() {
         <EmptyState
           icon={ScanSearch}
           title="No recent analyses yet"
-          description="Your recently analyzed sites will appear here. Saved history is coming soon."
+          description="Your recently analyzed sites will appear here. Saved history is coming soon — run your first audit to get started."
+          action={
+            <Link href="/analyze" className={buttonVariants({ variant: "secondary" })}>
+              <ScanSearch /> Analyze a site
+            </Link>
+          }
         />
       </section>
     </AppShell>

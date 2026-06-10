@@ -43,12 +43,16 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_2fr]">
           <div>
-            <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              aria-label={`${BRAND.name} — home`}
+              className="inline-flex items-center gap-2 rounded-md transition-opacity hover:opacity-80"
+            >
               <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
                 <Bot className="size-3.5" />
               </span>
               <span className="text-sm font-bold text-foreground">{BRAND.name}</span>
-            </div>
+            </Link>
             <p className="mt-3 max-w-xs text-xs text-muted-foreground">
               Audit, generate, and control who can crawl your site — search engines and AI bots.
             </p>

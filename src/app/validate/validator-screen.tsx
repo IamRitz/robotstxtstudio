@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Download, FileText, Megaphone } from "lucide-react";
 import { parseRobots } from "@/parser";
 import { validateRobots } from "@/features/validator";
 import type { Severity } from "@/types";
 import { trackValidationCompleted } from "@/lib/analytics";
+import { takeHandoff } from "@/lib/handoff";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { ScoreCard } from "@/components/score-card";
@@ -13,6 +15,7 @@ import { Callout } from "@/components/callout";
 import { EmptyState } from "@/components/empty-state";
 import { Segmented } from "@/components/segmented";
 import { RobotsSourceField } from "@/components/robots-source-field";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 import { Card } from "@/components/ui/card";
 
 const SAMPLE = `User-agent: *
@@ -33,6 +36,38 @@ export function ValidatorScreen() {
 
   const result = useMemo(() => validateRobots(parseRobots(text)), [text]);
   const visible = result.issues.filter((i) => filter === "all" || i.severity === filter);
+
+  // If the user arrived from another tool ("Validate this"), load their file.
+  useEffect(() => {
+    const handed = takeHandoff();
+    if (handed) setText(handed);
+  }, []);
+
+  const nextSteps: NextStep[] = [
+    {
+      kind: "link",
+      icon: FileText,
+      label: "Rebuild in the Generator",
+      description: "Fix issues fast with guided crawler toggles and presets.",
+      href: "/generate",
+    },
+    {
+      kind: "handoff",
+      icon: Megaphone,
+      label: "Explain in plain English",
+      description: "Understand exactly what these rules do.",
+      href: "/explain",
+      text,
+    },
+    {
+      kind: "download",
+      icon: Download,
+      label: "Download robots.txt",
+      description: "Save the current file to deploy.",
+      text,
+      filename: "robots.txt",
+    },
+  ];
 
   // Debounced: report a validation once the user stops editing (not per keystroke).
   useEffect(() => {
@@ -95,7 +130,19 @@ export function ValidatorScreen() {
             Your robots.txt is valid and follows best practices.
           </Callout>
         ) : visible.length === 0 ? (
-          <EmptyState title="Nothing in this filter" description="No issues match the selected severity." />
+          <EmptyState
+            title="Nothing in this filter"
+            description="No issues match the selected severity. Try another filter to see the rest."
+            action={
+              <button
+                type="button"
+                onClick={() => setFilter("all")}
+                className="text-xs font-medium text-brand hover:underline"
+              >
+                Show all issues
+              </button>
+            }
+          />
         ) : (
           <div className="space-y-3">
             {visible.map((issue) => (
@@ -104,6 +151,8 @@ export function ValidatorScreen() {
           </div>
         )}
       </div>
+
+      <NextSteps steps={nextSteps} />
     </div>
   );
 }

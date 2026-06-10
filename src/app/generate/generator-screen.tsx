@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Download, Plus, X } from "lucide-react";
+import { Download, Megaphone, Plus, ShieldCheck, X } from "lucide-react";
 import { applyPreset, generatePreview, TEMPLATE_LABELS } from "@/features/generator";
 import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
 import type { GeneratorConfig, WebsiteType } from "@/types";
@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { NextSteps, type NextStep } from "@/components/next-steps";
 
 const TEMPLATES = Object.keys(TEMPLATE_LABELS) as WebsiteType[];
 
@@ -49,6 +50,33 @@ export function GeneratorScreen() {
 
   const removePath = (path: string) =>
     setConfig((c) => ({ ...c, disallowPaths: c.disallowPaths.filter((p) => p !== path) }));
+
+  const nextSteps: NextStep[] = [
+    {
+      kind: "handoff",
+      icon: ShieldCheck,
+      label: "Validate this file",
+      description: "Confirm it's error-free before you deploy.",
+      href: "/validate",
+      text: preview.text,
+    },
+    {
+      kind: "handoff",
+      icon: Megaphone,
+      label: "Explain in plain English",
+      description: "Double-check the rules do what you expect.",
+      href: "/explain",
+      text: preview.text,
+    },
+    {
+      kind: "download",
+      icon: Download,
+      label: "Download robots.txt",
+      description: "Save the generated file to your project root.",
+      text: preview.text,
+      filename: "robots.txt",
+    },
+  ];
 
   return (
     <div>
@@ -160,6 +188,8 @@ export function GeneratorScreen() {
           <InfoPanel title="What this file does">{preview.explanation.summary}</InfoPanel>
         </aside>
       </div>
+
+      <NextSteps steps={nextSteps} />
     </div>
   );
 }
