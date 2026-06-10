@@ -124,11 +124,11 @@ export default function ComponentLibraryPage() {
           <SectionHeader>Issues & recommendations</SectionHeader>
           <div className="grid gap-3">
             <IssueCard
-              issue={{ severity: "error", title: "Conflicting Allow/Disallow", message: '"/x" is both allowed and disallowed.', line: 4 }}
+              issue={{ id: "conflicting-rules:4", code: "conflicting-rules", severity: "error", title: "Conflicting Allow/Disallow", message: '"/x" is both allowed and disallowed.', line: 4 }}
               actions={<a className="font-medium text-brand">Fix this</a>}
             />
             <IssueCard
-              issue={{ severity: "warning", title: "No sitemap declared", message: "Declaring a sitemap helps crawlers discover pages." }}
+              issue={{ id: "missing-sitemap", code: "missing-sitemap", severity: "warning", title: "No sitemap declared", message: "Declaring a sitemap helps crawlers discover pages." }}
             />
             <RecommendationCard
               recommendation={{ severity: "info", title: "GPTBot inherits the default rules", description: "Add an explicit Allow or Disallow for GPTBot." }}

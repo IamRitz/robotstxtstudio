@@ -1,20 +1,32 @@
 import type { ReactNode } from "react";
+import { ExternalLink, Wrench } from "lucide-react";
 import type { ValidationIssue } from "@/types";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { STATUS_VISUALS, severityToStatus } from "./severity";
 
-/** A validation issue card: severity icon, title, line ref, message, actions. */
+/**
+ * A validation issue card: severity icon, title, line ref, message, actions.
+ *
+ * When the issue carries an applicable {@link ValidationIssue.fix} AND an `onFix`
+ * handler is provided, a "Fix this" button is shown (Phase 15A Smart Fix). `onFix` is
+ * omitted on read-only surfaces (e.g. the Analyzer today), so no button appears there.
+ */
 export function IssueCard({
   issue,
+  onFix,
   actions,
   className,
 }: {
-  issue: Pick<ValidationIssue, "severity" | "title" | "message" | "line">;
+  issue: ValidationIssue;
+  /** Apply this issue's fix. Only wired where edits can be applied (the Validator). */
+  onFix?: (issue: ValidationIssue) => void;
   actions?: ReactNode;
   className?: string;
 }) {
   const status = severityToStatus(issue.severity);
   const { icon: Icon, chip } = STATUS_VISUALS[status];
+  const canFix = onFix && (issue.fix?.edits?.length ?? 0) > 0;
 
   return (
     <div className={cn("flex items-start gap-3 rounded-xl border border-border bg-card p-4", className)}>
@@ -29,7 +41,29 @@ export function IssueCard({
           ) : null}
         </div>
         <p className="mt-1 text-xs text-muted-foreground">{issue.message}</p>
-        {actions ? <div className="mt-2 flex items-center gap-3 text-xs">{actions}</div> : null}
+        {canFix || issue.learnMoreUrl || actions ? (
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+            {canFix ? (
+              <Button variant="outline" size="sm" onClick={() => onFix!(issue)} title={issue.fix!.description}>
+                <Wrench aria-hidden /> Fix this
+                {issue.fix!.safe ? null : (
+                  <span className="font-normal text-muted-foreground">· review</span>
+                )}
+              </Button>
+            ) : null}
+            {issue.learnMoreUrl ? (
+              <a
+                href={issue.learnMoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-brand hover:underline"
+              >
+                Learn more <ExternalLink className="size-3" aria-hidden />
+              </a>
+            ) : null}
+            {actions}
+          </div>
+        ) : null}
       </div>
     </div>
   );

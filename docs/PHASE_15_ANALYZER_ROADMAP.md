@@ -1,9 +1,14 @@
 # Phase 15 — Analyzer Improvement Roadmap (Design Proposal)
 
-> **Status: DESIGN ONLY. Do not build yet.** This document proposes the architecture
-> and UX for the next generation of the Analyzer. It is the deliverable for Phase
-> 14G and the input to a future Phase 15 build sprint. Estimates and sequencing are
-> indicative.
+> **Status: IN PROGRESS.** This document proposed the architecture (deliverable for
+> Phase 14G); Phase 15 is now building it.
+>
+> **✅ 15A — Smart Fix engine (Validator): DELIVERED.** The `Fix` model
+> (`SuggestedFix.edits` + `safe`), `applyTextEdits` (`validator/domain/apply-fix.ts`),
+> the line diff (`lib/diff.ts` / `components/diff-view.tsx`), and the Validator UI
+> (Fix This / Fix All Safe / Before-After diff / Undo / Download) are shipped. See
+> [`VALIDATOR.md` "Smart Fix engine"](./VALIDATOR.md). Detectors #11–#19, comparison
+> (#9/#10), and Analyzer-side inline fixes remain as described below.
 
 ## 1. Goal
 

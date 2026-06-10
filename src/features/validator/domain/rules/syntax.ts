@@ -21,6 +21,7 @@ export const missingColon: Rule = ({ file }) =>
         title: "Malformed line (missing colon)",
         message: `Line ${d.line} is not a valid directive — a directive needs a "field: value" form.`,
         line: d.line,
+        fix: { description: "Remove this malformed line", edits: [{ line: d.line, replacement: "" }], safe: false },
       }),
     );
 
@@ -35,6 +36,11 @@ export const directiveBeforeUserAgent: Rule = ({ file }) =>
         title: "Rule before any User-agent",
         message: `"${d.raw.trim()}" (line ${d.line}) appears before any User-agent and will be ignored. Start a group with a User-agent line.`,
         line: d.line,
+        fix: {
+          description: "Remove the orphaned rule (it is currently ignored)",
+          edits: [{ line: d.line, replacement: "" }],
+          safe: false,
+        },
       }),
     );
 
@@ -63,6 +69,11 @@ export const invalidCrawlDelay: Rule = ({ file }) =>
         title: "Invalid Crawl-delay",
         message: `"${d.value}" (line ${d.line}) is not a valid Crawl-delay. Use a non-negative number of seconds.`,
         line: d.line,
+        fix: {
+          description: "Remove the invalid Crawl-delay (it has no effect)",
+          edits: [{ line: d.line, replacement: "" }],
+          safe: true,
+        },
       }),
     );
 
@@ -77,6 +88,7 @@ export const invalidSitemapUrl: Rule = ({ file }) =>
         title: "Malformed Sitemap URL",
         message: `Sitemap on line ${s.line} ("${s.url || "empty"}") must be a full absolute URL, e.g. https://example.com/sitemap.xml.`,
         line: s.line,
+        fix: { description: "Remove the malformed Sitemap line", edits: [{ line: s.line, replacement: "" }], safe: false },
         ...(LEARN_MORE["invalid-sitemap-url"]
           ? { learnMoreUrl: LEARN_MORE["invalid-sitemap-url"] }
           : {}),
@@ -105,6 +117,11 @@ export const conflictingRules: Rule = ({ file }) => {
             message: `"${path}" is both Allowed (line ${allow.line}) and Disallowed (line ${disallow.line}) for ${group.userAgents.join(", ")}. Crawlers may resolve this unpredictably.`,
             line: start,
             lineRange: { start, end },
+            fix: {
+              description: "Remove the conflicting Disallow (keep Allow)",
+              edits: [{ line: disallow.line, replacement: "" }],
+              safe: false,
+            },
           }),
         );
       }

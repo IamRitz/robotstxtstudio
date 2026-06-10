@@ -52,16 +52,27 @@ export type ValidationCode =
 
 /** A concrete, deterministic edit suggestion attached to an issue ("Fix This"). */
 export interface SuggestedFix {
-  /** Human-readable description of the fix. */
+  /** Human-readable description of the fix (also the "Fix This" button hint). */
   readonly description: string;
-  /** Optional concrete text edits to apply. */
+  /** Concrete text edits to apply. When absent, the fix is advisory only. */
   readonly edits?: readonly TextEdit[];
+  /**
+   * True when the edit is deterministic AND intent-preserving, so it is eligible for
+   * "Fix All Safe Issues" (e.g. removing a no-op `Crawl-delay: 0`). Fixes that change
+   * crawler access or guess intent (e.g. removing one side of a conflict) are left
+   * `false`/undefined — offered as a manual "Fix This" only.
+   */
+  readonly safe?: boolean;
 }
 
-/** A single text edit: replace `line` (1-based) with `replacement`, or insert when `line` is past EOF. */
+/**
+ * A single line-based text edit (1-based `line`):
+ * - `replacement === ""` removes the line entirely,
+ * - non-empty `replacement` replaces the line's content,
+ * - `line` past EOF appends `replacement` as a new line.
+ */
 export interface TextEdit {
   readonly line: number;
-  /** New text for the line; empty string deletes the line's content. */
   readonly replacement: string;
 }
 

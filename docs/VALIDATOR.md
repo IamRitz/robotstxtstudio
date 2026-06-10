@@ -66,6 +66,36 @@ severity, then line.
 | `sitemap-not-https` | Sitemap declared over `http://`. | Prefer `https://`. |
 | `crawl-delay-ignored-by-google` | `Crawl-delay` set for Googlebot/`*`. | Google ignores it; use Search Console crawl settings. |
 
+## Smart Fix engine (Phase 15A)
+
+Rules attach an optional `fix: SuggestedFix` (`src/types/validation.ts`) — a set of
+line-based `TextEdit`s applied to the raw source by `applyTextEdits`
+(`domain/apply-fix.ts`). Editing text by the parser's 1-based line numbers (rather
+than mutating the AST) keeps fixes trivially correct and reversible; the Validator
+screen snapshots the previous text for **Undo** and renders a **Before/After diff**
+(`components/diff-view.tsx`, `lib/diff.ts`).
+
+Each fix is tagged `safe` or not:
+
+- **`safe: true`** — deterministic AND intent-preserving, so it is eligible for
+  **"Fix All Safe Issues"** (applied in one undoable batch): `invalid-crawl-delay`
+  (remove the no-op), `duplicate-rule` (remove the dupe), `unsupported-directive`
+  (remove the ignored line), `crawl-delay-zero` (remove the no-op), `sitemap-not-https`
+  (rewrite `http://`→`https://`).
+- **`safe: false`** — offered as a manual **"Fix this · review"** only, because the
+  edit changes access or guesses intent: `missing-colon` /
+  `directive-before-user-agent` (remove the malformed/ignored line),
+  `invalid-sitemap-url` (remove), `conflicting-rules` (remove the `Disallow`, keep
+  `Allow`), `overly-broad-disallow` (remove `Disallow: /`),
+  `crawl-delay-ignored-by-google` (remove the `Crawl-delay`).
+
+Advisory issues with no deterministic single-line edit (`missing-sitemap`,
+`no-default-group`, `no-crawler-specific-groups`, `no-comments`, and the AI-policy
+recommendations) carry no `fix.edits` and show no button. Fixes are surfaced only on
+the Validator (which owns the text); read-only surfaces like the Analyzer pass no
+`onFix`, so the same `IssueCard` shows the finding without a button (Analyzer inline
+fixes are a later sub-phase).
+
 ## AI-specific validation (differentiator)
 
 For each major AI crawler — **GPTBot, ClaudeBot, PerplexityBot, CCBot,
@@ -156,7 +186,8 @@ writing the function and registering it in `rules/index.ts`; add its code to the
 
 ## Testing
 
-`src/features/validator/domain/*.test.ts` — 39 tests: every rule, AI status
-detection, scoring math, ordering/counts, edge cases (empty, comments-only), and a
-real-world publisher file. Coverage: 100% of `validator/domain` (≈99% incl. rules);
-gate 80%.
+`src/features/validator/domain/*.test.ts` — every rule, AI status detection, scoring
+math, ordering/counts, edge cases (empty, comments-only), and a real-world publisher
+file, plus `apply-fix.test.ts` (edit application, safe/review selection, and an
+end-to-end "fix resolves its own finding" check). The diff helper is covered by
+`src/lib/diff.test.ts`. Coverage gate 80%.

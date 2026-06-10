@@ -49,6 +49,20 @@ export function hasWildcardGroup(file: RobotsFile): boolean {
   return file.groups.some((group) => groupTargets(group, WILDCARD_USER_AGENT));
 }
 
+/**
+ * The source line of the `Crawl-delay` directive inside a group (the group's own
+ * `lineRange.start` points at its first `User-agent`, not the directive). Returns
+ * `undefined` if not found. Used to target Crawl-delay fixes at the right line.
+ */
+export function crawlDelayDirectiveLine(file: RobotsFile, group: RobotsGroup): number | undefined {
+  return file.directives.find(
+    (d) =>
+      d.field === "crawl-delay" &&
+      d.line >= group.lineRange.start &&
+      d.line <= group.lineRange.end,
+  )?.line;
+}
+
 /** True when every group targets only `*` (no crawler-specific groups). */
 export function onlyWildcardGroups(file: RobotsFile): boolean {
   return (

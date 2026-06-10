@@ -10,7 +10,14 @@ import {
   LEARN_MORE,
 } from "../constants";
 import type { Rule } from "../context";
-import { groupTargets, hasWildcardGroup, isHttpsUrl, makeIssue, onlyWildcardGroups } from "../helpers";
+import {
+  crawlDelayDirectiveLine,
+  groupTargets,
+  hasWildcardGroup,
+  isHttpsUrl,
+  makeIssue,
+  onlyWildcardGroups,
+} from "../helpers";
 
 // ── Warnings ────────────────────────────────────────────────────────────────
 
@@ -29,6 +36,7 @@ export const duplicateRules: Rule = ({ file }) => {
             title: "Duplicate rule",
             message: `"${rule.raw.trim()}" (line ${rule.line}) duplicates an earlier rule in the same group and can be removed.`,
             line: rule.line,
+            fix: { description: "Remove the duplicate rule", edits: [{ line: rule.line, replacement: "" }], safe: true },
           }),
         );
       }
@@ -71,6 +79,11 @@ export const overlyBroadDisallow: Rule = ({ file }) => {
             title: "Disallow: / blocks everything",
             message: `Line ${rule.line} blocks the entire site for ${group.userAgents.join(", ")}. Confirm this is intentional — it can de-index your site.`,
             line: rule.line,
+            fix: {
+              description: "Remove Disallow: / (stop blocking the whole site)",
+              edits: [{ line: rule.line, replacement: "" }],
+              safe: false,
+            },
           }),
         );
       }
@@ -104,6 +117,11 @@ export const unsupportedDirective: Rule = ({ file }) =>
         title: "Unsupported directive",
         message: `"${d.raw.trim()}" (line ${d.line}) is not a standard robots.txt directive and most crawlers will ignore it.`,
         line: d.line,
+        fix: {
+          description: "Remove the unsupported directive",
+          edits: [{ line: d.line, replacement: "" }],
+          safe: true,
+        },
       }),
     );
 
@@ -111,15 +129,25 @@ export const unsupportedDirective: Rule = ({ file }) =>
 export const crawlDelayZero: Rule = ({ file }) =>
   file.groups
     .filter((group) => group.crawlDelay === 0)
-    .map((group) =>
-      makeIssue({
+    .map((group) => {
+      const delayLine = crawlDelayDirectiveLine(file, group);
+      return makeIssue({
         severity: "warning",
         code: "crawl-delay-zero",
         title: "Crawl-delay of 0",
         message: `The group for ${group.userAgents.join(", ")} sets Crawl-delay: 0, which has no effect. Remove it or set a positive value.`,
-        line: group.lineRange.start,
-      }),
-    );
+        line: delayLine ?? group.lineRange.start,
+        ...(delayLine
+          ? {
+              fix: {
+                description: "Remove the no-op Crawl-delay: 0",
+                edits: [{ line: delayLine, replacement: "" }],
+                safe: true,
+              },
+            }
+          : {}),
+      });
+    });
 
 // ── Recommendations (info) ────────────────────────────────────────────────────
 
@@ -176,6 +204,11 @@ export const sitemapNotHttps: Rule = ({ file }) =>
         title: "Sitemap uses HTTP",
         message: `Sitemap on line ${s.line} uses http://. Prefer https:// for your sitemap URL.`,
         line: s.line,
+        fix: {
+          description: "Upgrade the Sitemap URL to https://",
+          edits: [{ line: s.line, replacement: `Sitemap: ${s.url.replace(/^http:\/\//i, "https://")}` }],
+          safe: true,
+        },
       }),
     );
 
@@ -188,15 +221,25 @@ export const crawlDelayIgnoredByGoogle: Rule = ({ file }) =>
         group.crawlDelay > 0 &&
         CRAWL_DELAY_IGNORERS.some((ua) => groupTargets(group, ua)),
     )
-    .map((group) =>
-      makeIssue({
+    .map((group) => {
+      const delayLine = crawlDelayDirectiveLine(file, group);
+      return makeIssue({
         severity: "info",
         code: "crawl-delay-ignored-by-google",
         title: "Crawl-delay ignored by Google",
         message: `Googlebot ignores Crawl-delay (set in the group for ${group.userAgents.join(", ")}). Use Search Console's crawl-rate settings instead.`,
-        line: group.lineRange.start,
+        line: delayLine ?? group.lineRange.start,
+        ...(delayLine
+          ? {
+              fix: {
+                description: "Remove the Crawl-delay (Googlebot ignores it)",
+                edits: [{ line: delayLine, replacement: "" }],
+                safe: false,
+              },
+            }
+          : {}),
         ...(LEARN_MORE["crawl-delay-ignored-by-google"]
           ? { learnMoreUrl: LEARN_MORE["crawl-delay-ignored-by-google"] }
           : {}),
-      }),
-    );
+      });
+    });

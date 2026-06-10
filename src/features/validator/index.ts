@@ -11,6 +11,12 @@
  * const result = validateRobots(parseRobots(text));
  */
 export { validateRobots } from "./domain/validate";
+export {
+  applyTextEdits,
+  fixableIssues,
+  safelyFixableIssues,
+  collectSafeEdits,
+} from "./domain/apply-fix";
 export { computeHealth, aiConfigScore, SCORE_WEIGHTS, PENALTIES } from "./domain/scoring";
 export { getAiCrawlerStatuses } from "./domain/ai-crawlers";
 export type { AiCrawlerStatus, AiPolicyStatus } from "./domain/ai-crawlers";
