@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (next) |
+| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12B done; 12C next) |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -106,11 +106,23 @@ Commit: `b855e00`
 Delivered: fetch-from-URL (`app/api/fetch-robots` reusing the Analyzer fetch + shared `RobotsSourceField` in Validator/Tester/Explainer); Playwright e2e for all 6 journeys + smoke/nav + error states (12/12 pass, prod server via system Chrome); error-state audit; OG/Twitter metadata + favicon; `docs/LAUNCH_CHECKLIST.md`.
 See: [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md)
 
+## SEO — 12A Technical SEO Foundation
+Commit: `bf36de7`
+Delivered: `app/robots.ts` + `app/sitemap.ts`; site-wide Organization + WebSite (SearchAction) JSON-LD; per-tool canonical + BreadcrumbList; OG/Twitter/keywords base; `app/icon.svg`; `docs/SEO_AUDIT.md`.
+
+## SEO — 12B Content Architecture
+Commit: `07f92c9`
+Delivered: data-driven content system — `src/config/content.ts` registry (AUTHOR/EEAT, TOOLS, EDU_PAGES), `src/components/content/*` (SeoContentLayout, TOC, AuthorBox, ToolCTA, RelatedResources, FaqSection, SchemaWrapper emitting Breadcrumb + TechArticle + FAQ JSON-LD).
+
+## SEO — 12B Educational Cluster
+Commit: `e7ccb7e`
+Delivered: 12 educational pages on the shared architecture (what-is, file, how-it-works, syntax, format, how-to-find, how-to-read, examples, sitemap, why-important, seo-guide, checker). Unique metadata + canonical, distributed FAQ schema (no dup questions), breadcrumb + article JSON-LD, EEAT byline, ≥3 contextual internal links each + tool CTA + related + next-reading. Entry points: sitemap (registry-driven), footer Guides column, homepage Learn section. Build/tsc/eslint green, 208 unit + 12 e2e pass.
+
 ---
 
 # Current Sprint
 
-**Goal:** Phase 12 — SEO pages & growth assets.
+**Goal:** Phase 12 — SEO pages & growth assets (12C–12H remaining).
 
 **Scope:** `app/sitemap.ts`, `app/robots.ts` (ship an exemplary robots.txt), dynamic
 `opengraph-image`, and keyword landing pages (`/robots-txt-generator`,
