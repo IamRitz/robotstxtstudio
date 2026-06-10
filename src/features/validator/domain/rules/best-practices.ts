@@ -109,7 +109,8 @@ export const excessiveRules: Rule = ({ file }) =>
 /** Unsupported / vendor-specific directives (kept by the parser as unknown). */
 export const unsupportedDirective: Rule = ({ file }) =>
   file.unknownDirectives
-    .filter((d) => d.field === "unknown" && d.raw.includes(":"))
+    // `Noindex:` gets its own, more specific rule (noindex-unsupported).
+    .filter((d) => d.field === "unknown" && d.raw.includes(":") && !/^\s*noindex\s*:/i.test(d.raw))
     .map((d) =>
       makeIssue({
         severity: "warning",

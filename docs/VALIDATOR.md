@@ -42,6 +42,7 @@ severity, then line.
 | `invalid-crawl-delay` | Non-numeric/negative `Crawl-delay`. | Crawlers ignore it; intended throttling lost. |
 | `conflicting-rules` | Same path both `Allow` and `Disallow` in one group. | Crawlers resolve unpredictably; access is ambiguous. |
 | `invalid-sitemap-url` | `Sitemap:` is not a full absolute http(s) URL. | Sitemap is not discovered; indexing suffers. |
+| `quoted-directive` | Path wrapped in quotes (`Disallow: "/admin"`). | robots.txt has no quoting — the quotes match literally, so the rule never fires. |
 
 ### Warning
 
@@ -53,6 +54,11 @@ severity, then line.
 | `excessive-rules` | A group exceeds `EXCESSIVE_RULES_PER_GROUP` (50). | Hard to maintain; may hit crawler limits. |
 | `unsupported-directive` | Vendor/unknown directive (kept by the parser as `unknown`). | Most crawlers ignore it; intent may not apply. |
 | `crawl-delay-zero` | `Crawl-delay: 0` has no effect. | Throttling intent is a no-op. |
+| `path-missing-leading-slash` | A path that doesn't start with `/` or `*`. | Matched from the site root — likely won't match what's intended. |
+| `redundant-wildcard` | Consecutive wildcards (`**`). | Equivalent to a single `*`; noise. |
+| `duplicate-user-agent-group` | Same user-agent declared in two groups. | Crawlers apply one group; rules may not combine as expected. |
+| `blocks-rendering-assets` | `Disallow` of CSS/JS or core asset dirs (`/wp-includes/`). | Stops Google rendering the page; can hurt indexing. |
+| `noindex-unsupported` | `Noindex:` in robots.txt. | Ignored by Google since 2019 — use meta noindex / X-Robots-Tag. |
 
 ### Recommendation (info)
 
@@ -81,13 +87,15 @@ Each fix is tagged `safe` or not:
   **"Fix All Safe Issues"** (applied in one undoable batch): `invalid-crawl-delay`
   (remove the no-op), `duplicate-rule` (remove the dupe), `unsupported-directive`
   (remove the ignored line), `crawl-delay-zero` (remove the no-op), `sitemap-not-https`
-  (rewrite `http://`→`https://`).
+  (rewrite `http://`→`https://`), `quoted-directive` (strip quotes),
+  `path-missing-leading-slash` (prepend `/`), `redundant-wildcard` (collapse `**`→`*`).
 - **`safe: false`** — offered as a manual **"Fix this · review"** only, because the
   edit changes access or guesses intent: `missing-colon` /
   `directive-before-user-agent` (remove the malformed/ignored line),
   `invalid-sitemap-url` (remove), `conflicting-rules` (remove the `Disallow`, keep
   `Allow`), `overly-broad-disallow` (remove `Disallow: /`),
-  `crawl-delay-ignored-by-google` (remove the `Crawl-delay`).
+  `crawl-delay-ignored-by-google` (remove the `Crawl-delay`), `noindex-unsupported`
+  (remove the ignored line — the real fix is meta noindex / X-Robots-Tag).
 
 Advisory issues with no deterministic single-line edit (`missing-sitemap`,
 `no-default-group`, `no-crawler-specific-groups`, `no-comments`, and the AI-policy
@@ -129,10 +137,10 @@ Overall = 0.30·Syntax + 0.25·SEO + 0.20·AI + 0.15·Maintainability + 0.10·Se
 
 | Dimension | Codes → points |
 | --- | --- |
-| **Syntax** | missing-colon 15 · empty-user-agent 15 · conflicting-rules 12 · directive-before-user-agent 10 · invalid-crawl-delay 8 · invalid-sitemap-url 8 |
-| **SEO** | overly-broad-disallow 25 · missing-sitemap 10 · invalid-sitemap-url 6 · sitemap-not-https 4 |
+| **Syntax** | missing-colon 15 · empty-user-agent 15 · conflicting-rules 12 · quoted-directive 10 · directive-before-user-agent 10 · invalid-crawl-delay 8 · invalid-sitemap-url 8 · path-missing-leading-slash 6 · redundant-wildcard 3 |
+| **SEO** | overly-broad-disallow 25 · blocks-rendering-assets 12 · missing-sitemap 10 · invalid-sitemap-url 6 · noindex-unsupported 6 · sitemap-not-https 4 |
 | **AI** | missing-ai-crawler-policy 10 · ai-crawler-inherits-default 5 (each crawler) |
-| **Maintainability** | excessive-rules 10 · no-default-group 6 · duplicate-rule 5 · unsupported-directive 4 · crawl-delay-zero 4 · crawl-delay-ignored-by-google 3 · no-crawler-specific-groups 3 · no-comments 3 · missing-sitemap 2 |
+| **Maintainability** | excessive-rules 10 · no-default-group 6 · duplicate-user-agent-group 6 · duplicate-rule 5 · unsupported-directive 4 · crawl-delay-zero 4 · crawl-delay-ignored-by-google 3 · no-crawler-specific-groups 3 · no-comments 3 · missing-sitemap 2 |
 | **Security** | sensitive-path-disclosure 12 (each path) |
 
 A few codes deduct from two dimensions (e.g. `invalid-sitemap-url` is both a syntax

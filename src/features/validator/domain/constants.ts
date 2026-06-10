@@ -79,4 +79,8 @@ export const LEARN_MORE: Partial<Record<ValidationCode, string>> = {
   "crawl-delay-ignored-by-google":
     "https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt",
   "invalid-sitemap-url": "https://www.sitemaps.org/protocol.html",
+  "blocks-rendering-assets":
+    "https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt",
+  "noindex-unsupported":
+    "https://developers.google.com/search/blog/2019/07/a-note-on-unsupported-rules-in-robotstxt",
 };

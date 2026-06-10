@@ -34,6 +34,7 @@ export type ValidationCode =
   | "invalid-crawl-delay"
   | "conflicting-rules"
   | "invalid-sitemap-url"
+  | "quoted-directive"
   // Warning — valid but potentially problematic.
   | "duplicate-rule"
   | "missing-sitemap"
@@ -41,6 +42,11 @@ export type ValidationCode =
   | "excessive-rules"
   | "unsupported-directive"
   | "crawl-delay-zero"
+  | "path-missing-leading-slash"
+  | "redundant-wildcard"
+  | "duplicate-user-agent-group"
+  | "blocks-rendering-assets"
+  | "noindex-unsupported"
   // Recommendation (info) — best-practice guidance.
   | "missing-ai-crawler-policy"
   | "ai-crawler-inherits-default"

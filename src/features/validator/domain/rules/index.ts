@@ -7,6 +7,7 @@ import * as syntax from "./syntax";
 import * as best from "./best-practices";
 import * as ai from "./ai";
 import * as security from "./security";
+import * as mistakes from "./mistakes";
 
 export const ALL_RULES: readonly Rule[] = [
   // Critical (error)
@@ -16,6 +17,7 @@ export const ALL_RULES: readonly Rule[] = [
   syntax.invalidCrawlDelay,
   syntax.invalidSitemapUrl,
   syntax.conflictingRules,
+  mistakes.quotedDirective,
   // Warning
   best.duplicateRules,
   best.missingSitemap,
@@ -23,6 +25,11 @@ export const ALL_RULES: readonly Rule[] = [
   best.excessiveRules,
   best.unsupportedDirective,
   best.crawlDelayZero,
+  mistakes.pathMissingLeadingSlash,
+  mistakes.redundantWildcard,
+  mistakes.duplicateUserAgentGroup,
+  mistakes.blocksRenderingAssets,
+  mistakes.noindexUnsupported,
   // Recommendation (info)
   ai.missingAiCrawlerPolicy,
   ai.aiCrawlerInheritsDefault,

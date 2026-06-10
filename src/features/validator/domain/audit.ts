@@ -46,6 +46,14 @@ export const DEDUCTIONS: Partial<Record<ValidationCode, readonly Hit[]>> = {
     { dimension: "syntax", points: 8 },
     { dimension: "seo", points: 6 },
   ],
+  "quoted-directive": [{ dimension: "syntax", points: 10 }],
+  "path-missing-leading-slash": [{ dimension: "syntax", points: 6 }],
+  "redundant-wildcard": [{ dimension: "syntax", points: 3 }],
+  // SEO — rendering / indexing impact.
+  "blocks-rendering-assets": [{ dimension: "seo", points: 12 }],
+  "noindex-unsupported": [{ dimension: "seo", points: 6 }],
+  // Maintainability.
+  "duplicate-user-agent-group": [{ dimension: "maintainability", points: 6 }],
   // SEO — discoverability.
   "missing-sitemap": [
     { dimension: "seo", points: 10 },
@@ -72,6 +80,12 @@ export const DEDUCTIONS: Partial<Record<ValidationCode, readonly Hit[]>> = {
 /** Short labels per code for the breakdown rows. */
 const CODE_LABEL: Partial<Record<ValidationCode, string>> = {
   "missing-colon": "Malformed line",
+  "quoted-directive": "Quoted path",
+  "path-missing-leading-slash": "Path missing leading slash",
+  "redundant-wildcard": "Redundant wildcard",
+  "blocks-rendering-assets": "Blocks rendering assets (CSS/JS)",
+  "noindex-unsupported": "Noindex is ignored",
+  "duplicate-user-agent-group": "Duplicate user-agent group",
   "empty-user-agent": "Empty User-agent",
   "directive-before-user-agent": "Rule before User-agent",
   "invalid-crawl-delay": "Invalid Crawl-delay",
