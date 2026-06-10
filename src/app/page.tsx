@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { ArrowRight, Bot, FileText, Megaphone, ScanSearch, ShieldCheck, TestTube } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
@@ -31,6 +32,15 @@ const TOOL_GROUPS = [
     ],
   },
 ] as const;
+
+const LEARN_LINKS: ReadonlyArray<{ href: Route; title: string; desc: string }> = [
+  { href: "/what-is-robots-txt", title: "What is robots.txt?", desc: "The plain-English starting point — what it is and what it can't do." },
+  { href: "/how-does-robots-txt-work", title: "How does it work?", desc: "How crawlers fetch, match, and apply your rules." },
+  { href: "/robots-txt-syntax", title: "Syntax reference", desc: "Every directive: User-agent, Allow, Disallow, wildcards, Sitemap." },
+  { href: "/robots-txt-examples", title: "Examples", desc: "Copy-paste files for blogs, WordPress, ecommerce, and AI." },
+  { href: "/robots-txt-seo-guide", title: "robots.txt for SEO", desc: "Best practices that help — and the traps that hurt rankings." },
+  { href: "/why-robots-txt-is-important", title: "Why it matters", desc: "Crawl budget, AI access, and the cost of getting it wrong." },
+];
 
 const PREVIEW_CRAWLERS = [
   { name: "Google", status: "allowed" as const },
@@ -146,6 +156,31 @@ export default function HomePage() {
             Manage AI access <ArrowRight className="size-3" />
           </Link>
         </Card>
+      </section>
+
+      {/* Learn / educational cluster */}
+      <section className="mt-16">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            Learn robots.txt
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Practitioner guides — from the basics to SEO best practices and AI crawlers.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {LEARN_LINKS.map((g) => (
+            <Link key={g.href} href={g.href} className="group">
+              <Card className="h-full p-4">
+                <h3 className="text-sm font-semibold text-foreground">{g.title}</h3>
+                <p className="mt-1 text-xs text-muted-foreground">{g.desc}</p>
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand">
+                  Read <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* Recent activity placeholder */}

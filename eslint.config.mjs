@@ -26,6 +26,8 @@ const eslintConfig = [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
       ],
+      // Natural prose (apostrophes/quotes) in JSX content pages.
+      "react/no-unescaped-entities": "off",
       // Enforce feature boundaries: import features via their barrel only.
       "no-restricted-imports": [
         "error",
