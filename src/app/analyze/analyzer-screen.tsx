@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Download,
   FileText,
+  GitCompare,
   Globe,
   Megaphone,
   ScanSearch,
@@ -299,6 +300,14 @@ function Report({ report }: { report: AnalysisReport }) {
       label: "Explain these rules",
       description: "Read the (fixed) file in plain English.",
       href: "/explain",
+      text: workingText,
+    },
+    {
+      kind: "handoff",
+      icon: GitCompare,
+      label: "Compare with another site",
+      description: "Diff this file against a competitor or an older version.",
+      href: "/compare",
       text: workingText,
     },
     {

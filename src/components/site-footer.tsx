@@ -24,6 +24,7 @@ const TRUST_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
 
 // One entry per cluster head so every chain has a top-level link (no orphans).
 const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
+  { href: "/compare", label: "Compare robots.txt" },
   { href: "/crawlers", label: "Crawler Directory" },
   { href: "/ai-crawlers-directory", label: "AI Crawler Directory" },
   { href: "/robots-txt-templates", label: "robots.txt Templates" },
