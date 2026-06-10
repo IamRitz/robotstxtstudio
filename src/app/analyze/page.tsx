@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/app-shell";
 import { JsonLd } from "@/components/json-ld";
 import { breadcrumbSchema } from "@/lib/seo";
+import { ToolRelatedRail, toolAppSchema } from "@/components/tool-related-rail";
 import { AnalyzerScreen } from "./analyzer-screen";
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default async function AnalyzePage({
   return (
     <AppShell>
       <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Analyze", path: "/analyze" }])} />
+      <JsonLd data={toolAppSchema("analyzer")} />
       <AnalyzerScreen initialDomain={domain ?? ""} />
+      <ToolRelatedRail tool="analyzer" />
     </AppShell>
   );
 }

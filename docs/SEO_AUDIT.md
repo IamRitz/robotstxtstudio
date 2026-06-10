@@ -62,9 +62,13 @@ diagrams land.
 
 ## Remaining recommendations (later sub-phases)
 
-- **Per-page OG images** + richer per-page OG/Twitter (12B–F).
+- **Per-page OG images** + richer per-page OG/Twitter — ✅ dynamic renderer
+  (`src/lib/og.tsx`) shipped in 12D for home + Crawler Directory + templates +
+  glossary; remaining 12B/12C content routes still inherit the site default.
 - **FAQ schema rendered** on educational/tool/template pages (12B–E).
-- **Internal-linking engine** with related-resources + next-page blocks (12G).
+- **Internal-linking engine** with related-resources + next-page blocks — ✅ shipped
+  in 12D: computed `src/lib/internal-links.ts`, `ToolRelatedRail` on all tool pages,
+  Crawler Directory hub-and-spoke, `ContentPage.extraSchema` for richer JSON-LD.
 - **EEAT pages** (About, Methodology, Author, Changelog) + legal (Privacy/Terms/
   Cookies/Contact) for AdSense (12H).
 - **Sitemap expansion** as content routes are added (each sub-phase appends).

@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12C done; 12D next) |
+| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12D done; 12E next) |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -121,6 +121,15 @@ Delivered: 12 educational pages on the shared architecture (what-is, file, how-i
 ## SEO — 12C Transactional & Programmatic Cluster
 Commit: `a74152b`
 Delivered: 16 high-intent pages. Architecture extended (backward-compatible): `ContentPage.heroCta` + `nextReading`, a mid-article `cta` block, `ToolCTA` compact variant. New `src/config/ai-crawler-directory.ts` (9 crawlers) + `SEO_PAGES` registry. Pages: AI Crawler Directory hub (`/ai-crawlers-directory`); 5 crawler pages (gptbot/claudebot/perplexitybot/google-extended/ccbot); 4 CMS pages (wordpress/shopify/magento/nextjs); 2 comparisons (vs-noindex/vs-sitemap); 4 tool landing pages (generator/validator/analyzer/tester). Each: unique title/description/H1, distributed FAQ + breadcrumb + TechArticle schema, above-fold/mid/bottom CTAs, links to tool + edu + crawler + AI hub. Note: tool stays at `/ai-crawlers`; directory at `/ai-crawlers-directory` (per user decision). Entry points: sitemap (registry-driven), footer Solutions column, homepage AI link. Build/tsc/eslint green, 208 unit + 12 e2e pass.
+
+## SEO — 12D Growth Assets & Internal Linking
+Delivered: the Crawler Directory + growth assets + an internal-linking engine.
+- **Crawler Directory** — `/crawlers` hub (all 21 catalog crawlers, category-grouped, `CollectionPage`/`ItemList` schema) + 10 enriched standalone `/crawlers/[id]` pages (googlebot, bingbot, slurp, ahrefsbot, semrushbot, bytespider, amazonbot, applebot-extended, meta-externalagent, facebookexternalhit) with `HowTo` schema. Anti-thin guardrail: only crawlers with an editorial profile in new `src/config/crawler-directory.ts` get a page; the 5 AI crawlers keep their 12C pages (hub links out — no duplicate URLs).
+- **Internal-linking engine** — `src/lib/internal-links.ts` (computed sibling-tool + guide links); new `ToolRelatedRail` added to all 6 tool pages (which previously dead-ended); footer Solutions column surfaces every new cluster head.
+- **Growth assets** — `/robots-txt-templates` (8-template gallery, `ItemList`, Generator deep-links via `src/config/templates.ts`) and `/robots-txt-glossary` (21 terms, `DefinedTermSet`, via `src/config/glossary.ts`).
+- **Schema** — added `softwareAppSchema`/`howToSchema`/`itemListSchema`/`definedTermSetSchema` builders; `SoftwareApplication` JSON-LD on all 6 tool pages; `ContentPage.extraSchema` hook renders HowTo/ItemList/DefinedTermSet on content pages.
+- **Dynamic OG images** — shared `src/lib/og.tsx` renderer + `opengraph-image.tsx` for home, `/crawlers`, `/crawlers/[id]`, templates, glossary.
+- Registry-driven sitemap auto-includes all new routes. Build green (71 static pages), tsc/eslint clean, 208 unit + 12 e2e pass.
 
 ---
 

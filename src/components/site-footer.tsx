@@ -13,12 +13,14 @@ const TOOL_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/explain", label: "Explainer" },
 ];
 
-// One entry per transactional cluster so every chain has a top-level link (no orphans).
+// One entry per cluster head so every chain has a top-level link (no orphans).
 const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
+  { href: "/crawlers", label: "Crawler Directory" },
   { href: "/ai-crawlers-directory", label: "AI Crawler Directory" },
+  { href: "/robots-txt-templates", label: "robots.txt Templates" },
+  { href: "/robots-txt-glossary", label: "robots.txt Glossary" },
   { href: "/gptbot-robots-txt", label: "Block GPTBot" },
   { href: "/wordpress-robots-txt", label: "WordPress robots.txt" },
-  { href: "/nextjs-robots-txt", label: "Next.js robots.txt" },
   { href: "/robots-txt-vs-noindex", label: "robots.txt vs noindex" },
   { href: "/robots-txt-generator", label: "Generator (guide)" },
 ];

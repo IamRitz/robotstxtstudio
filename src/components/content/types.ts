@@ -56,4 +56,9 @@ export interface ContentPage {
    * automatically; transactional pages (12C+) set it directly.
    */
   readonly nextReading?: { readonly title: string; readonly href: Route };
+  /**
+   * Extra JSON-LD blocks emitted alongside the default Breadcrumb + Article + FAQ
+   * (e.g. HowTo on guide pages, ItemList on directory/gallery hubs). 12D+.
+   */
+  readonly extraSchema?: readonly Record<string, unknown>[];
 }

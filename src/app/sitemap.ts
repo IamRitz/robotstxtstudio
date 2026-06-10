@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
 import { EDU_PAGES, eduPath, SEO_PAGES, seoPath } from "@/config/content";
+import { crawlerPagePaths } from "@/config/crawler-directory";
 
 /** Tool + marketing routes. Cluster routes are appended from the content registries. */
 const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
@@ -15,6 +16,11 @@ const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
   ...EDU_PAGES.map((p) => ({ path: eduPath(p.slug), priority: 0.7 })),
   // Transactional / programmatic SEO cluster (Phase 12C). The AI hub ranks highest.
   ...SEO_PAGES.map((p) => ({ path: seoPath(p.slug), priority: p.group === "hub" ? 0.8 : 0.7 })),
+  // Growth assets & Crawler Directory (Phase 12D).
+  { path: "/crawlers", priority: 0.8 },
+  { path: "/robots-txt-templates", priority: 0.7 },
+  { path: "/robots-txt-glossary", priority: 0.7 },
+  ...crawlerPagePaths().map((path) => ({ path, priority: 0.6 })),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

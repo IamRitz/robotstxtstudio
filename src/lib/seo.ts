@@ -116,3 +116,103 @@ export function faqSchema(items: readonly FaqItem[]): Record<string, unknown> {
     })),
   };
 }
+
+export interface SoftwareAppSchemaInput {
+  readonly name: string;
+  readonly description: string;
+  readonly path: string;
+  /** Feature bullet list for the rich result. */
+  readonly features?: readonly string[];
+}
+
+/**
+ * SoftwareApplication schema for the interactive tools. Marks each tool page as a
+ * free web app (rich-result eligible) rather than a plain article.
+ */
+export function softwareAppSchema(input: SoftwareAppSchemaInput): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: input.name,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web Browser",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    ...(input.features && input.features.length > 0 ? { featureList: input.features } : {}),
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+  };
+}
+
+export interface HowToStep {
+  readonly name: string;
+  readonly text: string;
+}
+
+/** HowTo schema for step-by-step guides (rich-result eligible). */
+export function howToSchema(
+  name: string,
+  description: string,
+  steps: readonly HowToStep[],
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    step: steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
+export interface ItemListEntry {
+  readonly name: string;
+  readonly path: string;
+  readonly description?: string;
+}
+
+/** ItemList / CollectionPage schema for directory + gallery hub pages. */
+export function itemListSchema(name: string, items: readonly ItemListEntry[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListElement: items.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.name,
+        url: absoluteUrl(item.path),
+        ...(item.description ? { description: item.description } : {}),
+      })),
+    },
+  };
+}
+
+export interface DefinedTerm {
+  readonly term: string;
+  readonly definition: string;
+  /** Anchor/path the term resolves to. */
+  readonly path: string;
+}
+
+/** DefinedTermSet schema for the glossary. */
+export function definedTermSetSchema(name: string, terms: readonly DefinedTerm[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name,
+    hasDefinedTerm: terms.map((t) => ({
+      "@type": "DefinedTerm",
+      name: t.term,
+      description: t.definition,
+      url: absoluteUrl(t.path),
+    })),
+  };
+}
