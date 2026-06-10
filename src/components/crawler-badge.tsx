@@ -32,10 +32,12 @@ export function CrawlerBadge({
   className?: string;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+    <span className={cn("flex min-w-0 items-center gap-2", className)}>
       <CrawlerLogo name={name} />
-      <span className="text-sm font-semibold text-foreground">{name}</span>
-      {userAgent ? <span className="font-mono text-xs text-muted-foreground">{userAgent}</span> : null}
+      <span className="shrink-0 text-sm font-semibold text-foreground">{name}</span>
+      {userAgent ? (
+        <span className="truncate font-mono text-xs text-muted-foreground">{userAgent}</span>
+      ) : null}
     </span>
   );
 }

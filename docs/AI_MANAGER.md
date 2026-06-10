@@ -114,3 +114,32 @@ It depends only on other feature **barrels** (`@/features/generator`,
 category/crawler setters, immutability), config mapping, and impact scenarios
 (explicit allow, explicit block, inheritance, mixed, block-all-AI). Coverage ~99% of
 `crawler-manager/domain`.
+
+## Phase 15B.5 — polish shipped + Advanced Options proposal
+
+**Shipped (15B.5):** starter templates now show an active highlight (`aria-pressed`
++ brand variant) and a rationale panel (what the template does + who it's for);
+crawler categories are collapsible (`<details>`, keyboard-accessible); the generated
+output has a "Live" pulse affordance and a brief flash on change; and the two-column
+layout uses `min-w-0` grid items so there is **no horizontal scroll on mobile**.
+
+**Proposed (NOT yet built) — Advanced Options.** The AI Manager intentionally stays
+focused on per-crawler allow/block; richer rule editing lives in the Generator today.
+A future "Advanced options" disclosure on this screen could add, in priority order:
+
+1. **Sitemap helper** — an input that appends a validated `Sitemap:` line to the
+   generated block (reuse the Validator's `isValidAbsoluteUrl` + the
+   `sitemap-not-https` guidance so a bad/HTTP URL is caught inline).
+2. **Common disallow presets** — one-tap chips for the usual non-AI blocks
+   (`/admin/`, `/cart/`, `/checkout/`, `/wp-admin/`, `/search`), reusing the
+   per-template `disallowPaths` already defined in `presets.ts`, with a security note
+   (don't disallow secrets — see `sensitive-path-disclosure`).
+3. **Crawl-delay guidance** — an optional `Crawl-delay` field that surfaces the
+   existing `crawl-delay-zero` / `crawl-delay-ignored-by-google` rules as inline hints
+   (Google ignores it; 0 is a no-op), so users don't add a directive that does nothing.
+4. **Best-practice hints** — live, rule-backed tips wired to the Validator
+   (`buildAudit`) for the generated block: declare a sitemap, keep a default group,
+   add a comment. Each hint is traceable to a validator code (no new advice engine).
+
+All four are additive and reuse existing domain logic — no new robots.txt parsing or
+scoring. Sequence behind Phase 15C work; this is a proposal only.
