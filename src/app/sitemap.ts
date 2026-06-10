@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/seo";
-import { EDU_PAGES, eduPath } from "@/config/content";
+import { EDU_PAGES, eduPath, SEO_PAGES, seoPath } from "@/config/content";
 
-/** Tool + marketing routes. Educational cluster routes are appended from the registry. */
+/** Tool + marketing routes. Cluster routes are appended from the content registries. */
 const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
   { path: "/", priority: 1 },
   { path: "/analyze", priority: 0.9 },
@@ -13,6 +13,8 @@ const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
   { path: "/explain", priority: 0.8 },
   // Educational SEO cluster (Phase 12B) — kept in sync with the content registry.
   ...EDU_PAGES.map((p) => ({ path: eduPath(p.slug), priority: 0.7 })),
+  // Transactional / programmatic SEO cluster (Phase 12C). The AI hub ranks highest.
+  ...SEO_PAGES.map((p) => ({ path: seoPath(p.slug), priority: p.group === "hub" ? 0.8 : 0.7 })),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

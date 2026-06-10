@@ -3,10 +3,31 @@ import { ArrowRight } from "lucide-react";
 import { TOOLS, type ToolId } from "@/config/content";
 import { Card } from "@/components/ui/card";
 
-/** Prominent CTA card linking into a tool. */
-export function ToolCTA({ tool }: { tool: ToolId }) {
+/** Prominent CTA card linking into a tool. The `compact` variant is a slim banner
+ *  used above-the-fold and mid-article; the default is the full footer CTA. */
+export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "full" | "compact" }) {
   const t = TOOLS[tool];
   const Icon = t.icon;
+
+  if (variant === "compact") {
+    return (
+      <Link
+        href={t.href}
+        className="group flex items-center justify-between gap-3 rounded-xl border border-brand/30 bg-brand/5 p-3 hover:border-brand"
+      >
+        <span className="flex min-w-0 items-center gap-2.5">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand text-brand-foreground">
+            <Icon className="size-4" aria-hidden />
+          </span>
+          <span className="min-w-0 text-sm font-semibold text-foreground">{t.title}</span>
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-brand">
+          {t.cta} <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Card className="flex flex-col items-start gap-4 bg-primary p-6 text-primary-foreground sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">

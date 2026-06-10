@@ -81,3 +81,43 @@ export function eduPage(slug: string): EduPageMeta | undefined {
 export function eduPath(slug: string): string {
   return `/${slug}`;
 }
+
+/** Transactional / programmatic SEO pages (Phase 12C), grouped for the footer + sitemap. */
+export type SeoPageGroup = "crawler" | "cms" | "comparison" | "landing" | "hub";
+
+export interface SeoPageMeta {
+  readonly slug: string;
+  readonly title: string;
+  readonly group: SeoPageGroup;
+}
+
+/**
+ * The transactional SEO cluster. Powers the sitemap and footer so no page is
+ * orphaned. Page content lives in each route; this registry is link/index metadata.
+ */
+export const SEO_PAGES: readonly SeoPageMeta[] = [
+  { slug: "ai-crawlers-directory", title: "AI Crawler Directory", group: "hub" },
+  // Crawler-specific
+  { slug: "gptbot-robots-txt", title: "Block GPTBot in robots.txt", group: "crawler" },
+  { slug: "claudebot-robots-txt", title: "Block ClaudeBot in robots.txt", group: "crawler" },
+  { slug: "perplexitybot-robots-txt", title: "PerplexityBot in robots.txt", group: "crawler" },
+  { slug: "google-extended-robots-txt", title: "Google-Extended in robots.txt", group: "crawler" },
+  { slug: "ccbot-robots-txt", title: "Block CCBot in robots.txt", group: "crawler" },
+  // CMS-specific
+  { slug: "wordpress-robots-txt", title: "WordPress robots.txt", group: "cms" },
+  { slug: "shopify-robots-txt", title: "Shopify robots.txt", group: "cms" },
+  { slug: "magento-robots-txt", title: "Magento robots.txt", group: "cms" },
+  { slug: "nextjs-robots-txt", title: "Next.js robots.txt", group: "cms" },
+  // Comparisons
+  { slug: "robots-txt-vs-noindex", title: "robots.txt vs noindex", group: "comparison" },
+  { slug: "robots-txt-vs-sitemap", title: "robots.txt vs sitemap", group: "comparison" },
+  // Tool landing pages
+  { slug: "robots-txt-generator", title: "Robots.txt Generator", group: "landing" },
+  { slug: "robots-txt-validator", title: "Robots.txt Validator", group: "landing" },
+  { slug: "robots-txt-analyzer", title: "Robots.txt Analyzer", group: "landing" },
+  { slug: "robots-txt-tester", title: "Robots.txt Tester", group: "landing" },
+];
+
+export function seoPath(slug: string): string {
+  return `/${slug}`;
+}

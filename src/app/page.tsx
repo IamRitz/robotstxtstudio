@@ -147,6 +147,11 @@ export default function HomePage() {
             <h2 className="text-lg font-semibold text-foreground">Control how AI trains on your content</h2>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">
               GPTBot, ClaudeBot, PerplexityBot, Google-Extended and more — allow or block each with one click.
+              See the full{" "}
+              <Link href="/ai-crawlers-directory" className="font-medium text-brand hover:underline">
+                AI crawler directory
+              </Link>
+              .
             </p>
           </div>
           <Link

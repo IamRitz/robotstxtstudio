@@ -18,7 +18,9 @@ export type ContentBlock =
       readonly kind: "table";
       readonly head: readonly string[];
       readonly rows: ReadonlyArray<readonly ReactNode[]>;
-    };
+    }
+  /** Mid-article conversion CTA into a tool (renders a compact ToolCTA). */
+  | { readonly kind: "cta"; readonly tool: ToolId };
 
 export interface ContentSection {
   /** Anchor id (also used by the table of contents). */
@@ -43,8 +45,15 @@ export interface ContentPage {
   readonly description: string;
   readonly sections: readonly ContentSection[];
   readonly faqs: readonly FaqItem[];
-  /** Primary tool CTA. */
+  /** Primary tool CTA (rendered prominently at the foot of the article). */
   readonly cta: ToolId;
+  /** Optional above-the-fold CTA, shown under the byline (transactional pages). */
+  readonly heroCta?: ToolId;
   /** Curated related resources (internal links). */
   readonly related: readonly RelatedLink[];
+  /**
+   * Explicit "next reading" link. For pages in EDU_PAGES this is computed
+   * automatically; transactional pages (12C+) set it directly.
+   */
+  readonly nextReading?: { readonly title: string; readonly href: Route };
 }

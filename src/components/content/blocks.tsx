@@ -1,6 +1,7 @@
 import { CodePanel } from "@/components/code-panel";
 import { Callout } from "@/components/callout";
 import { cn } from "@/lib/utils";
+import { ToolCTA } from "./tool-cta";
 import type { ContentBlock } from "./types";
 
 /** Render one content block with consistent prose styling. */
@@ -49,6 +50,9 @@ export function Block({ block }: { block: ContentBlock }) {
           ))}
         </ul>
       );
+
+    case "cta":
+      return <ToolCTA tool={block.tool} variant="compact" />;
 
     case "table":
       return (

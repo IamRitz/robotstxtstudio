@@ -18,7 +18,8 @@ import type { ContentPage } from "./types";
  */
 export function SeoContentLayout({ page }: { page: ContentPage }) {
   const index = EDU_PAGES.findIndex((p) => p.slug === page.slug);
-  const next = index >= 0 && index < EDU_PAGES.length - 1 ? EDU_PAGES[index + 1] : undefined;
+  const autoNext = index >= 0 && index < EDU_PAGES.length - 1 ? EDU_PAGES[index + 1] : undefined;
+  const next = page.nextReading ?? (autoNext ? { title: autoNext.title, href: eduPath(autoNext.slug) as Route } : undefined);
 
   return (
     <AppShell>
@@ -27,8 +28,13 @@ export function SeoContentLayout({ page }: { page: ContentPage }) {
         <Breadcrumb items={["Robots.txt Studio", page.h1]} className="mb-3" />
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.h1}</h1>
         <p className="mt-3 max-w-2xl text-base text-muted-foreground">{page.lead}</p>
-        <div className="mt-4">
+        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <AuthorByline />
+          {page.heroCta ? (
+            <div className="w-full sm:max-w-xs">
+              <ToolCTA tool={page.heroCta} variant="compact" />
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_15rem]">
@@ -43,7 +49,7 @@ export function SeoContentLayout({ page }: { page: ContentPage }) {
             <FaqSection faqs={page.faqs} />
             <ToolCTA tool={page.cta} />
             <RelatedResources related={page.related} />
-            {next ? <NextReading title={next.title} href={eduPath(next.slug) as Route} /> : null}
+            {next ? <NextReading title={next.title} href={next.href} /> : null}
             <AuthorBox />
           </div>
 

@@ -13,6 +13,16 @@ const TOOL_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/explain", label: "Explainer" },
 ];
 
+// One entry per transactional cluster so every chain has a top-level link (no orphans).
+const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
+  { href: "/ai-crawlers-directory", label: "AI Crawler Directory" },
+  { href: "/gptbot-robots-txt", label: "Block GPTBot" },
+  { href: "/wordpress-robots-txt", label: "WordPress robots.txt" },
+  { href: "/nextjs-robots-txt", label: "Next.js robots.txt" },
+  { href: "/robots-txt-vs-noindex", label: "robots.txt vs noindex" },
+  { href: "/robots-txt-generator", label: "Generator (guide)" },
+];
+
 /** Site footer: brand mark, tool + guide links, copyright. Surfaces the educational
  *  cluster site-wide so no content page is orphaned. */
 export function SiteFooter() {
@@ -20,7 +30,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-[1fr_1fr_2fr]">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_2fr]">
           <div>
             <div className="flex items-center gap-2">
               <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -39,6 +49,17 @@ export function SiteFooter() {
               {TOOL_LINKS.map((t) => (
                 <li key={t.href}>
                   <Link href={t.href} className="hover:text-foreground">{t.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <nav aria-label="Solutions">
+            <h2 className="text-xs font-semibold text-foreground">Solutions</h2>
+            <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              {SOLUTION_LINKS.map((s) => (
+                <li key={s.href}>
+                  <Link href={s.href} className="hover:text-foreground">{s.label}</Link>
                 </li>
               ))}
             </ul>
