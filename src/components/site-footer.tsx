@@ -13,6 +13,15 @@ const TOOL_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/explain", label: "Explainer" },
 ];
 
+// Trust / EEAT + legal links, surfaced site-wide in the footer base row.
+const TRUST_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
+  { href: "/about", label: "About" },
+  { href: "/methodology", label: "Methodology" },
+  { href: "/contact", label: "Contact" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+];
+
 // One entry per cluster head so every chain has a top-level link (no orphans).
 const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/crawlers", label: "Crawler Directory" },
@@ -81,9 +90,16 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        <p className="mt-10 border-t border-border pt-6 text-xs text-muted-foreground">
-          © {year} {BRAND.name}
-        </p>
+        <div className="mt-10 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-muted-foreground">© {year} {BRAND.name}</p>
+          <nav aria-label="Company" className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+            {TRUST_LINKS.map((l) => (
+              <Link key={l.href} href={l.href} className="hover:text-foreground">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   );

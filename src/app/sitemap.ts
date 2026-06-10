@@ -21,6 +21,12 @@ const ROUTES: ReadonlyArray<{ path: string; priority: number }> = [
   { path: "/robots-txt-templates", priority: 0.7 },
   { path: "/robots-txt-glossary", priority: 0.7 },
   ...crawlerPagePaths().map((path) => ({ path, priority: 0.6 })),
+  // Trust / EEAT + legal pages (Phase 12H-Lite).
+  { path: "/about", priority: 0.5 },
+  { path: "/methodology", priority: 0.5 },
+  { path: "/contact", priority: 0.4 },
+  { path: "/privacy", priority: 0.3 },
+  { path: "/terms", priority: 0.3 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

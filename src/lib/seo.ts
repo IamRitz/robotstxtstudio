@@ -117,6 +117,33 @@ export function faqSchema(items: readonly FaqItem[]): Record<string, unknown> {
   };
 }
 
+export interface WebPageSchemaInput {
+  readonly name: string;
+  readonly description: string;
+  readonly path: string;
+  readonly dateModified?: string;
+}
+
+/**
+ * Generic page schema for trust/legal pages. `type` lets a page be marked as an
+ * AboutPage or ContactPage for richer entity understanding; defaults to WebPage.
+ */
+export function webPageSchema(
+  type: "WebPage" | "AboutPage" | "ContactPage",
+  input: WebPageSchemaInput,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    name: input.name,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+  };
+}
+
 export interface SoftwareAppSchemaInput {
   readonly name: string;
   readonly description: string;

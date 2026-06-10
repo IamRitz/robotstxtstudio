@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12D done; 12E next) |
+| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite (Trust/EEAT) done; Phase 13A (Production Hardening) next |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -130,6 +130,19 @@ Delivered: the Crawler Directory + growth assets + an internal-linking engine.
 - **Schema** — added `softwareAppSchema`/`howToSchema`/`itemListSchema`/`definedTermSetSchema` builders; `SoftwareApplication` JSON-LD on all 6 tool pages; `ContentPage.extraSchema` hook renders HowTo/ItemList/DefinedTermSet on content pages.
 - **Dynamic OG images** — shared `src/lib/og.tsx` renderer + `opengraph-image.tsx` for home, `/crawlers`, `/crawlers/[id]`, templates, glossary.
 - Registry-driven sitemap auto-includes all new routes. Build green (71 static pages), tsc/eslint clean, 208 unit + 12 e2e pass.
+
+## 12H-Lite Trust & EEAT
+Pivot from SEO expansion to launch readiness. Delivered 5 trust/legal pages on a new
+shared `TrustPageLayout` (reuses AppShell + Breadcrumb + content `Blocks` +
+`RelatedResources`): `/about` (AboutPage schema), `/methodology` (TechArticle —
+explains the deterministic RFC 9309-based parser, matching algorithm, validation/
+scoring, live-fetch pipeline, crawler classification, and limitations), `/contact`
+(ContactPage — channel: X @robotstudio), `/privacy` and `/terms` (WebPage; operator
+"Robots.txt Studio", jurisdiction-neutral, accurate to the no-accounts/no-PII
+architecture). New `webPageSchema` builder. Footer gains a Company/legal row; sitemap
+adds all 5. Build green (76 static pages), tsc/eslint clean, 208 unit + 12 e2e pass.
+Decisions captured: contact = X @robotstudio; operator = "Robots.txt Studio", no
+governing-law clause. No marketing pages added.
 
 ---
 
