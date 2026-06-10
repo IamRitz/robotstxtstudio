@@ -55,3 +55,31 @@ export const analyticsConfig = {
 
 /** True when at least one analytics provider is configured. */
 export const analyticsEnabled = Boolean(analyticsConfig.posthogKey || analyticsConfig.clarityId);
+
+/**
+ * Parse a boolean feature flag from an env var. Unset/empty → `fallback`; otherwise
+ * any of `0/false/off/no` (case-insensitive) is false, everything else is true.
+ */
+function flag(raw: string | undefined, fallback: boolean): boolean {
+  const v = raw?.trim().toLowerCase();
+  if (!v) return fallback;
+  return !(v === "0" || v === "false" || v === "off" || v === "no");
+}
+
+/**
+ * Vercel infrastructure providers (Phase 14 launch-readiness) — Web Analytics and
+ * Speed Insights. These are NOT part of the vendor-neutral event layer (see
+ * docs/ANALYTICS.md "Performance & infrastructure providers"): they auto-collect
+ * aggregate traffic / Core Web Vitals and have no typed-event surface.
+ *
+ * They are keyless and *inert by construction* — the `@vercel/*` components only
+ * transmit in a production deployment on Vercel (the `/_vercel/*` endpoints exist
+ * only there) and respect the dashboard "Enable" toggle. So unlike the keyed
+ * PostHog/Clarity providers (opt-in to guarantee zero tracking anywhere), these
+ * default ON and are gated by an explicit opt-out flag for clean local/preview
+ * disable without touching the dashboard.
+ */
+export const vercelInsights = {
+  webAnalytics: flag(process.env.NEXT_PUBLIC_VERCEL_ANALYTICS, true),
+  speedInsights: flag(process.env.NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS, true),
+} as const;

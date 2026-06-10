@@ -132,3 +132,58 @@ so they work even though the analyzer's in-result links aren't individually tagg
    `next.config.ts`.
 
 No call site changes — that's the point of the abstraction.
+
+## Performance & infrastructure providers (Vercel)
+
+Two Vercel providers sit **deliberately outside** the vendor-neutral event layer above:
+**Vercel Web Analytics** and **Vercel Speed Insights**. They are wired in
+`components/vercel-insights.tsx` (rendered once in `app/layout.tsx`) and gated by
+`vercelInsights` in `@/lib/env`.
+
+### Why they are not in `@/lib/analytics`
+
+The `AnalyticsProvider` contract is an **event** abstraction (`init` / `capture(event,
+props)` / `pageview`); call sites emit typed `track*` events that fan out to PostHog /
+Clarity. The Vercel components emit **none** of those events — they auto-collect data
+from browser Performance APIs and beacon it to Vercel's first-party `/_vercel/*`
+endpoints. There is no `capture()` for them to implement, so modeling them as
+`AnalyticsProvider`s would be a category error. They are a separate
+**infrastructure/RUM** concern, kept as a thin gated component instead.
+
+### What each collects, and how it differs
+
+| Provider | Layer | Collects | Differs from PostHog/Clarity |
+| --- | --- | --- | --- |
+| **PostHog** | event (`@/lib/analytics`) | Typed product events, funnels, pageviews | Product behaviour & conversion (what users *do*) |
+| **Clarity** | event (`@/lib/analytics`) | Heatmaps, session replay | Qualitative UX (how users *interact*) |
+| **Vercel Web Analytics** | infra (`vercel-insights.tsx`) | Aggregate page views, visitors, referrers, country/device | Privacy-friendly *traffic* counts, no events/funnels |
+| **Vercel Speed Insights** | infra (`vercel-insights.tsx`) | Real-user **Core Web Vitals** (LCP, INP, CLS, FCP, TTFB) per route, scored | *Performance* (RUM), not behaviour — answers "are real users' pages fast?" which none of the others do |
+
+### Configuration & gating
+
+| Env var | Default | Effect |
+| --- | --- | --- |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS` | on | `0`/`false`/`off`/`no` disables Web Analytics |
+| `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS` | on | `0`/`false`/`off`/`no` disables Speed Insights |
+
+These are **keyless** and default **on** (opt-out) — unlike the keyed PostHog/Clarity
+providers, which are opt-in to guarantee zero tracking everywhere. The justification:
+both Vercel components are **inert by construction** off Vercel — the `/_vercel/*`
+endpoints exist only on a production Vercel deployment, and each respects the
+project's dashboard "Enable" toggle. So "default on + explicit opt-out" still yields
+zero data locally / in previews, while keeping the dashboard as the real control. Set
+a flag to `0` only to remove the component (and its harmless local `/_vercel/*` 404)
+entirely.
+
+### When to enable
+
+Enable Speed Insights for launch and keep it on — Core Web Vitals are an SEO ranking
+signal and the only RUM performance signal we collect. Enable in the Vercel dashboard
+(Project → Speed Insights → Enable); the code is already in place.
+
+### Privacy
+
+Both are cookieless and collect no PII — Web Analytics records aggregate, anonymized
+traffic; Speed Insights records anonymous timing metrics keyed by route. No CSP change
+is needed (first-party `/_vercel/*`, covered by `script-src 'self'` / `connect-src
+'self'` from Phase 13A). They do not feed the PostHog event stream or the funnels above.

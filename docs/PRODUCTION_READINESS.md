@@ -83,6 +83,8 @@ few routes that need it. Tracked here; not a launch blocker.
 | Rate limiting | ⬜ | Optional; recommended before heavy promotion (Vercel WAF / KV token bucket). |
 | Production smoke test | 🟡 | Verified live via HTTP: routes/headers/sitemap/canonical/OG/dynamic routes. Remaining manual: analyze a real domain, generate + download, run Lighthouse. |
 | Analytics | ✅ | Implemented (13B). Set `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_CLARITY_ID` in Vercel to enable; CSP auto-allows vendor origins. |
+| Vercel Web Analytics | ✅ | `<Analytics />` via `components/vercel-insights.tsx`, default on (`NEXT_PUBLIC_VERCEL_ANALYTICS=0` to disable). First-party `/_vercel/*` — no CSP change. Enable in the Vercel dashboard. |
+| Vercel Speed Insights | ✅ | `<SpeedInsights />` via `components/vercel-insights.tsx`, default on (`NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS=0` to disable). Real-user Core Web Vitals; first-party `/_vercel/*` — no CSP change. Enable in the Vercel dashboard. See [`ANALYTICS.md`](./ANALYTICS.md) "Performance & infrastructure providers". |
 
 ---
 
