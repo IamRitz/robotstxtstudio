@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/json-ld";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SITE, organizationSchema, websiteSchema } from "@/lib/seo";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={websiteSchema()} />
         <AnalyticsProvider />
         {children}
+        <Analytics />
       </body>
     </html>
   );
