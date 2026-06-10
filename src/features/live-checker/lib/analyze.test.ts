@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import type { FetchLike } from "./fetch-robots";
+import type { LookupFn } from "./ssrf";
 import { analyze } from "./analyze";
+
+/** Permissive DNS so the SSRF guard treats the test host as public (offline). */
+const publicLookup: LookupFn = async () => [{ address: "93.184.216.34", family: 4 }];
 
 function fakeResponse(body: string, status = 200, contentType = "text/plain"): Response {
   return {
@@ -18,7 +22,7 @@ const NOW = () => new Date("2026-01-01T00:00:00.000Z");
 describe("analyze", () => {
   it("fetches and analyzes a live site end-to-end", async () => {
     const fetchFn: FetchLike = async () => fakeResponse("User-agent: *\nDisallow: /admin/");
-    const report = await analyze("example.com", { fetchFn, now: NOW });
+    const report = await analyze("example.com", { fetchFn, lookupFn: publicLookup, now: NOW });
     expect(report.domain).toBe("example.com");
     expect(report.fetch.status).toBe("ok");
     expect(report.fetchedAt).toBe("2026-01-01T00:00:00.000Z");
@@ -27,7 +31,7 @@ describe("analyze", () => {
 
   it("propagates a 404 as a not-found report", async () => {
     const fetchFn: FetchLike = async () => fakeResponse("", 404);
-    const report = await analyze("example.com", { fetchFn });
+    const report = await analyze("example.com", { fetchFn, lookupFn: publicLookup });
     expect(report.fetch.status).toBe("not-found");
   });
 

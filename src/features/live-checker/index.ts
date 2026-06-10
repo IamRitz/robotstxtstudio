@@ -14,6 +14,7 @@
 export { analyze, type AnalyzeOptions } from "./lib/analyze";
 export { fetchRobots, type FetchOptions, type FetchLike } from "./lib/fetch-robots";
 export { toRobotsUrl, type RobotsTarget } from "./lib/url";
+export { isPrivateIp, checkHostAllowed, type LookupFn, type HostCheck } from "./lib/ssrf";
 export { buildAnalysisReport } from "./domain/report";
 export { computeBreakdown } from "./domain/breakdown";
 export { computeVisibility } from "./domain/visibility";
