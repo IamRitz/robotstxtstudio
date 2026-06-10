@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12B done; 12C next) |
+| **Current Phase** | Phase 12 — SEO Pages & Growth Assets (12A–12C done; 12D next) |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -117,6 +117,10 @@ Delivered: data-driven content system — `src/config/content.ts` registry (AUTH
 ## SEO — 12B Educational Cluster
 Commit: `e7ccb7e`
 Delivered: 12 educational pages on the shared architecture (what-is, file, how-it-works, syntax, format, how-to-find, how-to-read, examples, sitemap, why-important, seo-guide, checker). Unique metadata + canonical, distributed FAQ schema (no dup questions), breadcrumb + article JSON-LD, EEAT byline, ≥3 contextual internal links each + tool CTA + related + next-reading. Entry points: sitemap (registry-driven), footer Guides column, homepage Learn section. Build/tsc/eslint green, 208 unit + 12 e2e pass.
+
+## SEO — 12C Transactional & Programmatic Cluster
+Commit: `a74152b`
+Delivered: 16 high-intent pages. Architecture extended (backward-compatible): `ContentPage.heroCta` + `nextReading`, a mid-article `cta` block, `ToolCTA` compact variant. New `src/config/ai-crawler-directory.ts` (9 crawlers) + `SEO_PAGES` registry. Pages: AI Crawler Directory hub (`/ai-crawlers-directory`); 5 crawler pages (gptbot/claudebot/perplexitybot/google-extended/ccbot); 4 CMS pages (wordpress/shopify/magento/nextjs); 2 comparisons (vs-noindex/vs-sitemap); 4 tool landing pages (generator/validator/analyzer/tester). Each: unique title/description/H1, distributed FAQ + breadcrumb + TechArticle schema, above-fold/mid/bottom CTAs, links to tool + edu + crawler + AI hub. Note: tool stays at `/ai-crawlers`; directory at `/ai-crawlers-directory` (per user decision). Entry points: sitemap (registry-driven), footer Solutions column, homepage AI link. Build/tsc/eslint green, 208 unit + 12 e2e pass.
 
 ---
 
