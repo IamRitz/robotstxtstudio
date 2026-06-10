@@ -1,18 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { TOOLS, type ToolId } from "@/config/content";
 import { Card } from "@/components/ui/card";
+import { classifyPath, trackCtaClicked } from "@/lib/analytics";
 
 /** Prominent CTA card linking into a tool. The `compact` variant is a slim banner
  *  used above-the-fold and mid-article; the default is the full footer CTA. */
 export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "full" | "compact" }) {
   const t = TOOLS[tool];
   const Icon = t.icon;
+  const pathname = usePathname();
+  const onCta = () => trackCtaClicked(tool, pathname ?? "", classifyPath(pathname ?? "/"), `tool-cta:${variant}`);
 
   if (variant === "compact") {
     return (
       <Link
         href={t.href}
+        onClick={onCta}
         className="group flex items-center justify-between gap-3 rounded-xl border border-brand/30 bg-brand/5 p-3 hover:border-brand"
       >
         <span className="flex min-w-0 items-center gap-2.5">
@@ -41,6 +48,7 @@ export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "f
       </div>
       <Link
         href={t.href}
+        onClick={onCta}
         className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-medium text-brand-foreground hover:opacity-90"
       >
         {t.cta} <ArrowRight className="size-3.5" aria-hidden />

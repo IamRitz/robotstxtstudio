@@ -124,7 +124,11 @@ without a loading affordance.
 
 **Recommended soon after launch:**
 4. Rate limiting on the two fetch endpoints.
-5. Phase 13B analytics + error tracking (PostHog, Microsoft Clarity).
+5. Analytics (Phase 13B ✅ implemented): set `NEXT_PUBLIC_POSTHOG_KEY` /
+   `NEXT_PUBLIC_CLARITY_ID` in prod to enable; the CSP auto-allows the vendor origins.
+   Decide whether a **cookie/consent banner** is required for your jurisdiction —
+   PostHog uses `localStorage` (no server cookies) and Clarity masks text, but consent
+   law may still apply. See [`ANALYTICS.md`](./ANALYTICS.md) / [`METRICS.md`](./METRICS.md).
 
 **Optional polish (non-blocking, from `LAUNCH_CHECKLIST.md`):**
 6. Editor line-number gutter; `apple-icon`/maskable PWA icons; final logo/wordmark.

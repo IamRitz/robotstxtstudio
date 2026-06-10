@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite + 13A (Production Hardening) done; Phase 13B (Analytics & Observability) next |
+| **Current Phase** | Launch readiness — 12A–12D + 12H-Lite + 13A + 13B (Analytics) done; deploy (set env, ship) next |
 | **Last Completed Commit** | `b855e00` — test(e2e) integration & launch readiness |
 | **Current Branch** | `master` |
 | **Overall Progress** | ~85% (11 of 13 roadmap phases) |
@@ -159,6 +159,25 @@ security checklists, loading-state audit, risk assessment, remaining blockers). 
 green (76 pages), prod CSP verified on the server, tsc/eslint clean, 208 unit + 12 e2e
 pass. No hard launch blockers in code; remaining items are operational (Vercel project,
 domain, optional rate limiting) + 13B analytics.
+
+## 13B Analytics & Observability
+Vendor-neutral analytics designed to answer product/SEO/business questions, not just
+count clicks. New `src/lib/analytics/*`: a provider contract (`types.ts`), central
+dispatcher (`client.ts`, server-safe + pre-init buffering + per-provider isolation),
+typed event taxonomy (`events.ts`), page classifier (`classify.ts`), funnel
+taxonomy-as-code (`funnels.ts`), and PostHog + Microsoft Clarity adapters loaded via
+their official snippets — **no npm dependencies**. `AnalyticsProvider` (mounted in
+layout) registers env-configured providers and sends classified pageviews. Opt-in by
+config: no `NEXT_PUBLIC_POSTHOG_KEY`/`NEXT_PUBLIC_CLARITY_ID` → nothing loads and the
+CSP stays tight (verified); `next.config.ts` adds vendor origins only when keys exist.
+Privacy: PostHog autocapture/session-recording off, manual pageviews, localStorage
+(no server cookies), DNT honored; Clarity masks text. Instrumented: pageviews,
+`cta_clicked` (ToolCTA), `analyze_completed`+`fetch_robots` (Analyzer),
+`validation_completed` (Validator, debounced), `code_copied` (CopyButton), fetch
+(RobotsSourceField). New `docs/ANALYTICS.md` (event/funnel inventories, architecture
+diagram, question mapping) + `docs/METRICS.md` (North Star/SEO/product/business
+metrics → source events). Build green (76 pages), tsc/eslint clean, 208 unit + 12 e2e
+pass.
 
 ---
 

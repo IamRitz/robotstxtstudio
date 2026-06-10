@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Segmented } from "@/components/segmented";
 import { Callout } from "@/components/callout";
 import type { StatusKey } from "@/components/severity";
+import { trackFetchRobots } from "@/lib/analytics";
 
 type Mode = "paste" | "fetch";
 
@@ -44,6 +45,7 @@ export function RobotsSourceField({
     if (!target) return;
     setLoading(true);
     setNote(null);
+    trackFetchRobots("source-field");
     try {
       const res = await fetch("/api/fetch-robots", {
         method: "POST",

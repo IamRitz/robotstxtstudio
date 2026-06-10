@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { parseRobots } from "@/parser";
 import { validateRobots } from "@/features/validator";
 import type { Severity } from "@/types";
+import { trackValidationCompleted } from "@/lib/analytics";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { ScoreCard } from "@/components/score-card";
@@ -32,6 +33,21 @@ export function ValidatorScreen() {
 
   const result = useMemo(() => validateRobots(parseRobots(text)), [text]);
   const visible = result.issues.filter((i) => filter === "all" || i.severity === filter);
+
+  // Debounced: report a validation once the user stops editing (not per keystroke).
+  useEffect(() => {
+    const id = setTimeout(() => {
+      trackValidationCompleted({
+        healthScore: result.health.value,
+        healthBand: result.health.band,
+        errorCount: result.counts.error,
+        warningCount: result.counts.warning,
+        infoCount: result.counts.info,
+        issueCodes: Array.from(new Set(result.issues.map((i) => i.code))),
+      });
+    }, 1500);
+    return () => clearTimeout(id);
+  }, [result]);
 
   return (
     <div>

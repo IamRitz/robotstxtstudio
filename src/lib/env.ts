@@ -37,3 +37,17 @@ export const env = {
 
 /** Canonical site origin (convenience re-export). */
 export const SITE_URL = env.SITE_URL;
+
+/**
+ * Analytics configuration (Phase 13B). All optional and public (NEXT_PUBLIC_*). When a
+ * provider's key is absent, that provider does not load and sends nothing — analytics
+ * is opt-in by configuration, so the default (and all local dev) is zero tracking.
+ */
+export const analyticsConfig = {
+  posthogKey: process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim() || undefined,
+  posthogHost: process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com",
+  clarityId: process.env.NEXT_PUBLIC_CLARITY_ID?.trim() || undefined,
+} as const;
+
+/** True when at least one analytics provider is configured. */
+export const analyticsEnabled = Boolean(analyticsConfig.posthogKey || analyticsConfig.clarityId);

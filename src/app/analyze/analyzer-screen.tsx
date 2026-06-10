@@ -18,6 +18,7 @@ import { ErrorState } from "@/components/error-state";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { StatusKey } from "@/components/severity";
+import { trackAnalyzeCompleted, trackFetchRobots } from "@/lib/analytics";
 
 type State =
   | { kind: "idle" }
@@ -42,6 +43,7 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
     const target = value.trim();
     if (!target) return;
     setState({ kind: "loading" });
+    trackFetchRobots("analyzer");
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -53,7 +55,18 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
         setState({ kind: "error", message: body?.error ?? "Analysis failed. Please try again." });
         return;
       }
-      setState({ kind: "done", report: (await res.json()) as AnalysisReport });
+      const report = (await res.json()) as AnalysisReport;
+      setState({ kind: "done", report });
+      trackAnalyzeCompleted({
+        fetchStatus: report.fetch.status,
+        visibilityScore: report.visibility.value,
+        visibilityBand: report.visibility.band,
+        healthScore: report.validation.health.value,
+        errorCount: report.validation.counts.error,
+        warningCount: report.validation.counts.warning,
+        findingCount: report.findings.length,
+        findingCodes: Array.from(new Set(report.findings.map((f) => f.code))),
+      });
     } catch {
       setState({ kind: "error", message: "Network error. Please try again." });
     }

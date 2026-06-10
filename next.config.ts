@@ -17,15 +17,36 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
  * reliable signal — NODE_ENV is not yet "production" when this file is evaluated
  * during `next build`).
  */
+/**
+ * Analytics vendor origins, added to the CSP only when the corresponding provider is
+ * configured (Phase 13B). Keeps the default policy tight: no analytics env → no extra
+ * origins allowed.
+ */
+function analyticsHosts() {
+  const posthog = process.env.NEXT_PUBLIC_POSTHOG_KEY
+    ? ["https://*.posthog.com", "https://*.i.posthog.com"]
+    : [];
+  const clarity = process.env.NEXT_PUBLIC_CLARITY_ID
+    ? ["https://www.clarity.ms", "https://*.clarity.ms", "https://c.bing.com"]
+    : [];
+  return {
+    script: [...posthog, ...clarity],
+    connect: [...posthog, ...clarity],
+    img: [...clarity],
+  };
+}
+
 function contentSecurityPolicy(isDev: boolean): string {
-  const scriptSrc = ["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : [])];
-  const connectSrc = ["'self'", ...(isDev ? ["ws:", "wss:"] : [])];
+  const vendors = analyticsHosts();
+  const scriptSrc = ["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : []), ...vendors.script];
+  const connectSrc = ["'self'", ...(isDev ? ["ws:", "wss:"] : []), ...vendors.connect];
+  const imgSrc = ["'self'", "data:", "blob:", ...vendors.img];
 
   return [
     "default-src 'self'",
     `script-src ${scriptSrc.join(" ")}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    `img-src ${imgSrc.join(" ")}`,
     "font-src 'self' data:",
     `connect-src ${connectSrc.join(" ")}`,
     "object-src 'none'",

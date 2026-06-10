@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SITE, organizationSchema, websiteSchema } from "@/lib/seo";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen">
         <JsonLd data={organizationSchema()} />
         <JsonLd data={websiteSchema()} />
+        <AnalyticsProvider />
         {children}
       </body>
     </html>

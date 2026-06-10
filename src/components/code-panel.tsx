@@ -30,7 +30,7 @@ export function CodePanel({
           </span>
           <div className="flex items-center gap-2">
             {actions}
-            {showCopy ? <CopyButton value={code} /> : null}
+            {showCopy ? <CopyButton value={code} context={title} /> : null}
           </div>
         </div>
       )}
