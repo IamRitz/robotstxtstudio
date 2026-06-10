@@ -15,14 +15,16 @@ test("analyze a website and view the report", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/analyze\?domain=example\.com/);
 
-  // Report renders from the mocked payload.
-  await expect(page.getByText("Crawler Visibility Score")).toBeVisible();
-  await expect(page.getByText("Robots.txt Health")).toBeVisible();
-  await expect(page.getByText("71")).toBeVisible(); // visibility value
-  await expect(page.getByText("78")).toBeVisible(); // health value
-  await expect(page.getByText("No sitemap declared")).toBeVisible(); // finding
-  await expect(page.getByText("ClaudeBot inherits the default rules")).toBeVisible(); // recommendation
-  await expect(page.getByText("Crawler breakdown")).toBeVisible();
+  // Report renders, recomputed live from the fetched file.
+  await expect(page.getByText("robots.txt fetched successfully")).toBeVisible();
+  await expect(page.getByText("Crawler Visibility Score")).toBeVisible(); // analyzer-unique
+  await expect(page.getByText("Overall health", { exact: true })).toBeVisible(); // audit dashboard
+  await expect(page.getByText("Crawler visibility — by crawler")).toBeVisible(); // per-crawler breakdown
+  await expect(page.getByTestId("issue-list").getByText("No sitemap declared")).toBeVisible(); // finding
+  await expect(page.getByText("ClaudeBot inherits the default rules").first()).toBeVisible(); // recommendation/priority
+  // Analyzer can produce a corrected file (the "finish here" workflow).
+  await expect(page.getByText("Fix & export")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download robots.txt", exact: true })).toBeVisible();
 });
 
 test("analyze shows a loading state while fetching", async ({ page }) => {

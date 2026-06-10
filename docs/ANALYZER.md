@@ -95,6 +95,30 @@ banded via the shared `scoreBand` (80/60). Access percentages come from the brea
 }
 ```
 
+## Analyzer screen (Phase 15C.2 — audit parity, kept distinct)
+
+The Analyzer is the **primary start-to-finish workflow**: enter a domain → audit the
+live file → fix it → download the corrected version. It reuses the Validator's engine
+but is deliberately *not* a second validation screen — it keeps an identity the
+Validator doesn't have:
+
+- **Crawler Visibility Score** (signature, preserved) leads the report, with
+  search/AI access and error-rate metrics.
+- **Per-crawler visibility breakdown**: the category tallies expand (collapsible
+  `<details>`) into every crawler's allowed/blocked verdict (via the Tester's
+  `isAllowed(file, "/", ua)`).
+- **Audit dashboard** (the 5-dimension `buildAudit`) for health detail.
+- **Fix & export**: the file is an editable *working copy* (not a free-form
+  textarea — that's the Validator). Findings carry **Fix This**/**Fix All Safe**
+  (the shared Smart Fix engine), with **Undo**, a session **trend**, a **cumulative
+  diff vs. the live file**, and **Download fixed robots.txt**.
+- **Recommendations** (info-level, deep-linking into Generator / AI Manager).
+
+Everything that depends on the file (findings, audit, breakdown, visibility,
+recommendations) is **recomputed client-side from the working copy** using the same
+pure functions as the server pipeline, so a fix updates every score live. The server
+report still supplies the fetch metadata (domain, status, original source).
+
 ## Route readiness
 
 `analyze()` is the integration seam: a future `app/api/analyze/route.ts` validates the
