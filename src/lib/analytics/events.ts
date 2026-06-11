@@ -21,6 +21,9 @@ export const EVENTS = {
   analyzeCompleted: "analyze_completed",
   validationCompleted: "validation_completed",
   codeCopied: "code_copied",
+  issueSelected: "issue_selected",
+  fixApplied: "fix_applied",
+  fixUndone: "fix_undone",
 } as const;
 
 /** Where a click/conversion originated (a page_type, or an in-tool surface). */
@@ -102,4 +105,42 @@ export function trackValidationCompleted(p: ValidationCompletedProps): void {
 /** A code snippet / template was copied. `context` = label or template id. */
 export function trackCodeCopied(context: string, path: string): void {
   capture(EVENTS.codeCopied, { context, path });
+}
+
+/**
+ * A validation issue was selected in the workspace (Phase 2A). `via` separates the
+ * issue-list path from the editor path (gutter marker / heatmap / annotated line) —
+ * answers whether the issue↔line linking is actually used.
+ */
+export function trackIssueSelected(code: string, via: "list" | "editor"): void {
+  capture(EVENTS.issueSelected, { code, via });
+}
+
+export interface FixAppliedProps {
+  /** "single" = one issue's Fix; "all-safe" = the batch action. */
+  readonly mode: "single" | "all-safe";
+  /** Issue code (single mode only). */
+  readonly code?: string;
+  /** Whether the applied fix was tagged safe (single mode only). */
+  readonly safe?: boolean;
+  /** Number of issues resolved by this apply. */
+  readonly count: number;
+  /** Overall score delta produced by the apply (after − before). */
+  readonly scoreDelta: number;
+}
+
+/** A fix (single or batch) was applied to the working file (Phase 2A). */
+export function trackFixApplied(p: FixAppliedProps): void {
+  capture(EVENTS.fixApplied, {
+    mode: p.mode,
+    code: p.code,
+    safe: p.safe,
+    count: p.count,
+    score_delta: p.scoreDelta,
+  });
+}
+
+/** The last applied fix was undone (Phase 2A) — measures fix trust/regret. */
+export function trackFixUndone(): void {
+  capture(EVENTS.fixUndone, {});
 }

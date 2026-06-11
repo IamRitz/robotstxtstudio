@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Globe } from "lucide-react";
 import type { FetchRobotsResponse } from "@/app/api/fetch-robots/route";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,17 +23,22 @@ const FETCH_NOTE: Record<string, { status: StatusKey; title: string }> = {
 /**
  * robots.txt source input with Paste and "Fetch from URL" tabs. The fetch path
  * reuses /api/fetch-robots and writes the result back into the shared text value.
+ * Pass `editor` to replace the default textarea with a richer editing surface
+ * (e.g. the Validator's annotated RobotsEditor) — fetch behavior is unchanged.
  */
 export function RobotsSourceField({
   value,
   onChange,
   rows = 14,
   label = "robots.txt",
+  editor,
 }: {
   value: string;
   onChange: (text: string) => void;
   rows?: number;
   label?: string;
+  /** Custom paste-mode editing surface; defaults to a plain textarea. */
+  editor?: ReactNode;
 }) {
   const [mode, setMode] = useState<Mode>("paste");
   const [domain, setDomain] = useState("");
@@ -52,7 +57,9 @@ export function RobotsSourceField({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ domain: target }),
       });
-      const data = (await res.json().catch(() => null)) as (FetchRobotsResponse & { error?: string }) | null;
+      const data = (await res.json().catch(() => null)) as
+        | (FetchRobotsResponse & { error?: string })
+        | null;
       if (!res.ok || !data) {
         setNote({ status: "blocked", title: data?.error ?? "Could not fetch robots.txt" });
         return;
@@ -79,7 +86,14 @@ export function RobotsSourceField({
       />
 
       {mode === "paste" ? (
-        <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} aria-label={label} />
+        (editor ?? (
+          <Textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            rows={rows}
+            aria-label={label}
+          />
+        ))
       ) : (
         <form
           onSubmit={(e) => {
@@ -98,7 +112,9 @@ export function RobotsSourceField({
               className="h-9 w-full bg-transparent text-sm placeholder:text-muted-foreground focus-visible:outline-none"
             />
           </div>
-          <Button type="submit" disabled={loading}>{loading ? "Fetching…" : "Fetch robots.txt"}</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Fetching…" : "Fetch robots.txt"}
+          </Button>
         </form>
       )}
 

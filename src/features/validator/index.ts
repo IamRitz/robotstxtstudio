@@ -19,6 +19,7 @@ export {
 } from "./domain/apply-fix";
 export { computeHealth, aiConfigScore, SCORE_WEIGHTS, PENALTIES } from "./domain/scoring";
 export { buildAudit, fixImpact, DEDUCTIONS, DIMENSIONS } from "./domain/audit";
+export { whyItMatters, WHY_IT_MATTERS } from "./domain/why";
 export { getAiCrawlerStatuses } from "./domain/ai-crawlers";
 export type { AiCrawlerStatus, AiPolicyStatus } from "./domain/ai-crawlers";
 export { MAJOR_AI_CRAWLERS, type MajorAiCrawler } from "./domain/constants";

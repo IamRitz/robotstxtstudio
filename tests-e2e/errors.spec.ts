@@ -24,5 +24,5 @@ test("fetch-from-URL rejects an invalid domain with a recovery path", async ({ p
 test("validator tolerates an empty document without crashing", async ({ page }) => {
   await page.goto("/validate");
   await page.getByRole("textbox", { name: "robots.txt" }).fill("");
-  await expect(page.getByText("Overall health", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("score-current")).toBeVisible();
 });

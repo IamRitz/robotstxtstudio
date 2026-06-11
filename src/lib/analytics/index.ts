@@ -12,9 +12,13 @@ export {
   trackAnalyzeCompleted,
   trackValidationCompleted,
   trackCodeCopied,
+  trackIssueSelected,
+  trackFixApplied,
+  trackFixUndone,
   type SourceType,
   type AnalyzeCompletedProps,
   type ValidationCompletedProps,
+  type FixAppliedProps,
 } from "./events";
 export { classifyPath, type PageType } from "./classify";
 export { isAnalyticsEnabled } from "./client";

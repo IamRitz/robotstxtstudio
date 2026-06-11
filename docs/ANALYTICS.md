@@ -74,6 +74,9 @@ All events auto-carry PostHog's `$current_url` (so any event is segmentable by p
 | `analyze_completed` | An analysis renders a report | `fetch_status`, `visibility_score/band`, `health_score`, `error_count`, `warning_count`, `finding_count`, `finding_codes[]` | Completed analyses; **most common analyzer findings**; analyzer completion rate |
 | `validation_completed` | A validation settles (debounced 1.5 s) | `health_score/band`, `error_count`, `warning_count`, `info_count`, `issue_codes[]` | Completed validations; **most common validation errors** |
 | `code_copied` | A code/template snippet is copied | `context` (panel title), `path` | Template copies; which snippets convert |
+| `issue_selected` | A Validator issue is selected (Phase 2A) | `code`, `via` (`list` \| `editor`) | Which rules users engage with; whether the issue↔line linking (gutter/heatmap) is used |
+| `fix_applied` | A fix is applied to the working file (Phase 2A) | `mode` (`single` \| `all-safe`), `code`, `safe`, `count`, `score_delta` | Fix adoption per rule; batch vs single; real score recovery delivered |
+| `fix_undone` | The last applied fix is undone (Phase 2A) | — | Fix trust/regret rate (undo ÷ applies) |
 
 **Taxonomy note (one event + property, not many names).** The brief lists
 `analyze_clicked`, `generate_clicked`, … and `crawler_page_visit`, `guide_page_visit`.
@@ -91,7 +94,7 @@ no taxonomy drift.
 | Tool CTA cards (all content pages) | `components/content/tool-cta.tsx` | `cta_clicked` |
 | Copy buttons (snippets/templates) | `components/copy-button.tsx` (via `code-panel.tsx`) | `code_copied` |
 | Analyzer | `app/analyze/analyzer-screen.tsx` | `fetch_robots`, `analyze_completed` |
-| Validator | `app/validate/validator-screen.tsx` | `validation_completed` (debounced) |
+| Validator | `app/validate/validator-screen.tsx` | `validation_completed` (debounced), `issue_selected`, `fix_applied`, `fix_undone` |
 | Fetch-from-URL (Validator/Tester/Explainer) | `components/robots-source-field.tsx` | `fetch_robots` |
 
 ## Funnel inventory

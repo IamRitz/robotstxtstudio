@@ -5,8 +5,8 @@ import { expect, test } from "@playwright/test";
 test("validate robots.txt and filter issues by severity", async ({ page }) => {
   await page.goto("/validate");
 
-  // Audit dashboard + issues from the default sample.
-  await expect(page.getByText("Overall health", { exact: true })).toBeVisible();
+  // Workspace command bar (score) + issues from the default sample.
+  await expect(page.getByTestId("score-current")).toBeVisible();
   const issues = page.getByTestId("issue-list");
   await expect(issues.getByText("Crawl-delay of 0")).toBeVisible(); // a warning
   await expect(issues.getByText("Sitemap uses HTTP")).toBeVisible(); // an info
@@ -20,7 +20,9 @@ test("validate robots.txt and filter issues by severity", async ({ page }) => {
 });
 
 // Phase 15A — Smart Fix engine edge cases.
-test("Fix All Safe applies fixes, shows a diff, and Undo restores the exact prior text", async ({ page }) => {
+test("Fix All Safe applies fixes, shows a diff, and Undo restores the exact prior text", async ({
+  page,
+}) => {
   await page.goto("/validate");
   const editor = page.getByRole("textbox", { name: "robots.txt" });
 
@@ -73,6 +75,9 @@ test("a manual edit resets the fix session without losing the typed content", as
 test("a single Fix This shows a diff for just that issue", async ({ page }) => {
   await page.goto("/validate");
   await expect(page.getByTestId("issue-list").getByText("Sitemap uses HTTP")).toBeVisible();
-  await page.getByRole("button", { name: /Fix this/ }).first().click();
+  await page
+    .getByRole("button", { name: /Fix this/ })
+    .first()
+    .click();
   await expect(page.getByText("Before / After")).toBeVisible();
 });
