@@ -25,6 +25,9 @@ export const EVENTS = {
   fixApplied: "fix_applied",
   fixUndone: "fix_undone",
   actionQueueClicked: "action_queue_clicked",
+  recentAnalysisSaved: "recent_analysis_saved",
+  dashboardResumeClicked: "dashboard_resume_clicked",
+  dashboardHistoryCleared: "dashboard_history_cleared",
 } as const;
 
 /** Which workspace a fix event came from (Validator vs. Analyzer queue). */
@@ -159,4 +162,19 @@ export function trackFixUndone(surface?: FixSurface): void {
  */
 export function trackActionQueueClicked(code: string, kind: "fix" | "deep-link"): void {
   capture(EVENTS.actionQueueClicked, { code, kind });
+}
+
+/** A fresh analysis was persisted to the local recent-analyses store (Phase 17C). */
+export function trackRecentAnalysisSaved(findingCount: number): void {
+  capture(EVENTS.recentAnalysisSaved, { finding_count: findingCount });
+}
+
+/** A homepage "Continue" was clicked — the session-continuity loop works (Phase 17C). */
+export function trackDashboardResumeClicked(ageHours: number, hasDelta: boolean): void {
+  capture(EVENTS.dashboardResumeClicked, { age_hours: ageHours, has_delta: hasDelta });
+}
+
+/** The local analysis history was cleared (Phase 17C). */
+export function trackDashboardHistoryCleared(): void {
+  capture(EVENTS.dashboardHistoryCleared, {});
 }

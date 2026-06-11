@@ -54,7 +54,11 @@ export const FUNNELS: readonly Funnel[] = [
       // code_copied carries the panel title as `context` + the page path; scope by the
       // templates path (PostHog: $current_url) rather than a literal context value.
       { label: "Copy a template (on /robots-txt-templates)", event: EVENTS.codeCopied },
-      { label: "Open the Generator", event: EVENTS.ctaClicked, where: { tool: "generator", source_type: "template" } },
+      {
+        label: "Open the Generator",
+        event: EVENTS.ctaClicked,
+        where: { tool: "generator", source_type: "template" },
+      },
     ],
   },
   {

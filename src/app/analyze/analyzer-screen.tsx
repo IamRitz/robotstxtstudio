@@ -11,7 +11,7 @@ import {
   safelyFixableIssues,
   validateRobots,
 } from "@/features/validator";
-import { computeBreakdown, computeVisibility } from "@/features/live-checker";
+import { buildAnalysisReport, computeBreakdown, computeVisibility } from "@/features/live-checker";
 import type { AnalysisReport, ScoreDimension, TextEdit, ValidationIssue } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
@@ -29,8 +29,15 @@ import {
   trackFetchRobots,
   trackFixApplied,
   trackFixUndone,
+  trackRecentAnalysisSaved,
   type FixAppliedProps,
 } from "@/lib/analytics";
+import {
+  getRecentAnalysis,
+  listRecentAnalyses,
+  saveRecentAnalysis,
+  type RecentAnalysis,
+} from "@/lib/recent-analyses";
 import { DimensionChipStrip } from "@/components/dimension-chip-strip";
 import { RobotsEditor, type EditorAnnotation } from "@/components/robots-editor";
 import { affectsDimension, issueLine } from "@/app/validate/issue-panel";
@@ -42,7 +49,21 @@ type State =
   | { kind: "idle" }
   | { kind: "loading" }
   | { kind: "error"; message: string }
-  | { kind: "done"; report: AnalysisReport };
+  | { kind: "done"; report: AnalysisReport; initialWorkingText?: string };
+
+/** Rebuild the full report from a stored snapshot — the same pure pipeline the
+ *  server runs, just fed from localStorage instead of the network. */
+function restoreState(stored: RecentAnalysis): State {
+  return {
+    kind: "done",
+    report: buildAnalysisReport(
+      { ...stored.fetch, body: stored.source },
+      stored.domain,
+      stored.fetchedAt,
+    ),
+    initialWorkingText: stored.workingText,
+  };
+}
 
 /** Non-`ok` outcomes change what the report MEANS, so they keep a loud callout;
  *  a successful fetch is just provenance and lives in the verdict band. */
@@ -63,7 +84,14 @@ function downloadText(text: string, filename = "robots.txt") {
   URL.revokeObjectURL(url);
 }
 
-export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
+export function AnalyzerScreen({
+  initialDomain,
+  forceFresh = false,
+}: {
+  initialDomain: string;
+  /** True for explicit "analyze now" entries (?fresh=1) — never restore a snapshot. */
+  forceFresh?: boolean;
+}) {
   const [domain, setDomain] = useState(initialDomain);
   const [state, setState] = useState<State>({ kind: "idle" });
 
@@ -85,6 +113,9 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
       }
       const report = (await res.json()) as AnalysisReport;
       setState({ kind: "done", report });
+      // Drop ?fresh=1 so a refresh of this URL restores instead of refetching.
+      window.history.replaceState(null, "", `/analyze?domain=${encodeURIComponent(target)}`);
+      trackRecentAnalysisSaved(report.findings.length);
       trackAnalyzeCompleted({
         fetchStatus: report.fetch.status,
         visibilityScore: report.visibility.value,
@@ -100,9 +131,26 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
     }
   }, []);
 
+  // Continuity (Phase 17C): a mount is navigation (refresh / back / Continue),
+  // not a request for new IO — restore the snapshot when we have one. Only an
+  // explicit submit (the form, or ?fresh=1) fetches.
   useEffect(() => {
-    if (initialDomain) void run(initialDomain);
-  }, [initialDomain, run]);
+    if (initialDomain) {
+      const stored = forceFresh ? undefined : getRecentAnalysis(initialDomain);
+      if (stored?.source !== undefined) {
+        setDomain(stored.domain);
+        setState(restoreState(stored));
+        return;
+      }
+      void run(initialDomain);
+      return;
+    }
+    const latest = listRecentAnalyses()[0];
+    if (latest?.source !== undefined) {
+      setDomain(latest.domain);
+      setState(restoreState(latest));
+    }
+  }, [initialDomain, forceFresh, run]);
 
   return (
     <div>
@@ -159,7 +207,13 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
 
       {state.kind === "error" ? <ErrorState message={state.message} /> : null}
 
-      {state.kind === "done" ? <Report key={state.report.fetchedAt} report={state.report} /> : null}
+      {state.kind === "done" ? (
+        <Report
+          key={state.report.fetchedAt}
+          report={state.report}
+          initialWorkingText={state.initialWorkingText}
+        />
+      ) : null}
     </div>
   );
 }
@@ -174,13 +228,43 @@ function visibilityOf(text: string) {
   };
 }
 
-function Report({ report }: { report: AnalysisReport }) {
+const DIMENSION_FILTER_KEY = "rs:analyzer-dimension";
+
+function Report({
+  report,
+  initialWorkingText,
+}: {
+  report: AnalysisReport;
+  /** Restored working copy (continuity) — defaults to the fetched source. */
+  initialWorkingText?: string;
+}) {
   const fetchProblem = FETCH_PROBLEM[report.fetch.status];
   const originalSource = report.file.source ?? report.fetch.body ?? "";
 
-  const [workingText, setWorkingText] = useState(originalSource);
+  const [workingText, setWorkingText] = useState(initialWorkingText ?? originalSource);
   const [undoStack, setUndoStack] = useState<string[]>([]);
-  const [dimension, setDimension] = useState<ScoreDimension | null>(null);
+  // The chip filter survives navigation within the tab (back/forward, resume).
+  const [dimension, setDimension] = useState<ScoreDimension | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem(DIMENSION_FILTER_KEY);
+      if (!raw) return null;
+      const saved = JSON.parse(raw) as { domain?: string; dimension?: ScoreDimension | null };
+      return saved.domain === report.domain ? (saved.dimension ?? null) : null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        DIMENSION_FILTER_KEY,
+        JSON.stringify({ domain: report.domain, dimension }),
+      );
+    } catch {
+      // session-only nicety
+    }
+  }, [report.domain, dimension]);
 
   // Everything that depends on the file is recomputed from the working copy, so
   // applying a fix updates the verdict, queue, and breakdown live.
@@ -228,6 +312,24 @@ function Report({ report }: { report: AnalysisReport }) {
   const aiTotal = ai.reduce((s, b) => s + b.total, 0);
 
   const changed = workingText !== originalSource;
+
+  // Keep the local snapshot current (Phase 17C): on mount and after every fix.
+  // Upsert is LRU-by-domain and same-fetch updates preserve the re-check delta.
+  useEffect(() => {
+    const { body: _body, ...fetchMeta } = report.fetch;
+    saveRecentAnalysis({
+      domain: report.domain,
+      fetchedAt: report.fetchedAt,
+      fetch: fetchMeta,
+      source: originalSource,
+      workingText: changed ? workingText : undefined,
+      visibility: { value: derived.visibility.value, band: derived.visibility.band },
+      health: derived.validation.health.value,
+      fetchStatus: report.fetch.status,
+      findingCount: derived.validation.counts.error + derived.validation.counts.warning,
+      safeFixCount: recovery.safeCount,
+    });
+  }, [report, originalSource, changed, workingText, derived, recovery.safeCount]);
 
   function applyEdits(edits: readonly TextEdit[], meta: Omit<FixAppliedProps, "scoreDelta">) {
     const before = workingText;

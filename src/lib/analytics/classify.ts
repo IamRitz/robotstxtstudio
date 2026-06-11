@@ -21,11 +21,22 @@ export type PageType =
   | "guide"
   | "trust";
 
-const TOOL_PATHS = new Set(["/analyze", "/generate", "/validate", "/url-tester", "/ai-crawlers", "/explain"]);
+const TOOL_PATHS = new Set([
+  "/analyze",
+  "/generate",
+  "/validate",
+  "/url-tester",
+  "/ai-crawlers",
+  "/explain",
+]);
 const TRUST_PATHS = new Set(["/about", "/contact", "/privacy", "/terms", "/methodology"]);
-const LANDING_PATHS = new Set(SEO_PAGES.filter((p) => p.group === "landing").map((p) => `/${p.slug}`));
+const LANDING_PATHS = new Set(
+  SEO_PAGES.filter((p) => p.group === "landing").map((p) => `/${p.slug}`),
+);
 const CMS_PATHS = new Set(SEO_PAGES.filter((p) => p.group === "cms").map((p) => `/${p.slug}`));
-const COMPARISON_PATHS = new Set(SEO_PAGES.filter((p) => p.group === "comparison").map((p) => `/${p.slug}`));
+const COMPARISON_PATHS = new Set(
+  SEO_PAGES.filter((p) => p.group === "comparison").map((p) => `/${p.slug}`),
+);
 
 /** Coarse page type for a pathname. Order matters (most specific first). */
 export function classifyPath(path: string): PageType {

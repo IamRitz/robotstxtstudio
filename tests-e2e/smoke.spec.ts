@@ -11,7 +11,14 @@ test("home renders the hero and tool grid", async ({ page }) => {
 });
 
 test("home navigation reaches each tool", async ({ page }) => {
-  for (const path of ["/analyze", "/generate", "/validate", "/url-tester", "/ai-crawlers", "/explain"]) {
+  for (const path of [
+    "/analyze",
+    "/generate",
+    "/validate",
+    "/url-tester",
+    "/ai-crawlers",
+    "/explain",
+  ]) {
     const res = await page.goto(path);
     expect(res?.status()).toBeLessThan(400);
   }

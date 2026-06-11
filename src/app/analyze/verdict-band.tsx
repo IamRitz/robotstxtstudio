@@ -106,30 +106,36 @@ export function VerdictBand({
     <div className="sticky top-14 z-30 -mx-4 border-b border-border bg-background/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1" aria-live="polite">
-          <span className="flex items-end gap-2" data-testid="score-current">
-            <span className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold tabular-nums leading-none text-foreground">
-                {now}
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                now
-              </span>
+          {/* Name the number — "93" alone doesn't say what is being scored. */}
+          <span className="flex flex-col gap-0.5">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Crawler Visibility
             </span>
-            {recoverable > 0 ? (
-              <>
-                <MoveRight className="mb-0.5 size-4 text-status-allowed-fg" aria-hidden />
-                <span className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold tabular-nums leading-none text-status-allowed-fg">
-                    {potential}
-                  </span>
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-status-allowed-fg/80">
-                    potential
-                  </span>
+            <span className="flex items-end gap-2" data-testid="score-current">
+              <span className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold tabular-nums leading-none text-foreground">
+                  {now}
                 </span>
-              </>
-            ) : (
-              <span className="mb-0.5 text-xs text-muted-foreground">/100</span>
-            )}
+                <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                  now
+                </span>
+              </span>
+              {recoverable > 0 ? (
+                <>
+                  <MoveRight className="mb-0.5 size-4 text-status-allowed-fg" aria-hidden />
+                  <span className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold tabular-nums leading-none text-status-allowed-fg">
+                      {potential}
+                    </span>
+                    <span className="text-[10px] font-medium uppercase tracking-wide text-status-allowed-fg/80">
+                      potential
+                    </span>
+                  </span>
+                </>
+              ) : (
+                <span className="mb-0.5 text-xs text-muted-foreground">/100</span>
+              )}
+            </span>
           </span>
           <span
             className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", BAND_CHIP[band])}

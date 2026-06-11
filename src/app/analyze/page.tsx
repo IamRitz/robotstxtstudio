@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 export default async function AnalyzePage({
   searchParams,
 }: {
-  searchParams: Promise<{ domain?: string }>;
+  searchParams: Promise<{ domain?: string; fresh?: string }>;
 }) {
-  const { domain } = await searchParams;
+  const { domain, fresh } = await searchParams;
   return (
     <AppShell>
       <JsonLd
@@ -27,7 +27,7 @@ export default async function AnalyzePage({
         ])}
       />
       <JsonLd data={toolAppSchema("analyzer")} />
-      <AnalyzerScreen initialDomain={domain ?? ""} />
+      <AnalyzerScreen initialDomain={domain ?? ""} forceFresh={fresh === "1"} />
       {/* Collapsed during remediation — the report is the page's job. The rail
           stays in the DOM (SEO/internal links) but costs one line. */}
       <details className="mt-12">

@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 // Phase 15C.3 — Compare.
-test("compare two robots.txt and see score, AI visibility, and findings deltas", async ({ page }) => {
+test("compare two robots.txt and see score, AI visibility, and findings deltas", async ({
+  page,
+}) => {
   await page.goto("/compare");
 
   // Default samples (A allows all AI, B blocks several AI crawlers) → a real comparison.

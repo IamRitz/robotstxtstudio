@@ -143,6 +143,25 @@ potentials) is **recomputed client-side from the working copy** using the same
 pure functions as the server pipeline, so a fix updates every score live. The server
 report still supplies the fetch metadata (domain, status, original source).
 
+## Session continuity (Phase 17C)
+
+Analyses snapshot to localStorage (`src/lib/recent-analyses.ts`, key
+`rs:recent-analyses:v1`, LRU by domain, cap 10): domain, fetch metadata, the
+robots.txt source, the working copy when fixes were applied, and the dashboard
+summary (visibility, health, finding/safe-fix counts, `previousVisibility` for the
+re-check delta). Snapshots over 100 KB are skipped (the entry still lists; resume
+falls back to a fetch). Nothing leaves the browser.
+
+**Mount = navigation, not IO.** The Analyzer restores from the snapshot via the
+pure `buildAnalysisReport({ ...fetch, body: source })` on refresh, Back/forward,
+`/analyze?domain=X` deep links, and the homepage **Continue working** dashboard
+(`components/continue-working.tsx`, which replaces the locked-report teaser for
+returning users). Only an explicit submit fetches: the in-page form, or `?fresh=1`
+(set by `QuickAnalyze`); after a successful fetch the URL is canonicalized via
+`history.replaceState` so a refresh restores. The dimension-chip filter survives
+per-tab in sessionStorage. e2e: `tests-e2e/continuity.spec.ts` (resume / refresh /
+Back keep the workspace with `/api/analyze` called exactly once).
+
 ## Route readiness
 
 `analyze()` is the integration seam: a future `app/api/analyze/route.ts` validates the

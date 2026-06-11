@@ -1,12 +1,20 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { ArrowRight, Bot, FileText, Megaphone, ScanSearch, ShieldCheck, TestTube } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  FileText,
+  Megaphone,
+  ScanSearch,
+  ShieldCheck,
+  TestTube,
+} from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { QuickAnalyze } from "@/components/quick-analyze";
 import { SectionHeader } from "@/components/section-header";
-import { EmptyState } from "@/components/empty-state";
+import { ContinueWorking } from "@/components/continue-working";
 import { LockedReport } from "@/components/locked-report";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -14,33 +22,88 @@ const TOOL_GROUPS = [
   {
     group: "Analyze",
     tools: [
-      { title: "Crawler Visibility Audit", desc: "See who can access your site and where your visibility gaps are.", href: "/analyze", icon: ScanSearch },
-      { title: "Explainer", desc: "Read your robots.txt rules in plain English — no technical knowledge needed.", href: "/explain", icon: Megaphone },
+      {
+        title: "Crawler Visibility Audit",
+        desc: "See who can access your site and where your visibility gaps are.",
+        href: "/analyze",
+        icon: ScanSearch,
+      },
+      {
+        title: "Explainer",
+        desc: "Read your robots.txt rules in plain English — no technical knowledge needed.",
+        href: "/explain",
+        icon: Megaphone,
+      },
     ],
   },
   {
     group: "Control",
     tools: [
-      { title: "AI Crawler Manager", desc: "Decide which AI companies can train on your content — block GPTBot, ClaudeBot, and 18 more.", href: "/ai-crawlers", icon: Bot, featured: true },
-      { title: "Generator", desc: "Build your robots.txt with a guided visual editor — no coding required.", href: "/generate", icon: FileText },
+      {
+        title: "AI Crawler Manager",
+        desc: "Decide which AI companies can train on your content — block GPTBot, ClaudeBot, and 18 more.",
+        href: "/ai-crawlers",
+        icon: Bot,
+        featured: true,
+      },
+      {
+        title: "Generator",
+        desc: "Build your robots.txt with a guided visual editor — no coding required.",
+        href: "/generate",
+        icon: FileText,
+      },
     ],
   },
   {
     group: "Verify",
     tools: [
-      { title: "Validator", desc: "Check your robots.txt for syntax errors and warnings before they cause issues.", href: "/validate", icon: ShieldCheck },
-      { title: "URL Tester", desc: "Test whether a page is blocked or allowed for any crawler.", href: "/url-tester", icon: TestTube },
+      {
+        title: "Validator",
+        desc: "Check your robots.txt for syntax errors and warnings before they cause issues.",
+        href: "/validate",
+        icon: ShieldCheck,
+      },
+      {
+        title: "URL Tester",
+        desc: "Test whether a page is blocked or allowed for any crawler.",
+        href: "/url-tester",
+        icon: TestTube,
+      },
     ],
   },
 ] as const;
 
 const LEARN_LINKS: ReadonlyArray<{ href: Route; title: string; desc: string }> = [
-  { href: "/what-is-robots-txt", title: "What is robots.txt?", desc: "The plain-English starting point — what it is and what it can't do." },
-  { href: "/how-does-robots-txt-work", title: "How does it work?", desc: "How crawlers fetch, match, and apply your rules." },
-  { href: "/robots-txt-syntax", title: "Syntax reference", desc: "Every directive: User-agent, Allow, Disallow, wildcards, Sitemap." },
-  { href: "/robots-txt-examples", title: "Examples", desc: "Copy-paste files for blogs, WordPress, ecommerce, and AI." },
-  { href: "/robots-txt-seo-guide", title: "robots.txt for SEO", desc: "Best practices that help — and the traps that hurt rankings." },
-  { href: "/why-robots-txt-is-important", title: "Why it matters", desc: "Crawl budget, AI access, and the cost of getting it wrong." },
+  {
+    href: "/what-is-robots-txt",
+    title: "What is robots.txt?",
+    desc: "The plain-English starting point — what it is and what it can't do.",
+  },
+  {
+    href: "/how-does-robots-txt-work",
+    title: "How does it work?",
+    desc: "How crawlers fetch, match, and apply your rules.",
+  },
+  {
+    href: "/robots-txt-syntax",
+    title: "Syntax reference",
+    desc: "Every directive: User-agent, Allow, Disallow, wildcards, Sitemap.",
+  },
+  {
+    href: "/robots-txt-examples",
+    title: "Examples",
+    desc: "Copy-paste files for blogs, WordPress, ecommerce, and AI.",
+  },
+  {
+    href: "/robots-txt-seo-guide",
+    title: "robots.txt for SEO",
+    desc: "Best practices that help — and the traps that hurt rankings.",
+  },
+  {
+    href: "/why-robots-txt-is-important",
+    title: "Why it matters",
+    desc: "Crawl budget, AI access, and the cost of getting it wrong.",
+  },
 ];
 
 export default function HomePage() {
@@ -48,7 +111,9 @@ export default function HomePage() {
     <AppShell>
       {/* Hero */}
       <section className="mx-auto max-w-3xl pt-8 text-center sm:pt-12">
-        <Badge variant="brand" className="mx-auto">Crawler Visibility &amp; Permissions Platform</Badge>
+        <Badge variant="brand" className="mx-auto">
+          Crawler Visibility &amp; Permissions Platform
+        </Badge>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           Who Can See Your Website?
         </h1>
@@ -64,18 +129,28 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Locked report preview — premium locked state (Phase 14C) */}
+      {/* Returning users: their recent analyses, resumable in one click (Phase 17C).
+          Strangers: the locked-report teaser (Phase 14C), unchanged. */}
       <div className="mx-auto mt-12 max-w-3xl">
-        <SectionHeader className="mb-3">Your crawler report</SectionHeader>
-        <LockedReport
-          title="Unlock your full crawler report"
-          description="Run a free analysis to reveal your visibility score, AI-crawler access, and every robots.txt issue — no sign-up required."
-          action={
+        <ContinueWorking
+          fallback={
             <>
-              <Link href="/analyze" className={buttonVariants({ variant: "brand", size: "lg" })}>
-                <ScanSearch /> Run free analysis
-              </Link>
-              <span className="text-xs text-muted-foreground">Takes about 5 seconds</span>
+              <SectionHeader className="mb-3">Your crawler report</SectionHeader>
+              <LockedReport
+                title="Unlock your full crawler report"
+                description="Run a free analysis to reveal your visibility score, AI-crawler access, and every robots.txt issue — no sign-up required."
+                action={
+                  <>
+                    <Link
+                      href="/analyze"
+                      className={buttonVariants({ variant: "brand", size: "lg" })}
+                    >
+                      <ScanSearch /> Run free analysis
+                    </Link>
+                    <span className="text-xs text-muted-foreground">Takes about 5 seconds</span>
+                  </>
+                }
+              />
             </>
           }
         />
@@ -102,7 +177,11 @@ export default function HomePage() {
                   return (
                     <Link key={tool.href} href={tool.href} className="group">
                       <Card
-                        className={featured ? "h-full bg-surface-dark p-5 text-surface-dark-foreground" : "h-full p-5"}
+                        className={
+                          featured
+                            ? "h-full bg-surface-dark p-5 text-surface-dark-foreground"
+                            : "h-full p-5"
+                        }
                       >
                         <div className="flex items-center justify-between">
                           <span
@@ -117,11 +196,18 @@ export default function HomePage() {
                           {featured ? <Badge variant="brand">AI</Badge> : null}
                         </div>
                         <h3 className="mt-3 text-base font-semibold">{tool.title}</h3>
-                        <p className={featured ? "mt-1 text-sm text-surface-dark-foreground/70" : "mt-1 text-sm text-muted-foreground"}>
+                        <p
+                          className={
+                            featured
+                              ? "mt-1 text-sm text-surface-dark-foreground/70"
+                              : "mt-1 text-sm text-muted-foreground"
+                          }
+                        >
                           {tool.desc}
                         </p>
                         <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand">
-                          Open <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                          Open{" "}
+                          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
                         </span>
                       </Card>
                     </Link>
@@ -138,11 +224,16 @@ export default function HomePage() {
         <Card className="flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <SectionHeader className="mb-2">AI visibility</SectionHeader>
-            <h2 className="text-lg font-semibold text-foreground">Control how AI trains on your content</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              Control how AI trains on your content
+            </h2>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-              GPTBot, ClaudeBot, PerplexityBot, Google-Extended and more — allow or block each with one click.
-              See the full{" "}
-              <Link href="/ai-crawlers-directory" className="font-medium text-brand hover:underline">
+              GPTBot, ClaudeBot, PerplexityBot, Google-Extended and more — allow or block each with
+              one click. See the full{" "}
+              <Link
+                href="/ai-crawlers-directory"
+                className="font-medium text-brand hover:underline"
+              >
                 AI crawler directory
               </Link>
               .
@@ -160,9 +251,7 @@ export default function HomePage() {
       {/* Learn / educational cluster */}
       <section className="mt-16">
         <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Learn robots.txt
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Learn robots.txt</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Practitioner guides — from the basics to SEO best practices and AI crawlers.
           </p>
@@ -174,27 +263,13 @@ export default function HomePage() {
                 <h3 className="text-sm font-semibold text-foreground">{g.title}</h3>
                 <p className="mt-1 text-xs text-muted-foreground">{g.desc}</p>
                 <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand">
-                  Read <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                  Read{" "}
+                  <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </Card>
             </Link>
           ))}
         </div>
-      </section>
-
-      {/* Recent activity placeholder */}
-      <section className="mt-16">
-        <SectionHeader className="mb-3">Recent activity</SectionHeader>
-        <EmptyState
-          icon={ScanSearch}
-          title="No recent analyses yet"
-          description="Your recently analyzed sites will appear here. Saved history is coming soon — run your first audit to get started."
-          action={
-            <Link href="/analyze" className={buttonVariants({ variant: "secondary" })}>
-              <ScanSearch /> Analyze a site
-            </Link>
-          }
-        />
       </section>
     </AppShell>
   );

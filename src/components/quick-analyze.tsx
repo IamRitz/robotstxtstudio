@@ -7,14 +7,21 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /** Domain input that routes to the Analyzer with the domain prefilled. */
-export function QuickAnalyze({ className, autoFocus }: { className?: string; autoFocus?: boolean }) {
+export function QuickAnalyze({
+  className,
+  autoFocus,
+}: {
+  className?: string;
+  autoFocus?: boolean;
+}) {
   const router = useRouter();
   const [domain, setDomain] = useState("");
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = domain.trim();
-    if (value) router.push(`/analyze?domain=${encodeURIComponent(value)}`);
+    // fresh=1: an explicit request for a NEW analysis — never restore a snapshot.
+    if (value) router.push(`/analyze?domain=${encodeURIComponent(value)}&fresh=1`);
   }
 
   return (

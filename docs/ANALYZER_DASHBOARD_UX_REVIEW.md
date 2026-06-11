@@ -13,7 +13,21 @@
 > `components/dimension-chip-strip.tsx`, lifted from the Validator). First-viewport
 > coverage at 1440×900: verdict band + full matrix visible (queue header at the
 > fold); at 390×844: band + matrix through the AI-training row with its blocked
-> chips. Phases 17C–17D remain proposals.
+> chips.
+>
+> **Phase 17C SHIPPED** (session continuity): `lib/recent-analyses.ts`
+> (localStorage snapshots, LRU cap 10, re-check deltas, oversize guard) +
+> homepage `components/continue-working.tsx` replacing the locked teaser for
+> returners (the dead bottom "Recent activity" placeholder is deleted); the
+> Analyzer restores the full workspace — fixes included — on resume, refresh,
+> and Back via the pure `buildAnalysisReport`, fetching only on explicit submit
+> (`?fresh=1`); the chip filter persists per tab; the verdict score is now
+> labeled "Crawler Visibility" (chosen over "Visibility Score" — names what is
+> measured, matches the page title/matrix/brand term, and "/100 · NOW→POTENTIAL"
+> already says "score"). Homepage usefulness: resume went from retype + refetch
+> (5 interactions + network) to 1 click + 0 requests (e2e-proven); personalized
+> above-the-fold content went from zero to up to 10 scored, delta-annotated
+> analyses. Phase 17D remains a proposal.
 >
 > Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience
