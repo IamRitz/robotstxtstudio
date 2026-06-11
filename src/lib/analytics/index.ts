@@ -15,10 +15,12 @@ export {
   trackIssueSelected,
   trackFixApplied,
   trackFixUndone,
+  trackActionQueueClicked,
   type SourceType,
   type AnalyzeCompletedProps,
   type ValidationCompletedProps,
   type FixAppliedProps,
+  type FixSurface,
 } from "./events";
 export { classifyPath, type PageType } from "./classify";
 export { isAnalyticsEnabled } from "./client";

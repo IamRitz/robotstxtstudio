@@ -45,7 +45,8 @@ function fetchRecommendation(fetch: FetchResult): Recommendation | null {
         id: "fetch-too-large",
         severity: "warning",
         title: "robots.txt is very large",
-        description: "Only the first part was analyzed. Crawlers may ignore content past their size limit.",
+        description:
+          "Only the first part was analyzed. Crawlers may ignore content past their size limit.",
         action: { kind: "edit-rules" },
       };
     case "timeout":
@@ -89,4 +90,9 @@ export function buildRecommendations(
   }
 
   return recommendations;
+}
+
+/** The Control-tool deep-link a finding's code points to, if any (Action Queue). */
+export function recommendedActionFor(code: ValidationCode): RecommendedAction | undefined {
+  return ACTION_BY_CODE[code];
 }

@@ -9,9 +9,9 @@
 
 The Analyzer is the first feature with network IO, so the boundary is strict:
 
-| Layer | Location | IO? | Responsibility |
-| --- | --- | --- | --- |
-| **Fetch** | `lib/` | yes | normalize URL, fetch, classify outcome → `FetchResult` |
+| Layer        | Location  | IO?    | Responsibility                                          |
+| ------------ | --------- | ------ | ------------------------------------------------------- |
+| **Fetch**    | `lib/`    | yes    | normalize URL, fetch, classify outcome → `FetchResult`  |
 | **Analysis** | `domain/` | **no** | `FetchResult` → `AnalysisReport` by reusing the engines |
 
 The fetch layer contains **no** parsing/validation; the analysis layer performs **no**
@@ -36,15 +36,15 @@ is the pure pipeline and can be tested/reused without any network.
 `globalThis.fetch` and is injectable for tests. It **never throws**; every outcome
 maps to a `FetchStatus`:
 
-| Situation | `status` | `robotsExists` | Analysis input |
-| --- | --- | --- | --- |
-| 200, `text/plain` | `ok` | true | the body |
-| 200, empty body | `ok` | true | `""` (allow-all) |
-| 404 | `not-found` | false | `""` (allow-all) |
-| 200, `text/html` / JSON / etc. | `invalid-content-type` | false | `""` |
-| body over `maxBytes` (512 KiB) | `too-large` | true | first `maxBytes` |
-| no response in `timeoutMs` (8 s) | `timeout` | false | `""` |
-| other non-2xx / thrown error | `network-error` | false | `""` |
+| Situation                        | `status`               | `robotsExists` | Analysis input   |
+| -------------------------------- | ---------------------- | -------------- | ---------------- |
+| 200, `text/plain`                | `ok`                   | true           | the body         |
+| 200, empty body                  | `ok`                   | true           | `""` (allow-all) |
+| 404                              | `not-found`            | false          | `""` (allow-all) |
+| 200, `text/html` / JSON / etc.   | `invalid-content-type` | false          | `""`             |
+| body over `maxBytes` (512 KiB)   | `too-large`            | true           | first `maxBytes` |
+| no response in `timeoutMs` (8 s) | `timeout`              | false          | `""`             |
+| other non-2xx / thrown error     | `network-error`        | false          | `""`             |
 
 **Missing ≠ error:** 404/invalid/failed all analyze an empty (allow-all) file with the
 real `fetch.status` recorded and a recommendation attached, so the report is always
@@ -95,27 +95,38 @@ banded via the shared `scoreBand` (80/60). Access percentages come from the brea
 }
 ```
 
-## Analyzer screen (Phase 15C.2 — audit parity, kept distinct)
+## Analyzer screen (Phase 17A — verdict & queue; see ANALYZER_DASHBOARD_UX_REVIEW.md)
 
 The Analyzer is the **primary start-to-finish workflow**: enter a domain → audit the
 live file → fix it → download the corrected version. It reuses the Validator's engine
-but is deliberately *not* a second validation screen — it keeps an identity the
-Validator doesn't have:
+but is deliberately _not_ a second validation screen — it leads with _access_ ("who
+gets in"), the Validator leads with _the file_:
 
-- **Crawler Visibility Score** (signature, preserved) leads the report, with
-  search/AI access and error-rate metrics.
-- **Per-crawler visibility breakdown**: the category tallies expand (collapsible
-  `<details>`) into every crawler's allowed/blocked verdict (via the Tester's
-  `isAllowed(file, "/", ua)`).
-- **Audit dashboard** (the 5-dimension `buildAudit`) for health detail.
-- **Fix & export**: the file is an editable *working copy* (not a free-form
-  textarea — that's the Validator). Findings carry **Fix This**/**Fix All Safe**
-  (the shared Smart Fix engine), with **Undo**, a session **trend**, a **cumulative
-  diff vs. the live file**, and **Download fixed robots.txt**.
-- **Recommendations** (info-level, deep-linking into Generator / AI Manager).
+- **Verdict band** (`app/analyze/verdict-band.tsx`, sticky) — the ONE score surface:
+  Visibility `NOW → POTENTIAL` (potential = the same pure pipeline re-run on the
+  text with every in-app fix applied — no estimates), band chip, the one-sentence
+  verdict ("Search engines see everything · 1 of 8 AI bots blocked · 2 fixable
+  issues cost 1 pt"), contributing metrics (`Search 3/3 · AI 7/8 · File health
+83 → 89` — health is **not** a second hero, and the old `errorRate` is no longer
+  rendered anywhere), fetch provenance (`200 OK · text/plain · 0.2 KB · fetched
+14:02 UTC`), and the actions: **Fix N safe issues +Δ pts** / Undo / Download.
+  Non-`ok` fetch outcomes keep a loud `Callout`; a successful fetch is just the
+  metadata line.
+- **Per-crawler visibility breakdown** (unchanged; becomes the Access Matrix in 17B).
+- **Action Queue** (`app/analyze/action-queue.tsx`) — Priorities + Issues +
+  Recommendations collapsed into ONE ranked list over `validation.issues`:
+  in-app-fixable first by deduction points, then manual point work, then advisories.
+  Rows mirror the Validator issue-panel anatomy (severity chip · title · `+pts` ·
+  action; expanded: message, `whyItMatters`, preview-before-apply `DiffView`,
+  `fixImpact` recovery line). Non-fixable rows deep-link via
+  `recommendedActionFor(code)` → AI Manager / Generator. `AuditDashboard`
+  (Strengths/Weaknesses/priorities/dimension cards), the visibility `ScoreCard`,
+  the Fix & export toolbar, and `RecommendationCard` no longer render here.
+- **Cumulative diff vs. the live file** after any fix; **Next Steps** only when the
+  queue is empty; the related rail is collapsed into a `<details>`.
 
-Everything that depends on the file (findings, audit, breakdown, visibility,
-recommendations) is **recomputed client-side from the working copy** using the same
+Everything that depends on the file (queue, breakdown, visibility, recovery
+potentials) is **recomputed client-side from the working copy** using the same
 pure functions as the server pipeline, so a fix updates every score live. The server
 report still supplies the fetch metadata (domain, status, original source).
 

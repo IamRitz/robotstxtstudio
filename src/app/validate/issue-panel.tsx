@@ -27,7 +27,7 @@ export function issueLine(issue: ValidationIssue): number | undefined {
 }
 
 /** "Recovers SEO +10 · Overall +3" — the per-fix score recovery preview. */
-function impactDetail(issue: ValidationIssue): string | null {
+export function impactDetail(issue: ValidationIssue): string | null {
   const { dimensions, overall } = fixImpact(issue);
   if (dimensions.length === 0) return null;
   const parts = dimensions.map((h) => `${DIM_SHORT[h.dimension]} +${h.points}`);

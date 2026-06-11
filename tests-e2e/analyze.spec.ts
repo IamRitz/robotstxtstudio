@@ -15,16 +15,17 @@ test("analyze a website and view the report", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/analyze\?domain=example\.com/);
 
-  // Report renders, recomputed live from the fetched file.
-  await expect(page.getByText("robots.txt fetched successfully")).toBeVisible();
-  await expect(page.getByText("Crawler Visibility Score")).toBeVisible(); // analyzer-unique
-  await expect(page.getByText("Overall health", { exact: true })).toBeVisible(); // audit dashboard
+  // Report renders, recomputed live from the fetched file (Phase 17A workspace).
+  await expect(page.getByTestId("score-current")).toBeVisible(); // verdict band (visibility NOW → POTENTIAL)
   await expect(page.getByText("Crawler visibility — by crawler")).toBeVisible(); // per-crawler breakdown
-  await expect(page.getByTestId("issue-list").getByText("No sitemap declared")).toBeVisible(); // finding
-  await expect(page.getByText("ClaudeBot inherits the default rules").first()).toBeVisible(); // recommendation/priority
+  const queue = page.getByTestId("issue-list"); // the single ranked Action Queue
+  await expect(queue.getByText("No sitemap declared")).toBeVisible(); // finding
+  await expect(queue.getByText("ClaudeBot inherits the default rules")).toBeVisible(); // advisory (deep-link row)
+  await expect(queue.getByRole("link", { name: /Open AI Manager/ }).first()).toBeVisible();
   // Analyzer can produce a corrected file (the "finish here" workflow).
-  await expect(page.getByText("Fix & export")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Download robots.txt", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Download robots.txt", exact: true }),
+  ).toBeVisible();
 });
 
 test("analyze shows a loading state while fetching", async ({ page }) => {

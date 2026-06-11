@@ -1,6 +1,13 @@
 # Analyzer & Dashboard UX Review — "From Report to Verdict"
 
-> **Status: DESIGN PROPOSAL — no code in this phase.** Founder/PM/design review of
+> **Status: Phase 17A SHIPPED** (verdict band `app/analyze/verdict-band.tsx`, Action
+> Queue `app/analyze/action-queue.tsx`; Strengths/Weaknesses, the second hero score,
+> "Error rate", the Fix & export toolbar, and the Issues/Recommendations split are
+> gone from the Analyzer — `AuditDashboard` now has no production consumer). Measured
+> scroll: 4.30 → 1.99 viewports at 1440×900, 7.46 → 3.08 at 390×844 (same mocked
+> report). Phases 17B–17D remain proposals.
+>
+> Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience
 > (`src/app/page.tsx`). Companion docs: [`ANALYZER.md`](./ANALYZER.md),
 > [`VALIDATOR_UX_REDESIGN.md`](./VALIDATOR_UX_REDESIGN.md) (the Phase 16 playbook

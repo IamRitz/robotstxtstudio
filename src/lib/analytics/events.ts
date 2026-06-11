@@ -24,7 +24,11 @@ export const EVENTS = {
   issueSelected: "issue_selected",
   fixApplied: "fix_applied",
   fixUndone: "fix_undone",
+  actionQueueClicked: "action_queue_clicked",
 } as const;
+
+/** Which workspace a fix event came from (Validator vs. Analyzer queue). */
+export type FixSurface = "validator" | "analyzer";
 
 /** Where a click/conversion originated (a page_type, or an in-tool surface). */
 export type SourceType = PageType | "rail" | "nav" | "footer";
@@ -127,6 +131,8 @@ export interface FixAppliedProps {
   readonly count: number;
   /** Overall score delta produced by the apply (after − before). */
   readonly scoreDelta: number;
+  /** Originating workspace (omitted = validator, the original surface). */
+  readonly surface?: FixSurface;
 }
 
 /** A fix (single or batch) was applied to the working file (Phase 2A). */
@@ -137,10 +143,20 @@ export function trackFixApplied(p: FixAppliedProps): void {
     safe: p.safe,
     count: p.count,
     score_delta: p.scoreDelta,
+    surface: p.surface,
   });
 }
 
 /** The last applied fix was undone (Phase 2A) — measures fix trust/regret. */
-export function trackFixUndone(): void {
-  capture(EVENTS.fixUndone, {});
+export function trackFixUndone(surface?: FixSurface): void {
+  capture(EVENTS.fixUndone, { surface });
+}
+
+/**
+ * An Action Queue row's action was clicked on the Analyzer (Phase 17A). `kind`
+ * separates in-app fixes from deep-links into Control tools — answers whether the
+ * queue drives remediation, navigation, or both.
+ */
+export function trackActionQueueClicked(code: string, kind: "fix" | "deep-link"): void {
+  capture(EVENTS.actionQueueClicked, { code, kind });
 }
