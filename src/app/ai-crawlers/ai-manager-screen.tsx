@@ -237,13 +237,26 @@ export function AiManagerScreen({
     setPolicySet((prev) => setPermission(prev, id, checked ? "allow" : "block"));
     setTemplate(null);
   };
+  /** Groups holding explicit decisions under `next` — the change must be SEEN
+   *  in the rows, not only in the generated code. */
+  const revealMapFor = (next: PolicySet) =>
+    Object.fromEntries(
+      CATEGORY_ORDER.map((category) => [
+        category,
+        crawlersByCategory(category).some((c) => getPermission(next, c.id) !== "inherit"),
+      ]),
+    ) as Record<CrawlerCategory, boolean>;
+  const revealDecisions = (next: PolicySet) => setOpen(revealMapFor(next));
+
   const applyTemplate = (t: WebsiteType) => {
     setPolicySet(fromWebsitePreset(t));
     setTemplate(t);
+    revealDecisions(fromWebsitePreset(t));
   };
   const applyAndClear = (next: PolicySet) => {
     setPolicySet(next);
     setTemplate(null);
+    revealDecisions(next);
   };
 
   const openMap = open ?? defaultOpenMap(policySet);
@@ -256,10 +269,20 @@ export function AiManagerScreen({
 
   /** Header bulk action: set every crawler in the group in ONE click (17E). */
   const setCategory = (category: CrawlerCategory, state: PermissionState) => {
-    applyAndClear(setCategoryPermission(policySet, category, state));
-    // Bulk decisions are work happening here — make sure the group is visible.
-    if (!openMap[category] && state !== "inherit") setOpen({ ...openMap, [category]: true });
+    const next = setCategoryPermission(policySet, category, state);
+    setPolicySet(next);
+    setTemplate(null);
+    // Reveal what changed everywhere, but ALWAYS keep the acted-on group open —
+    // a header Reset must show the rows flipping back to Inherited.
+    setOpen({ ...revealMapFor(next), [category]: true });
   };
+
+  // Do the bulk buttons reflect reality? (Every AI crawler explicitly decided.)
+  const aiStates = [...crawlersByCategory("ai-training"), ...crawlersByCategory("ai-search")].map(
+    (c) => getPermission(policySet, c.id),
+  );
+  const allAiBlocked = aiStates.every((st) => st === "block");
+  const allAiAllowed = aiStates.every((st) => st === "allow");
 
   const matches = (c: Crawler) =>
     `${c.name} ${c.owner}`.toLowerCase().includes(query.trim().toLowerCase());
@@ -332,16 +355,19 @@ export function AiManagerScreen({
           );
         })}
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
+        {/* Highlight = the policy's ACTUAL state, never a static button style. */}
         <Button
-          variant="outline"
+          variant={allAiBlocked ? "brand" : "secondary"}
           size="sm"
+          aria-pressed={allAiBlocked}
           onClick={() => applyAndClear(blockAllAiCrawlers(policySet))}
         >
           Block all AI
         </Button>
         <Button
-          variant="ghost"
+          variant={allAiAllowed ? "brand" : "secondary"}
           size="sm"
+          aria-pressed={allAiAllowed}
           onClick={() => applyAndClear(allowAllAiCrawlers(policySet))}
         >
           Allow all AI
@@ -478,10 +504,21 @@ export function AiManagerScreen({
                             {crawler.description}
                           </p>
                         </div>
-                        <StatusBadge
-                          status={badgeStatus(state)}
-                          label={state === "inherit" ? "Inherited" : undefined}
-                        />
+                        <span
+                          title={
+                            state === "inherit"
+                              ? "Inherited: no explicit rule for this crawler — it follows your default (User-agent: *) policy, which currently allows it. Use the toggle to decide explicitly."
+                              : state === "allow"
+                                ? "Explicitly allowed by your policy."
+                                : "Explicitly blocked: this crawler gets its own Disallow: / group."
+                          }
+                          className="cursor-help"
+                        >
+                          <StatusBadge
+                            status={badgeStatus(state)}
+                            label={state === "inherit" ? "Inherited" : undefined}
+                          />
+                        </span>
                         <Switch
                           checked={state !== "block"}
                           onCheckedChange={(c) => toggle(crawler.id, c)}

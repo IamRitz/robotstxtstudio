@@ -36,3 +36,31 @@ test("category header bulk actions: Block all / Reset without touching rows", as
   await expect(page.getByText("User-agent: GPTBot")).toBeHidden();
   await expect(page.getByRole("switch", { name: "Allow GPTBot" })).toBeChecked();
 });
+
+// Bulk-button state, group reveal, and the Inherited explanation.
+test("Block/Allow all AI track the policy, reveal the groups, and explain Inherited", async ({
+  page,
+}) => {
+  await page.goto("/ai-crawlers");
+
+  const blockAll = page.getByRole("button", { name: "Block all AI" });
+  const allowAll = page.getByRole("button", { name: "Allow all AI" });
+  await expect(blockAll).toHaveAttribute("aria-pressed", "false");
+
+  // Block all AI: highlights, and OPENS the AI groups so the rows show it.
+  await blockAll.click();
+  await expect(blockAll).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("switch", { name: "Allow GPTBot" })).toBeVisible();
+  await expect(page.getByRole("switch", { name: "Allow GPTBot" })).not.toBeChecked();
+  await expect(page.getByRole("switch", { name: "Allow PerplexityBot" })).toBeVisible();
+
+  // Allow all AI: the highlight moves — it tracks the policy, not a fixed style.
+  await allowAll.click();
+  await expect(allowAll).toHaveAttribute("aria-pressed", "true");
+  await expect(blockAll).toHaveAttribute("aria-pressed", "false");
+  await expect(page.getByRole("switch", { name: "Allow GPTBot" })).toBeChecked();
+
+  // Undecided crawlers stay "Inherited", with a hover explanation.
+  await page.getByRole("button", { name: "Expand all" }).click();
+  await expect(page.getByTitle(/Inherited: no explicit rule/).first()).toBeVisible();
+});
