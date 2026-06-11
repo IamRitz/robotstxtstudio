@@ -16,14 +16,13 @@ test("homepage Continue restores the analysis without refetching", async ({ page
   await expect(page.getByTestId("score-current")).toBeVisible();
   expect(calls).toBe(1);
 
-  // The homepage now shows the dashboard instead of the locked teaser.
+  // The homepage now shows the resume strip instead of the locked teaser. The
+  // active domain renders ONCE: in the strip, not as a duplicate archive row.
   await page.goto("/");
-  const dash = page.getByTestId("continue-working");
-  await expect(dash.getByText("example.com")).toBeVisible();
-  await dash
-    .getByRole("link", { name: /Continue/ })
-    .first()
-    .click();
+  const strip = page.getByTestId("workspace-resume");
+  await expect(strip).toContainText("example.com");
+  await expect(page.getByTestId("continue-working")).toBeHidden();
+  await strip.getByRole("link", { name: /Resume/ }).click();
 
   // Full report restored from the local snapshot — zero network.
   await expect(page).toHaveURL(/\/analyze\?domain=example\.com/);
@@ -60,15 +59,27 @@ test("refresh and Back keep the workspace, including applied fixes", async ({ pa
   expect(calls).toBe(1);
 });
 
-test("clear history removes the archive but keeps the active workspace strip", async ({ page }) => {
+test("workspace folds its archive row into the strip; clear history restores first-run", async ({
+  page,
+}) => {
   await page.route("**/api/analyze", (route) => route.fulfill({ json: ANALYSIS_REPORT }));
   await page.goto("/analyze?domain=example.com&fresh=1");
   await expect(page.getByTestId("score-current")).toBeVisible();
 
+  // Active workspace matches the only archive entry → strip only, score folded in.
   await page.goto("/");
-  await expect(page.getByTestId("continue-working")).toBeVisible();
-  await page.getByRole("button", { name: "Clear history" }).click();
-  // History ≠ workspace (17F.5): the archive list goes, active work stays.
-  await expect(page.getByTestId("continue-working")).toBeHidden();
   await expect(page.getByTestId("workspace-resume")).toBeVisible();
+  await expect(page.getByTestId("continue-working")).toBeHidden();
+
+  // Without an active workspace the entry surfaces as a normal archive row.
+  await page.evaluate(() => localStorage.removeItem("rs:workspace:v1"));
+  await page.reload();
+  const dash = page.getByTestId("continue-working");
+  await expect(dash.getByText("example.com")).toBeVisible();
+  await expect(page.getByTestId("workspace-resume")).toBeHidden();
+
+  // Clear history → true first-run state (locked teaser returns).
+  await page.getByRole("button", { name: "Clear history" }).click();
+  await expect(dash).toBeHidden();
+  await expect(page.getByText("Unlock your full crawler report")).toBeVisible();
 });

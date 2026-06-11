@@ -126,8 +126,11 @@ the crawler's group, scrolls the row into view, and marks it briefly;
 `/generate?focus=sitemap` lands focused on the sitemap field. **Homepage
 (17F.5):** when a workspace exists, `ContinueWorking` shows a resume strip
 ("Continue working on example.com · Last changed in AI Manager · 3m ago →
-Resume") above — and independent of — the recent-analyses archive; clearing
-history never touches the active workspace.
+Resume") above the recent-analyses archive (headed "Recent analyses"). One
+domain never renders twice: the active workspace's archive entry folds its
+score/delta/fixes-available into the strip and its row is hidden until the
+workspace moves on or is discarded. Clearing history never touches the active
+workspace.
 
 ## Context preservation
 

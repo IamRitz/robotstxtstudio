@@ -29,8 +29,10 @@ const BAND_DOT: Record<ScoreBand, string> = {
   poor: "bg-status-blocked-dot",
 };
 
-/** 17F.5 — the fastest path back into ACTIVE work (distinct from the archive). */
-function WorkspaceResume({ ws }: { ws: Workspace }) {
+/** 17F.5 — the fastest path back into ACTIVE work (distinct from the archive).
+ *  When the workspace matches an archive entry, that entry's score/delta fold in
+ *  here and its row is hidden below — one domain never renders twice. */
+function WorkspaceResume({ ws, entry }: { ws: Workspace; entry?: RecentAnalysis }) {
   return (
     <div
       className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-brand/30 bg-brand-muted/40 px-4 py-3"
@@ -43,8 +45,23 @@ function WorkspaceResume({ ws }: { ws: Workspace }) {
         </p>
         <p className="text-xs text-muted-foreground">
           Last changed in {WORKSPACE_SOURCE_LABEL[ws.source]} · {relativeTime(ws.updatedAt)}
+          {entry && entry.safeFixCount > 0
+            ? ` · ${entry.safeFixCount} quick ${entry.safeFixCount === 1 ? "fix" : "fixes"} available`
+            : ""}
         </p>
       </div>
+      {entry ? (
+        <span className="flex shrink-0 items-center gap-1.5">
+          <span
+            className={cn("size-1.5 rounded-full", BAND_DOT[entry.visibility.band])}
+            aria-hidden
+          />
+          <span className="font-mono text-sm font-bold tabular-nums text-foreground">
+            {entry.visibility.value}
+          </span>
+          <Delta entry={entry} />
+        </span>
+      ) : null}
       <Link
         href={ws.domain ? `/analyze?domain=${encodeURIComponent(ws.domain)}` : "/validate"}
         className={cn(buttonVariants({ variant: "brand", size: "sm" }), "ml-auto shrink-0")}
@@ -90,13 +107,18 @@ export function ContinueWorking({ fallback }: { fallback: ReactNode }) {
 
   if (entries === null || (entries.length === 0 && ws === null)) return <>{fallback}</>;
 
+  // One domain never renders twice: the active workspace's archive entry folds
+  // into the resume strip; the list below holds everything else.
+  const wsEntry = ws?.domain ? entries.find((e) => e.domain === ws.domain) : undefined;
+  const archive = ws?.domain ? entries.filter((e) => e.domain !== ws.domain) : entries;
+
   return (
     <div className="space-y-4">
-      {ws ? <WorkspaceResume ws={ws} /> : null}
-      {entries.length === 0 ? null : (
+      {ws ? <WorkspaceResume ws={ws} entry={wsEntry} /> : null}
+      {archive.length === 0 ? null : (
         <div>
           <div className="mb-3 flex items-baseline justify-between gap-2">
-            <SectionHeader>Continue working</SectionHeader>
+            <SectionHeader>Recent analyses</SectionHeader>
             <button
               type="button"
               onClick={() => {
@@ -110,7 +132,7 @@ export function ContinueWorking({ fallback }: { fallback: ReactNode }) {
             </button>
           </div>
           <Card className="divide-y divide-border p-0" data-testid="continue-working">
-            {entries.map((e) => (
+            {archive.map((e) => (
               <div key={e.domain} className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
                 <span
                   className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold uppercase text-foreground"
