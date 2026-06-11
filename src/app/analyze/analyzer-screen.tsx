@@ -1,24 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, FileText, GitCompare, Globe, Megaphone, ScanSearch } from "lucide-react";
+import { FileText, GitCompare, Globe, Megaphone, ScanSearch } from "lucide-react";
 import { parseRobots } from "@/parser";
 import {
   applyTextEdits,
+  buildAudit,
   collectSafeEdits,
   fixableIssues,
   safelyFixableIssues,
   validateRobots,
 } from "@/features/validator";
 import { computeBreakdown, computeVisibility } from "@/features/live-checker";
-import { isAllowed } from "@/features/tester";
-import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
-import type { AnalysisReport, Crawler, TextEdit, ValidationIssue } from "@/types";
+import type { AnalysisReport, ScoreDimension, TextEdit, ValidationIssue } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { DiffView } from "@/components/diff-view";
-import { CrawlerBadge } from "@/components/crawler-badge";
-import { StatusBadge } from "@/components/status-badge";
 import { Callout } from "@/components/callout";
 import { EmptyState } from "@/components/empty-state";
 import { LoadingCard } from "@/components/loading-state";
@@ -34,8 +31,12 @@ import {
   trackFixUndone,
   type FixAppliedProps,
 } from "@/lib/analytics";
+import { DimensionChipStrip } from "@/components/dimension-chip-strip";
+import { RobotsEditor, type EditorAnnotation } from "@/components/robots-editor";
+import { affectsDimension, issueLine } from "@/app/validate/issue-panel";
 import { VerdictBand } from "./verdict-band";
 import { ActionQueue } from "./action-queue";
+import { AccessMatrix } from "./access-matrix";
 
 type State =
   | { kind: "idle" }
@@ -163,68 +164,6 @@ export function AnalyzerScreen({ initialDomain }: { initialDomain: string }) {
   );
 }
 
-/** Per-category, per-crawler visibility breakdown (collapsible). */
-function CrawlerBreakdown({ file }: { file: ReturnType<typeof parseRobots> }) {
-  const categories = useMemo(
-    () =>
-      CATEGORY_ORDER.map((category) => {
-        const crawlers = crawlersByCategory(category).map((crawler: Crawler) => ({
-          crawler,
-          allowed: isAllowed(file, "/", crawler.userAgent),
-        }));
-        const allowed = crawlers.filter((c) => c.allowed).length;
-        return { category, crawlers, allowed, total: crawlers.length };
-      }),
-    [file],
-  );
-
-  return (
-    <Card className="p-6">
-      <SectionHeader className="mb-4">Crawler visibility — by crawler</SectionHeader>
-      <div className="space-y-2">
-        {categories.map(({ category, crawlers, allowed, total }) => {
-          const pct = total === 0 ? 0 : Math.round((allowed / total) * 100);
-          return (
-            <details key={category} className="group rounded-lg border border-border">
-              <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-2.5 [&::-webkit-details-marker]:hidden">
-                <ChevronDown
-                  className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
-                  aria-hidden
-                />
-                <span className="flex-1 text-sm font-medium text-foreground">
-                  {CATEGORY_LABELS[category]}
-                </span>
-                <span
-                  className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-status-blocked-bg sm:block"
-                  aria-hidden
-                >
-                  <span
-                    className="block h-full bg-status-allowed-dot"
-                    style={{ width: `${pct}%` }}
-                  />
-                </span>
-                <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                  {allowed}/{total} allowed
-                </span>
-              </summary>
-              <ul className="divide-y divide-border border-t border-border">
-                {crawlers.map(({ crawler, allowed: isOk }) => (
-                  <li key={crawler.id} className="flex items-center gap-3 px-3 py-2">
-                    <div className="min-w-0 flex-1">
-                      <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
-                    </div>
-                    <StatusBadge status={isOk ? "allowed" : "blocked"} />
-                  </li>
-                ))}
-              </ul>
-            </details>
-          );
-        })}
-      </div>
-    </Card>
-  );
-}
-
 /** Recompute the visibility verdict for a hypothetical file text. Pure + cheap. */
 function visibilityOf(text: string) {
   const file = parseRobots(text);
@@ -241,6 +180,7 @@ function Report({ report }: { report: AnalysisReport }) {
 
   const [workingText, setWorkingText] = useState(originalSource);
   const [undoStack, setUndoStack] = useState<string[]>([]);
+  const [dimension, setDimension] = useState<ScoreDimension | null>(null);
 
   // Everything that depends on the file is recomputed from the working copy, so
   // applying a fix updates the verdict, queue, and breakdown live.
@@ -249,7 +189,8 @@ function Report({ report }: { report: AnalysisReport }) {
     const validation = validateRobots(file);
     const breakdown = computeBreakdown(file);
     const visibility = computeVisibility(breakdown, validation.health);
-    return { file, validation, breakdown, visibility };
+    const audit = buildAudit(validation.issues);
+    return { file, validation, breakdown, visibility, audit };
   }, [workingText]);
 
   // Recovery, in the headline currency: simulate the fixes and re-score. No
@@ -322,6 +263,17 @@ function Report({ report }: { report: AnalysisReport }) {
     setUndoStack((s) => s.slice(0, -1));
   };
 
+  const issues = derived.validation.issues;
+  const queueIssues =
+    dimension === null ? issues : issues.filter((i) => affectsDimension(i, dimension));
+  const activeDim = derived.audit.dimensions.find((d) => d.dimension === dimension);
+
+  const annotations: EditorAnnotation[] = issues.flatMap((i) => {
+    const line = issueLine(i);
+    return line === undefined ? [] : [{ line, severity: i.severity }];
+  });
+  const lineCount = workingText === "" ? 0 : workingText.split("\n").length;
+
   const nextSteps: NextStep[] = [
     {
       kind: "link",
@@ -379,21 +331,59 @@ function Report({ report }: { report: AnalysisReport }) {
         onDownload={() => downloadText(workingText)}
       />
 
-      <CrawlerBreakdown file={derived.file} />
+      <AccessMatrix file={derived.file} domain={report.domain} />
 
       <section>
         <div className="mb-3 flex items-baseline justify-between gap-2">
           <SectionHeader>What to do first</SectionHeader>
           <span className="text-xs text-muted-foreground">ranked by points recovered</span>
         </div>
-        {derived.validation.issues.length === 0 ? (
+        {issues.length > 0 ? (
+          <div className="mb-3">
+            <DimensionChipStrip
+              report={derived.audit}
+              active={dimension}
+              onToggle={(d) => setDimension((cur) => (cur === d ? null : d))}
+            />
+            {activeDim ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Showing only {activeDim.label} issues ({queueIssues.length}). Click the chip again
+                to clear.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {issues.length === 0 ? (
           <Callout status="allowed" title="Nothing to fix">
             This robots.txt is healthy — no errors, warnings, or open decisions.
           </Callout>
+        ) : queueIssues.length === 0 ? (
+          <Callout status="allowed" title={`No ${activeDim?.label ?? ""} issues left`}>
+            Nothing to do in this dimension — click the chip again to see everything.
+          </Callout>
         ) : (
-          <ActionQueue issues={derived.validation.issues} sourceText={workingText} onFix={onFix} />
+          <ActionQueue issues={queueIssues} sourceText={workingText} onFix={onFix} />
         )}
       </section>
+
+      {/* Transparency: the exact text that was fetched / fixed / will download. */}
+      <details className="rounded-xl border border-border bg-card px-4 py-3">
+        <summary className="cursor-pointer text-xs font-semibold uppercase tracking-widest text-muted-foreground hover:text-foreground">
+          The file — {changed ? "with your fixes applied" : "as served"} ({lineCount}{" "}
+          {lineCount === 1 ? "line" : "lines"}
+          {annotations.length > 0 ? `, ${annotations.length} flagged` : ""})
+        </summary>
+        <div className="mt-3">
+          <RobotsEditor
+            value={workingText}
+            readOnly
+            annotations={annotations}
+            ariaLabel="robots.txt (read-only)"
+            minRows={4}
+            className="max-h-[60vh]"
+          />
+        </div>
+      </details>
 
       {changed ? (
         <Card className="p-4" aria-live="polite">

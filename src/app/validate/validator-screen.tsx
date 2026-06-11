@@ -7,7 +7,6 @@ import {
   applyTextEdits,
   buildAudit,
   collectSafeEdits,
-  DEDUCTIONS,
   fixableIssues,
   getAiCrawlerStatuses,
   safelyFixableIssues,
@@ -33,7 +32,7 @@ import { RobotsEditor, type EditorAnnotation } from "@/components/robots-editor"
 import { NextSteps, type NextStep } from "@/components/next-steps";
 import { CommandBar } from "./command-bar";
 import { DimensionChips } from "./dimension-chips";
-import { IssueList, issueLine, sortIssues, type IssueSort } from "./issue-panel";
+import { affectsDimension, IssueList, issueLine, sortIssues, type IssueSort } from "./issue-panel";
 
 const SAMPLE = `User-agent: *
 Allow: /
@@ -55,11 +54,6 @@ function downloadText(text: string, filename = "robots.txt") {
   a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
-}
-
-/** Does this issue deduct from the given dimension? (chip filter predicate) */
-function affectsDimension(issue: ValidationIssue, dimension: ScoreDimension): boolean {
-  return (DEDUCTIONS[issue.code] ?? []).some((h) => h.dimension === dimension);
 }
 
 /**

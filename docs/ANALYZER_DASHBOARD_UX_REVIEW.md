@@ -5,7 +5,15 @@
 > "Error rate", the Fix & export toolbar, and the Issues/Recommendations split are
 > gone from the Analyzer — `AuditDashboard` now has no production consumer). Measured
 > scroll: 4.30 → 1.99 viewports at 1440×900, 7.46 → 3.08 at 390×844 (same mocked
-> report). Phases 17B–17D remain proposals.
+> report).
+>
+> **Phase 17B SHIPPED** (17B.1 Access Matrix `app/analyze/access-matrix.tsx` —
+> named blocked-bot chips + split bars, §7 option A; 17B.2 read-only file view via
+> `RobotsEditor` `readOnly`; 17B.3 dimension chips as queue filters via the shared
+> `components/dimension-chip-strip.tsx`, lifted from the Validator). First-viewport
+> coverage at 1440×900: verdict band + full matrix visible (queue header at the
+> fold); at 390×844: band + matrix through the AI-training row with its blocked
+> chips. Phases 17C–17D remain proposals.
 >
 > Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience

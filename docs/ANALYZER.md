@@ -95,7 +95,7 @@ banded via the shared `scoreBand` (80/60). Access percentages come from the brea
 }
 ```
 
-## Analyzer screen (Phase 17A — verdict & queue; see ANALYZER_DASHBOARD_UX_REVIEW.md)
+## Analyzer screen (Phase 17A/17B — verdict, matrix & queue; see ANALYZER_DASHBOARD_UX_REVIEW.md)
 
 The Analyzer is the **primary start-to-finish workflow**: enter a domain → audit the
 live file → fix it → download the corrected version. It reuses the Validator's engine
@@ -112,7 +112,20 @@ gets in"), the Validator leads with _the file_:
 14:02 UTC`), and the actions: **Fix N safe issues +Δ pts** / Undo / Download.
   Non-`ok` fetch outcomes keep a loud `Callout`; a successful fetch is just the
   metadata line.
-- **Per-crawler visibility breakdown** (unchanged; becomes the Access Matrix in 17B).
+- **Access Matrix** (`app/analyze/access-matrix.tsx`, 17B.1) — "Who can see
+  {domain}", directly under the verdict band: one row per crawler category with an
+  allowed/blocked split bar, the count, and a red `✗ {name}` chip for every
+  **blocked** crawler (exceptions are the information; fully-allowed rows just get
+  a ✓). Rows expand into the full per-crawler verdict list. Names, not
+  percentages; data is the same Tester `isAllowed(file, "/", ua)` sweep as before.
+- **Read-only file view** (17B.2) — a collapsed `<details>` ("The file — as
+  served / with your fixes applied · N lines, M flagged") rendering the working
+  copy in `RobotsEditor` (`readOnly`, severity annotations). Transparency only:
+  no editing, no split pane.
+- **Dimension chips** (17B.3) — the Phase 16 chip strip, lifted to
+  `components/dimension-chip-strip.tsx` and shared with the Validator. Chips
+  (`SEO 95 +5`) filter the Action Queue by dimension; no panels, no dashboard
+  cards.
 - **Action Queue** (`app/analyze/action-queue.tsx`) — Priorities + Issues +
   Recommendations collapsed into ONE ranked list over `validation.issues`:
   in-app-fixable first by deduction points, then manual point work, then advisories.

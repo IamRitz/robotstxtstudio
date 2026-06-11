@@ -26,6 +26,11 @@ export function issueLine(issue: ValidationIssue): number | undefined {
   return issue.line ?? issue.lineRange?.start;
 }
 
+/** Does this issue deduct from the given dimension? (chip filter predicate) */
+export function affectsDimension(issue: ValidationIssue, dimension: ScoreDimension): boolean {
+  return (DEDUCTIONS[issue.code] ?? []).some((h) => h.dimension === dimension);
+}
+
 /** "Recovers SEO +10 · Overall +3" — the per-fix score recovery preview. */
 export function impactDetail(issue: ValidationIssue): string | null {
   const { dimensions, overall } = fixImpact(issue);

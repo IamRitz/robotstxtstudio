@@ -139,7 +139,12 @@ export function VerdictBand({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={onFixAllSafe} disabled={safeCount === 0}>
+          {/* No button at zero — "Fix 0 safe issues" reads as a bug on a clean file. */}
+          <Button
+            size="sm"
+            onClick={onFixAllSafe}
+            className={safeCount === 0 ? "hidden" : undefined}
+          >
             <Wand2 aria-hidden /> Fix {safeCount} safe {safeCount === 1 ? "issue" : "issues"}
             {safeDelta > 0 ? (
               <span className="font-semibold">

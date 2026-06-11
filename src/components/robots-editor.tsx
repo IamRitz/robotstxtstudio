@@ -11,7 +11,9 @@ export interface EditorAnnotation {
 
 export interface RobotsEditorProps {
   value: string;
-  onChange: (value: string) => void;
+  /** Omit (or set `readOnly`) for a display-only view — selection/copy still work. */
+  onChange?: (value: string) => void;
+  readOnly?: boolean;
   /** Line markers (issue locations). Lines may carry several annotations. */
   annotations?: readonly EditorAnnotation[];
   /** 1-based line to emphasize and scroll into view (the selected issue's line). */
@@ -75,6 +77,7 @@ function markersByLine(annotations: readonly EditorAnnotation[]): Map<number, Se
 export function RobotsEditor({
   value,
   onChange,
+  readOnly = false,
   annotations = [],
   activeLine,
   onLineSelect,
@@ -201,7 +204,8 @@ export function RobotsEditor({
             </div>
             <textarea
               value={value}
-              onChange={(e) => onChange(e.target.value)}
+              readOnly={readOnly || !onChange}
+              onChange={(e) => onChange?.(e.target.value)}
               onClick={(e) => {
                 const line = lineAtCaret(e.currentTarget);
                 if (onLineSelect && markers.has(line)) onLineSelect(line);
