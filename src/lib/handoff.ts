@@ -8,6 +8,11 @@
  *
  * The Generator is intentionally excluded: it builds from structured config, not raw
  * text, so it cannot ingest an arbitrary file.
+ *
+ * Phase 17D: the four core tools (Analyze/Validate/AI Manager/Generator) now share
+ * the ambient workspace (`@/lib/workspace`) instead — navigation alone carries the
+ * file. The handoff remains the one-shot push channel for the read-only consumers
+ * (Explainer, Compare, Tester) and for explicit "take THIS text" CTAs.
  */
 const KEY = "rts:robots-handoff";
 

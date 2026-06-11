@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, FileText, Megaphone, Search, ShieldCheck } from "lucide-react";
+import { Check, ChevronDown, FileText, Megaphone, Search, ShieldCheck } from "lucide-react";
 import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
 import { TEMPLATE_LABELS } from "@/features/generator";
 import {
@@ -11,10 +11,21 @@ import {
   emptyPolicySet,
   fromWebsitePreset,
   getPermission,
+  policySetFromFile,
   setPermission,
   type PermissionState,
   type PolicySet,
 } from "@/features/crawler-manager";
+import { parseRobots } from "@/parser";
+import {
+  clearWorkspace,
+  getWorkspace,
+  setWorkspace,
+  workspaceLabel,
+  type Workspace,
+} from "@/lib/workspace";
+import { WorkspaceBar } from "@/components/workspace-bar";
+import { DiffView } from "@/components/diff-view";
 import type { Crawler, WebsiteType } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
@@ -74,11 +85,79 @@ function useJustUpdated(value: string): boolean {
   return flash;
 }
 
+const UI_KEY = "rs:ai-manager-ui";
+
+interface SavedManagerUi {
+  policySet?: PolicySet;
+  template?: WebsiteType | null;
+  /** The workspace text the saved intent was based on — stale saves are dropped. */
+  basedOnText?: string | null;
+}
+
+function readSavedUi(): SavedManagerUi {
+  try {
+    return (JSON.parse(sessionStorage.getItem(UI_KEY) ?? "{}") as SavedManagerUi) ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export function AiManagerScreen() {
   const [policySet, setPolicySet] = useState<PolicySet>(emptyPolicySet);
   const [query, setQuery] = useState("");
   /** The active starter template, highlighted until the policy diverges from it. */
   const [template, setTemplate] = useState<WebsiteType | null>(null);
+  /** The shared working file this screen is seeded from, if any (17D). */
+  const [ws, setWs] = useState<Workspace | null>(null);
+
+  // Seed from the shared workspace (17D): toggles reflect the working file's
+  // decisions. Uncommitted intent survives back/forward via sessionStorage, but
+  // only while it was based on the SAME workspace text (stale intent is dropped).
+  useEffect(() => {
+    const current = getWorkspace();
+    setWs(current);
+    const saved = readSavedUi();
+    if (saved.policySet && (saved.basedOnText ?? null) === (current?.text ?? null)) {
+      setPolicySet(saved.policySet);
+      setTemplate(saved.template ?? null);
+      return;
+    }
+    if (current) {
+      setPolicySet(policySetFromFile(parseRobots(current.text)));
+      setTemplate(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        UI_KEY,
+        JSON.stringify({ policySet, template, basedOnText: ws?.text ?? null }),
+      );
+    } catch {
+      // session nicety only
+    }
+  }, [policySet, template, ws]);
+
+  /** Commit the manager's output as the new working file (explicit, previewed). */
+  const applyToWorkspace = () => {
+    if (!ws) return;
+    setWorkspace({
+      domain: ws.domain,
+      originalText: ws.originalText,
+      text: impact.text,
+      appliedFixes: ws.appliedFixes,
+      source: "ai-manager",
+    });
+    setWs(getWorkspace());
+  };
+
+  const discardWorkspace = () => {
+    clearWorkspace();
+    setWs(null);
+    setPolicySet(emptyPolicySet());
+    setTemplate(null);
+  };
 
   const impact = useMemo(() => analyzePolicySet(policySet), [policySet]);
   const justUpdated = useJustUpdated(impact.text);
@@ -137,9 +216,17 @@ export function AiManagerScreen() {
         subtitle="Control which bots can access your website. Changes update the export below instantly."
       />
 
+      {ws ? (
+        <WorkspaceBar
+          workspace={ws}
+          note="crawler toggles seeded from this file"
+          onDiscard={discardWorkspace}
+        />
+      ) : null}
+
       <InfoPanel title="What are AI crawlers and why do they matter?" className="mb-6">
-        AI crawlers collect your content to train language models or power AI answer engines. Blocking
-        them keeps your content out of their datasets without affecting search visibility.
+        AI crawlers collect your content to train language models or power AI answer engines.
+        Blocking them keeps your content out of their datasets without affecting search visibility.
       </InfoPanel>
 
       {/* Starter templates */}
@@ -160,10 +247,18 @@ export function AiManagerScreen() {
           );
         })}
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
-        <Button variant="outline" size="sm" onClick={() => applyAndClear(blockAllAiCrawlers(policySet))}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => applyAndClear(blockAllAiCrawlers(policySet))}
+        >
           Block all AI
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => applyAndClear(allowAllAiCrawlers(policySet))}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => applyAndClear(allowAllAiCrawlers(policySet))}
+        >
           Allow all AI
         </Button>
         <Button variant="ghost" size="sm" onClick={() => applyAndClear(emptyPolicySet())}>
@@ -175,12 +270,14 @@ export function AiManagerScreen() {
         <InfoPanel title={`${TEMPLATE_LABELS[template]} template`} className="mb-6">
           <p>{TEMPLATE_RATIONALE[template].what}</p>
           <p className="mt-1">
-            <span className="font-medium text-foreground">Best for:</span> {TEMPLATE_RATIONALE[template].who}
+            <span className="font-medium text-foreground">Best for:</span>{" "}
+            {TEMPLATE_RATIONALE[template].who}
           </p>
         </InfoPanel>
       ) : (
         <p className="mb-6 text-xs text-muted-foreground">
-          Pick a template to start, then fine-tune any crawler below — your choices update the file live.
+          Pick a template to start, then fine-tune any crawler below — your choices update the file
+          live.
         </p>
       )}
 
@@ -209,37 +306,42 @@ export function AiManagerScreen() {
                 className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm"
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 border-b border-border bg-muted px-4 py-2 [&::-webkit-details-marker]:hidden">
-                    <span className="flex items-center gap-2">
-                      <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
-                      <SectionHeader>{CATEGORY_LABELS[category]}</SectionHeader>
-                    </span>
-                    <span className="text-xs tabular-nums text-muted-foreground">
-                      {summary.allowed} allowed · {summary.blocked} blocked
-                    </span>
-                  </summary>
-                  <ul className="divide-y divide-border">
-                    {crawlers.map((crawler) => {
-                      const state = getPermission(policySet, crawler.id);
-                      return (
-                        <li key={crawler.id} className="flex items-center gap-3 px-4 py-3">
-                          <div className="min-w-0 flex-1">
-                            <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
-                            <p className="mt-1 text-xs text-muted-foreground">{crawler.description}</p>
-                          </div>
-                          <StatusBadge
-                            status={badgeStatus(state)}
-                            label={state === "inherit" ? "Inherited" : undefined}
-                          />
-                          <Switch
-                            checked={state !== "block"}
-                            onCheckedChange={(c) => toggle(crawler.id, c)}
-                            aria-label={`Allow ${crawler.name}`}
-                          />
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </details>
+                  <span className="flex items-center gap-2">
+                    <ChevronDown
+                      className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
+                      aria-hidden
+                    />
+                    <SectionHeader>{CATEGORY_LABELS[category]}</SectionHeader>
+                  </span>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {summary.allowed} allowed · {summary.blocked} blocked
+                  </span>
+                </summary>
+                <ul className="divide-y divide-border">
+                  {crawlers.map((crawler) => {
+                    const state = getPermission(policySet, crawler.id);
+                    return (
+                      <li key={crawler.id} className="flex items-center gap-3 px-4 py-3">
+                        <div className="min-w-0 flex-1">
+                          <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {crawler.description}
+                          </p>
+                        </div>
+                        <StatusBadge
+                          status={badgeStatus(state)}
+                          label={state === "inherit" ? "Inherited" : undefined}
+                        />
+                        <Switch
+                          checked={state !== "block"}
+                          onCheckedChange={(c) => toggle(crawler.id, c)}
+                          aria-label={`Allow ${crawler.name}`}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </details>
             );
           })}
         </div>
@@ -249,7 +351,10 @@ export function AiManagerScreen() {
           <div>
             <div className="mb-2 flex items-center justify-between">
               <SectionHeader>Generated robots.txt</SectionHeader>
-              <span className="flex items-center gap-1.5 text-xs font-medium text-status-allowed-fg" aria-label="Updates live">
+              <span
+                className="flex items-center gap-1.5 text-xs font-medium text-status-allowed-fg"
+                aria-label="Updates live"
+              >
                 <span className="relative flex size-2" aria-hidden>
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-status-allowed-dot opacity-75 motion-reduce:hidden" />
                   <span className="relative inline-flex size-2 rounded-full bg-status-allowed-dot" />
@@ -257,12 +362,46 @@ export function AiManagerScreen() {
                 Live
               </span>
             </div>
-            <div className={cn("rounded-xl ring-brand transition-shadow duration-300", justUpdated && "ring-2")}>
+            <div
+              className={cn(
+                "rounded-xl ring-brand transition-shadow duration-300",
+                justUpdated && "ring-2",
+              )}
+            >
               <CodePanel code={impact.text} title="robots.txt block" />
             </div>
             <p className="mt-1.5 text-right text-xs tabular-nums text-muted-foreground">
               {allowedTotal} allowed · {blockedTotal} blocked
             </p>
+
+            {/* 17D: commit these choices to the shared working file — explicit and
+                previewed, because regeneration replaces comments/custom rules. */}
+            {ws && impact.text !== ws.text ? (
+              <div className="mt-3 space-y-2 rounded-xl border border-border bg-card p-3">
+                <p className="text-xs text-muted-foreground">
+                  These choices differ from your working file ({workspaceLabel(ws)}). Applying
+                  regenerates it from the toggles above — comments and rules outside the manager's
+                  model are replaced (see the preview).
+                </p>
+                <details>
+                  <summary className="cursor-pointer text-xs font-medium text-brand hover:underline">
+                    Preview the change
+                  </summary>
+                  <DiffView
+                    before={ws.text}
+                    after={impact.text}
+                    className="mt-2 max-h-64 text-[11px]"
+                  />
+                </details>
+                <Button size="sm" onClick={applyToWorkspace}>
+                  <Check aria-hidden /> Apply to working file
+                </Button>
+              </div>
+            ) : ws ? (
+              <p className="mt-2 text-xs font-medium text-status-allowed-fg">
+                Working file is up to date with these choices.
+              </p>
+            ) : null}
           </div>
 
           {impact.recommendations.length > 0 ? (
@@ -270,7 +409,10 @@ export function AiManagerScreen() {
               <SectionHeader className="mb-2">Recommendations</SectionHeader>
               <div className="space-y-2">
                 {impact.recommendations.slice(0, 4).map((r, i) => (
-                  <RecommendationCard key={`${r.crawlerId ?? r.message}-${i}`} recommendation={{ severity: r.severity, title: r.message, description: "" }} />
+                  <RecommendationCard
+                    key={`${r.crawlerId ?? r.message}-${i}`}
+                    recommendation={{ severity: r.severity, title: r.message, description: "" }}
+                  />
                 ))}
               </div>
             </div>

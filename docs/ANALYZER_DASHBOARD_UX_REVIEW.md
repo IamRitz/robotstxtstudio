@@ -27,7 +27,16 @@
 > already says "score"). Homepage usefulness: resume went from retype + refetch
 > (5 interactions + network) to 1 click + 0 requests (e2e-proven); personalized
 > above-the-fold content went from zero to up to 10 scored, delta-annotated
-> analyses. Phase 17D remains a proposal.
+> analyses.
+>
+> **Phase 17D SHIPPED** (shared workspace — see [`WORKSPACE.md`](./WORKSPACE.md)):
+> one ambient working robots.txt (`lib/workspace.ts`) read on mount and written on
+> committed changes by all four core tools; the AI Manager and Generator seed from
+> the file via `policySetFromFile` and commit back only through an explicit,
+> diff-previewed "Apply to working file"; `WorkspaceBar` names the active file on
+> every tool; dirty replacements confirm. Cross-tool continuity is e2e-proven
+> (`tests-e2e/workspace.spec.ts`). This supersedes the original item-9 "workspace
+> convergence" framing — the file converged instead of the layouts.
 >
 > Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience

@@ -18,7 +18,11 @@ export function getPermission(set: PolicySet, crawlerId: string): PermissionStat
 }
 
 /** Set one crawler's permission (immutable). */
-export function setPermission(set: PolicySet, crawlerId: string, state: PermissionState): PolicySet {
+export function setPermission(
+  set: PolicySet,
+  crawlerId: string,
+  state: PermissionState,
+): PolicySet {
   return { ...set, permissions: { ...set.permissions, [crawlerId]: state } };
 }
 
@@ -35,12 +39,20 @@ export function setCategoryPermission(
 
 /** Block every AI crawler (training + search) — the "Block all AI" preset. */
 export function blockAllAiCrawlers(set: PolicySet): PolicySet {
-  return setCategoryPermission(setCategoryPermission(set, "ai-training", "block"), "ai-search", "block");
+  return setCategoryPermission(
+    setCategoryPermission(set, "ai-training", "block"),
+    "ai-search",
+    "block",
+  );
 }
 
 /** Allow every AI crawler (training + search) — the "Open/Research" preset. */
 export function allowAllAiCrawlers(set: PolicySet): PolicySet {
-  return setCategoryPermission(setCategoryPermission(set, "ai-training", "allow"), "ai-search", "allow");
+  return setCategoryPermission(
+    setCategoryPermission(set, "ai-training", "allow"),
+    "ai-search",
+    "allow",
+  );
 }
 
 /** Seed a policy set from a website preset (maps allow/block intent). */

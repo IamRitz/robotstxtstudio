@@ -20,6 +20,16 @@ import {
   trackValidationCompleted,
 } from "@/lib/analytics";
 import { takeHandoff } from "@/lib/handoff";
+import {
+  clearWorkspace,
+  getWorkspace,
+  isWorkspaceDirty,
+  setWorkspace,
+  updateWorkspaceText,
+  workspaceLabel,
+  type Workspace,
+} from "@/lib/workspace";
+import { WorkspaceBar } from "@/components/workspace-bar";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
@@ -47,6 +57,25 @@ Sitemap: http://example.com/sitemap.xml`;
 type Filter = "all" | Severity;
 type MobilePane = "file" | "issues";
 
+const UI_KEY = "rs:validator-ui";
+
+interface SavedUi {
+  filter?: Filter;
+  dimension?: ScoreDimension | null;
+  sort?: IssueSort;
+  selectedId?: string | null;
+}
+
+/** Per-tab UI state (filters, sort, selection) — survives back/forward (17D). */
+function readSavedUi(): SavedUi {
+  if (typeof window === "undefined") return {};
+  try {
+    return (JSON.parse(sessionStorage.getItem(UI_KEY) ?? "{}") as SavedUi) ?? {};
+  } catch {
+    return {};
+  }
+}
+
 function downloadText(text: string, filename = "robots.txt") {
   const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
   const a = document.createElement("a");
@@ -64,10 +93,16 @@ function downloadText(text: string, filename = "robots.txt") {
  */
 export function ValidatorScreen() {
   const [text, setText] = useState(SAMPLE);
-  const [filter, setFilter] = useState<Filter>("all");
-  const [dimension, setDimension] = useState<ScoreDimension | null>(null);
-  const [sort, setSort] = useState<IssueSort>("impact");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  /** The shared working file this screen is attached to, if any (17D). */
+  const [ws, setWs] = useState<Workspace | null>(null);
+  const [filter, setFilter] = useState<Filter>(() => readSavedUi().filter ?? "all");
+  const [dimension, setDimension] = useState<ScoreDimension | null>(
+    () => readSavedUi().dimension ?? null,
+  );
+  const [sort, setSort] = useState<IssueSort>(() => readSavedUi().sort ?? "impact");
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => readSavedUi().selectedId ?? null,
+  );
   /** Which pane is visible below `lg` (desktop always shows both). */
   const [mobilePane, setMobilePane] = useState<MobilePane>("file");
   /** Snapshots of the text before each applied fix (most recent last) — for Undo. */
@@ -107,19 +142,73 @@ export function ValidatorScreen() {
     [result],
   );
 
-  // If the user arrived from another tool ("Validate this"), load their file.
+  // Load priority (17D): an explicit handoff > the shared workspace > the sample.
+  // A dirty workspace is never silently replaced by a handoff.
   useEffect(() => {
     const handed = takeHandoff();
-    if (handed) editText(handed);
+    const existing = getWorkspace();
+    if (handed && handed !== existing?.text) {
+      if (
+        existing &&
+        isWorkspaceDirty(existing) &&
+        !window.confirm(
+          `Replace your working file (${workspaceLabel(existing)}) with the file you brought? Its current edits will be overwritten.`,
+        )
+      ) {
+        loadText(existing.text);
+        setWs(existing);
+        return;
+      }
+      loadText(handed);
+      setWorkspace({
+        domain: existing?.domain,
+        originalText: handed,
+        text: handed,
+        appliedFixes: [],
+        source: "validator",
+      });
+      setWs(getWorkspace());
+      return;
+    }
+    if (existing) {
+      // Returning to the workspace file: set the text WITHOUT loadText so the
+      // session-restored selection/filters (objective: context preservation)
+      // survive — there's no new file to reset for.
+      setText(existing.text);
+      setWs(existing);
+    }
   }, []);
 
-  /** Manual edits (typing / fetch / handoff) reset the fix session. */
-  function editText(next: string) {
+  // Persist the panel's UI state per tab (back/forward keeps your place — 17D).
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(UI_KEY, JSON.stringify({ filter, dimension, sort, selectedId }));
+    } catch {
+      // session nicety only
+    }
+  }, [filter, dimension, sort, selectedId]);
+
+  /** Set the text + reset the fix session WITHOUT touching the workspace. */
+  function loadText(next: string) {
     setText(next);
     setUndoStack([]);
     setLastFix(null);
     setTrend([]);
     setSelectedId(null);
+  }
+
+  /** Manual edits (typing / fetch / handoff) — the workspace follows the user. */
+  function editText(next: string) {
+    loadText(next);
+    updateWorkspaceText(next, "validator");
+    setWs(getWorkspace());
+  }
+
+  /** Detach from the shared file and return to the sample. */
+  function discardWorkspace() {
+    clearWorkspace();
+    setWs(null);
+    loadText(SAMPLE);
   }
 
   /** Apply a batch of edits as one undoable operation, surfacing a diff + trend. */
@@ -137,6 +226,12 @@ export function ValidatorScreen() {
     setText(after);
     setLastFix({ before, after });
     setSelectedId(null);
+    const codes =
+      meta.mode === "single" && meta.code
+        ? [meta.code]
+        : safelyFixableIssues(result.issues).map((i) => i.code);
+    updateWorkspaceText(after, "validator", codes);
+    setWs(getWorkspace());
     trackFixApplied({ ...meta, scoreDelta: afterOverall - beforeOverall });
   }
 
@@ -160,7 +255,10 @@ export function ValidatorScreen() {
 
   const undo = () => {
     if (undoStack.length === 0) return;
-    setText(undoStack[undoStack.length - 1]!);
+    const previous = undoStack[undoStack.length - 1]!;
+    setText(previous);
+    updateWorkspaceText(previous, "validator");
+    setWs(getWorkspace());
     setUndoStack((s) => s.slice(0, -1));
     setTrend((t) => t.slice(0, -1));
     setLastFix(null);
@@ -258,6 +356,14 @@ export function ValidatorScreen() {
         title="Validate robots.txt"
         subtitle="Audit, jump to the exact line, fix in one click, and watch the score recover."
       />
+
+      {ws ? (
+        <WorkspaceBar
+          workspace={ws}
+          note="edits here update it for every tool"
+          onDiscard={discardWorkspace}
+        />
+      ) : null}
 
       <CommandBar
         report={audit}

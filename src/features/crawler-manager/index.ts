@@ -31,5 +31,6 @@ export {
   setSitemapUrl,
 } from "./domain/permissions";
 export { toGeneratorConfig } from "./domain/to-config";
+export { policySetFromFile } from "./domain/from-file";
 export { analyzePolicySet } from "./domain/impact";
 export { categorySummaries, summarizeCrawler } from "./domain/summaries";

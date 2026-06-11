@@ -8,7 +8,8 @@ import {
 } from "./permissions";
 import type { PolicyImpact } from "./types";
 
-const crawler = (impact: PolicyImpact, id: string) => impact.crawlers.find((c) => c.crawler.id === id)!;
+const crawler = (impact: PolicyImpact, id: string) =>
+  impact.crawlers.find((c) => c.crawler.id === id)!;
 const recIds = (impact: PolicyImpact) => impact.recommendations.map((r) => r.crawlerId);
 
 describe("analyzePolicySet — no direct robots.txt", () => {

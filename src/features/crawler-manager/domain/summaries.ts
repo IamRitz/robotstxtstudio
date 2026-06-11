@@ -39,6 +39,13 @@ export function categorySummaries(set: PolicySet): CategorySummary[] {
       else if (state === "block") blocked += 1;
       else inherited += 1;
     }
-    return { category, label: CATEGORY_LABELS[category], allowed, blocked, inherited, total: crawlers.length };
+    return {
+      category,
+      label: CATEGORY_LABELS[category],
+      allowed,
+      blocked,
+      inherited,
+      total: crawlers.length,
+    };
   });
 }

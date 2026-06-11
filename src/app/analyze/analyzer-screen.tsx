@@ -38,6 +38,7 @@ import {
   saveRecentAnalysis,
   type RecentAnalysis,
 } from "@/lib/recent-analyses";
+import { getWorkspace, isWorkspaceDirty, setWorkspace, workspaceLabel } from "@/lib/workspace";
 import { DimensionChipStrip } from "@/components/dimension-chip-strip";
 import { RobotsEditor, type EditorAnnotation } from "@/components/robots-editor";
 import { affectsDimension, issueLine } from "@/app/validate/issue-panel";
@@ -54,6 +55,11 @@ type State =
 /** Rebuild the full report from a stored snapshot — the same pure pipeline the
  *  server runs, just fed from localStorage instead of the network. */
 function restoreState(stored: RecentAnalysis): State {
+  // Bidirectional editing (17D): if the shared workspace holds this domain's file,
+  // its text wins — it may carry edits made in the Validator/Manager/Generator
+  // since this archive snapshot was taken.
+  const ws = getWorkspace();
+  const workingText = ws?.domain === stored.domain ? ws.text : stored.workingText;
   return {
     kind: "done",
     report: buildAnalysisReport(
@@ -61,7 +67,7 @@ function restoreState(stored: RecentAnalysis): State {
       stored.domain,
       stored.fetchedAt,
     ),
-    initialWorkingText: stored.workingText,
+    initialWorkingText: workingText,
   };
 }
 
@@ -98,6 +104,17 @@ export function AnalyzerScreen({
   const run = useCallback(async (value: string) => {
     const target = value.trim();
     if (!target) return;
+    // Unsaved-work protection (17D): a fetch REPLACES the working file.
+    const ws = getWorkspace();
+    if (
+      ws &&
+      isWorkspaceDirty(ws) &&
+      !window.confirm(
+        `Analyzing will replace your working file (${workspaceLabel(ws)}), which has edits. Continue?`,
+      )
+    ) {
+      return;
+    }
     setState({ kind: "loading" });
     trackFetchRobots("analyzer");
     try {
@@ -243,6 +260,12 @@ function Report({
 
   const [workingText, setWorkingText] = useState(initialWorkingText ?? originalSource);
   const [undoStack, setUndoStack] = useState<string[]>([]);
+  /** Smart-Fix provenance log (17D) — continued from the workspace when it's ours. */
+  const [fixLog, setFixLog] = useState<readonly string[]>(() => {
+    if (typeof window === "undefined") return [];
+    const ws = getWorkspace();
+    return ws?.domain === report.domain ? ws.appliedFixes : [];
+  });
   // The chip filter survives navigation within the tab (back/forward, resume).
   const [dimension, setDimension] = useState<ScoreDimension | null>(() => {
     if (typeof window === "undefined") return null;
@@ -313,6 +336,17 @@ function Report({
 
   const changed = workingText !== originalSource;
 
+  // Publish the shared workspace (17D): the Analyzer is where named files are born.
+  useEffect(() => {
+    setWorkspace({
+      domain: report.domain,
+      originalText: originalSource,
+      text: workingText,
+      appliedFixes: fixLog,
+      source: "analyzer",
+    });
+  }, [report.domain, originalSource, workingText, fixLog]);
+
   // Keep the local snapshot current (Phase 17C): on mount and after every fix.
   // Upsert is LRU-by-domain and same-fetch updates preserve the re-check delta.
   useEffect(() => {
@@ -343,6 +377,7 @@ function Report({
 
   const onFix = (issue: ValidationIssue) => {
     if (issue.fix?.edits?.length) {
+      setFixLog((l) => [...l, issue.code]);
       applyEdits(issue.fix.edits, {
         mode: "single",
         code: issue.code,
@@ -355,6 +390,8 @@ function Report({
   const fixAllSafe = () => {
     const edits = collectSafeEdits(derived.validation.issues);
     if (edits.length) {
+      const codes = safelyFixableIssues(derived.validation.issues).map((i) => i.code);
+      setFixLog((l) => [...l, ...codes]);
       applyEdits(edits, { mode: "all-safe", count: recovery.safeCount, surface: "analyzer" });
     }
   };
