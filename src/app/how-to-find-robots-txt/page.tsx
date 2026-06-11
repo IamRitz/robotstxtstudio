@@ -76,8 +76,8 @@ const page: ContentPage = {
               <Link href="/analyze" className="text-brand hover:underline">
                 Analyzer
               </Link>{" "}
-              to fetch and break down its file — which crawlers are blocked, how AI bots are handled,
-              and any issues — without copy-pasting into a text editor.
+              to fetch and break down its file — which crawlers are blocked, how AI bots are
+              handled, and any issues — without copy-pasting into a text editor.
             </>
           ),
         },
@@ -117,9 +117,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Looking in a subfolder", body: "/blog/robots.txt is never used. Only the root file counts." },
-            { title: "Checking the wrong subdomain", body: "Your store on shop.example.com needs its own file; the root domain's doesn't apply." },
-            { title: "Seeing an HTML page", body: "If /robots.txt shows a styled page, the server is returning HTML, not a real robots.txt — crawlers will ignore it." },
+            {
+              title: "Looking in a subfolder",
+              body: "/blog/robots.txt is never used. Only the root file counts.",
+            },
+            {
+              title: "Checking the wrong subdomain",
+              body: "Your store on shop.example.com needs its own file; the root domain's doesn't apply.",
+            },
+            {
+              title: "Seeing an HTML page",
+              body: "If /robots.txt shows a styled page, the server is returning HTML, not a real robots.txt — crawlers will ignore it.",
+            },
           ],
         },
       ],
@@ -128,24 +137,36 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Where is robots.txt located?",
-      answer: "Always at the root of the host, e.g. https://example.com/robots.txt. It cannot live in a subdirectory, and each subdomain has its own.",
+      answer:
+        "Always at the root of the host, e.g. https://example.com/robots.txt. It cannot live in a subdirectory, and each subdomain has its own.",
     },
     {
       question: "How do I find another website's robots.txt?",
-      answer: "Add /robots.txt to its domain in your browser, or paste the domain into the Analyzer to fetch and audit it automatically.",
+      answer:
+        "Add /robots.txt to its domain in your browser, or paste the domain into the Analyzer to fetch and audit it automatically.",
     },
     {
       question: "What if /robots.txt returns a 404?",
-      answer: "The site has no robots.txt, which crawlers treat as “allow everything.” Create one with the Generator if you want to control crawling or declare a sitemap.",
+      answer:
+        "The site has no robots.txt, which crawlers treat as “allow everything.” Create one with the Generator if you want to control crawling or declare a sitemap.",
     },
     {
       question: "Can I view robots.txt on a phone?",
-      answer: "Yes — it's just a web page. Open https://domain.com/robots.txt in any mobile browser.",
+      answer:
+        "Yes — it's just a web page. Open https://domain.com/robots.txt in any mobile browser.",
     },
   ],
   related: [
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "Fetch and audit any live file." },
-    { title: "How to read robots.txt", href: "/how-to-read-robots-txt", description: "Understand what you find." },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "Fetch and audit any live file.",
+    },
+    {
+      title: "How to read robots.txt",
+      href: "/how-to-read-robots-txt",
+      description: "Understand what you find.",
+    },
     { title: "What is robots.txt?", href: "/what-is-robots-txt", description: "The fundamentals." },
   ],
 };

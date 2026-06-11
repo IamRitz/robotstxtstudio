@@ -53,7 +53,10 @@ export function DiffView({
                     seg.type === "add" && "bg-status-allowed-bg/60",
                   )}
                 >
-                  <td className="w-8 select-none px-2 py-0.5 text-right text-muted-foreground" aria-hidden>
+                  <td
+                    className="w-8 select-none px-2 py-0.5 text-right text-muted-foreground"
+                    aria-hidden
+                  >
                     {seg.type === "add" ? (
                       <Plus className="ml-auto size-3 text-status-allowed-fg" />
                     ) : seg.type === "remove" ? (

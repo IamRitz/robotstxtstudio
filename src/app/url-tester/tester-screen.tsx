@@ -91,14 +91,27 @@ export function TesterScreen() {
         </div>
         <div>
           <Label htmlFor="url">URL to test</Label>
-          <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="/blog/my-post" className="mt-1.5" />
+          <Input
+            id="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="/blog/my-post"
+            className="mt-1.5"
+          />
         </div>
         <div>
           <Label htmlFor="ua">User-agent</Label>
-          <Select id="ua" value={userAgent} onChange={(e) => setUserAgent(e.target.value)} className="mt-1.5 w-full">
+          <Select
+            id="ua"
+            value={userAgent}
+            onChange={(e) => setUserAgent(e.target.value)}
+            className="mt-1.5 w-full"
+          >
             <option value="*">* (all crawlers)</option>
             {ALL_CRAWLERS.map((c) => (
-              <option key={c.id} value={c.userAgent}>{c.name}</option>
+              <option key={c.id} value={c.userAgent}>
+                {c.name}
+              </option>
             ))}
           </Select>
         </div>
@@ -117,7 +130,10 @@ export function TesterScreen() {
       </Card>
 
       {!result ? (
-        <EmptyState title="Enter a URL to test" description="Type a path or URL above to see whether it is blocked or allowed." />
+        <EmptyState
+          title="Enter a URL to test"
+          description="Type a path or URL above to see whether it is blocked or allowed."
+        />
       ) : (
         <div className="space-y-6">
           {/* Verdict */}
@@ -134,9 +150,12 @@ export function TesterScreen() {
             <Card className="p-6">
               <SectionHeader className="mb-3">Matched rule</SectionHeader>
               <div className="rounded-lg bg-surface-dark p-4 font-mono text-xs text-surface-dark-foreground">
-                <div className="text-surface-dark-foreground/60">User-agent: {result.matchedUserAgent}</div>
+                <div className="text-surface-dark-foreground/60">
+                  User-agent: {result.matchedUserAgent}
+                </div>
                 <div className="font-semibold">
-                  {result.matchedRule.type === "allow" ? "Allow" : "Disallow"}: {result.matchedRule.path}
+                  {result.matchedRule.type === "allow" ? "Allow" : "Disallow"}:{" "}
+                  {result.matchedRule.path}
                 </div>
               </div>
             </Card>
@@ -151,7 +170,13 @@ export function TesterScreen() {
                 const Icon = STATUS_VISUALS[sk].icon;
                 return (
                   <li key={step.step} className="flex items-start gap-3">
-                    <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full", STATUS_VISUALS[sk].chip)} aria-hidden>
+                    <span
+                      className={cn(
+                        "flex size-6 shrink-0 items-center justify-center rounded-full",
+                        STATUS_VISUALS[sk].chip,
+                      )}
+                      aria-hidden
+                    >
                       <Icon className="size-3.5" />
                     </span>
                     <div className="min-w-0">

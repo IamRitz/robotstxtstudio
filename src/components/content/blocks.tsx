@@ -43,7 +43,10 @@ export function Block({ block }: { block: ContentBlock }) {
       return (
         <ul className="space-y-2">
           {block.items.map((m, i) => (
-            <li key={i} className="rounded-xl border border-status-blocked-bg bg-status-blocked-bg/40 p-3">
+            <li
+              key={i}
+              className="rounded-xl border border-status-blocked-bg bg-status-blocked-bg/40 p-3"
+            >
               <p className="text-sm font-semibold text-foreground">{m.title}</p>
               <p className="mt-0.5 text-xs leading-6 text-muted-foreground">{m.body}</p>
             </li>
@@ -71,7 +74,10 @@ export function Block({ block }: { block: ContentBlock }) {
               {block.rows.map((row, ri) => (
                 <tr key={ri} className={cn(ri % 2 === 1 && "bg-muted/40")}>
                   {row.map((cell, ci) => (
-                    <td key={ci} className="border-t border-border px-3 py-2 align-top text-muted-foreground">
+                    <td
+                      key={ci}
+                      className="border-t border-border px-3 py-2 align-top text-muted-foreground"
+                    >
                       {cell}
                     </td>
                   ))}

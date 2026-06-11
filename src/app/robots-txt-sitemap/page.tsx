@@ -31,7 +31,11 @@ const page: ContentPage = {
           content:
             "Sitemap is a file-level directive: it isn't tied to any User-agent group and can appear anywhere in the file. It must be a full, absolute URL.",
         },
-        { kind: "snippet", code: "Sitemap: https://example.com/sitemap.xml", caption: "Correct: absolute URL" },
+        {
+          kind: "snippet",
+          code: "Sitemap: https://example.com/sitemap.xml",
+          caption: "Correct: absolute URL",
+        },
         {
           kind: "callout",
           status: "blocked",
@@ -49,7 +53,10 @@ const page: ContentPage = {
           content:
             "You can list as many sitemaps as you like — one per line. Large sites often split sitemaps by section or content type.",
         },
-        { kind: "snippet", code: "Sitemap: https://example.com/sitemap-pages.xml\nSitemap: https://example.com/sitemap-products.xml\nSitemap: https://example.com/sitemap-blog.xml" },
+        {
+          kind: "snippet",
+          code: "Sitemap: https://example.com/sitemap-pages.xml\nSitemap: https://example.com/sitemap-products.xml\nSitemap: https://example.com/sitemap-blog.xml",
+        },
       ],
     },
     {
@@ -103,9 +110,18 @@ const page: ContentPage = {
           kind: "mistakes",
           items: [
             { title: "Relative path", body: "Use the absolute URL, not /sitemap.xml." },
-            { title: "http on an https site", body: "Match your canonical protocol — declare the https:// sitemap URL." },
-            { title: "Sitemap as the only submission method", body: "robots.txt discovery is passive; also submit your sitemap in Google Search Console for reporting." },
-            { title: "Pointing to a 404", body: "Make sure the sitemap URL actually resolves before referencing it." },
+            {
+              title: "http on an https site",
+              body: "Match your canonical protocol — declare the https:// sitemap URL.",
+            },
+            {
+              title: "Sitemap as the only submission method",
+              body: "robots.txt discovery is passive; also submit your sitemap in Google Search Console for reporting.",
+            },
+            {
+              title: "Pointing to a 404",
+              body: "Make sure the sitemap URL actually resolves before referencing it.",
+            },
           ],
         },
       ],
@@ -114,25 +130,41 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Can I list multiple sitemaps in robots.txt?",
-      answer: "Yes. Add one Sitemap line per sitemap. For many sitemaps, reference a single sitemap index file that links to the rest.",
+      answer:
+        "Yes. Add one Sitemap line per sitemap. For many sitemaps, reference a single sitemap index file that links to the rest.",
     },
     {
       question: "Does the Sitemap line need to be a full URL?",
-      answer: "Yes. It must be an absolute URL including protocol and host (https://example.com/sitemap.xml). Relative paths are ignored.",
+      answer:
+        "Yes. It must be an absolute URL including protocol and host (https://example.com/sitemap.xml). Relative paths are ignored.",
     },
     {
       question: "Where should the Sitemap line go in robots.txt?",
-      answer: "Anywhere — it's file-level and not part of any group. Top or bottom of the file is conventional for readability.",
+      answer:
+        "Anywhere — it's file-level and not part of any group. Top or bottom of the file is conventional for readability.",
     },
     {
       question: "Is robots.txt the only way to submit a sitemap?",
-      answer: "No. The Sitemap directive helps crawlers discover it passively, but you should also submit your sitemap directly in Google Search Console and Bing Webmaster Tools.",
+      answer:
+        "No. The Sitemap directive helps crawlers discover it passively, but you should also submit your sitemap directly in Google Search Console and Bing Webmaster Tools.",
     },
   ],
   related: [
-    { title: "Robots.txt Generator", href: "/generate", description: "Add a sitemap automatically." },
-    { title: "robots.txt format", href: "/robots-txt-format", description: "Where file-level directives go." },
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Sitemaps in your SEO workflow." },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Add a sitemap automatically.",
+    },
+    {
+      title: "robots.txt format",
+      href: "/robots-txt-format",
+      description: "Where file-level directives go.",
+    },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Sitemaps in your SEO workflow.",
+    },
   ],
 };
 

@@ -91,3 +91,11 @@ export function isWorkspaceDirty(ws: Workspace | null): boolean {
 export function workspaceLabel(ws: Workspace): string {
   return ws.domain ?? "untitled robots.txt";
 }
+
+/** Human name of the tool that last wrote the workspace. */
+export const WORKSPACE_SOURCE_LABEL: Record<WorkspaceSource, string> = {
+  analyzer: "Analyzer",
+  validator: "Validate",
+  generator: "Generator",
+  "ai-manager": "AI Manager",
+};

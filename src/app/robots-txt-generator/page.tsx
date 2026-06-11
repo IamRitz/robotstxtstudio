@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-generator",
   h1: "Robots.txt Generator",
-  description: "Build a valid, best-practice robots.txt with presets and crawler toggles — no syntax required.",
+  description:
+    "Build a valid, best-practice robots.txt with presets and crawler toggles — no syntax required.",
   heroCta: "generator",
   lead: (
     <>
-      Writing robots.txt by hand is easy to get subtly wrong. This generator builds a valid file from
-      presets and simple toggles — search engines, AI crawlers, blocked paths, and your sitemap — and
-      validates the output as you go. No sign-up, no syntax knowledge required.
+      Writing robots.txt by hand is easy to get subtly wrong. This generator builds a valid file
+      from presets and simple toggles — search engines, AI crawlers, blocked paths, and your sitemap
+      — and validates the output as you go. No sign-up, no syntax knowledge required.
     </>
   ),
   cta: "generator",
@@ -60,7 +61,8 @@ const page: ContentPage = {
       blocks: [
         {
           kind: "p",
-          content: "A typical result — allow search engines, block AI training crawlers, declare the sitemap:",
+          content:
+            "A typical result — allow search engines, block AI training crawlers, declare the sitemap:",
         },
         {
           kind: "snippet",
@@ -76,10 +78,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "New site launch", body: "Generate a safe default that allows search engines and points to your sitemap." },
-            { title: "Opting out of AI", body: "Block the major AI training crawlers in one step while staying fully indexable." },
-            { title: "E-commerce crawl control", body: "Disallow cart, checkout, and faceted URLs to protect crawl budget." },
-            { title: "Fixing a broken file", body: "Rebuild cleanly instead of patching a file with conflicting rules." },
+            {
+              title: "New site launch",
+              body: "Generate a safe default that allows search engines and points to your sitemap.",
+            },
+            {
+              title: "Opting out of AI",
+              body: "Block the major AI training crawlers in one step while staying fully indexable.",
+            },
+            {
+              title: "E-commerce crawl control",
+              body: "Disallow cart, checkout, and faceted URLs to protect crawl budget.",
+            },
+            {
+              title: "Fixing a broken file",
+              body: "Rebuild cleanly instead of patching a file with conflicting rules.",
+            },
           ],
         },
         {
@@ -94,26 +108,42 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Is this robots.txt generator free?",
-      answer: "Yes. The generator is free and requires no sign-up. Build your file, copy it, and deploy it to your site root at /robots.txt.",
+      answer:
+        "Yes. The generator is free and requires no sign-up. Build your file, copy it, and deploy it to your site root at /robots.txt.",
     },
     {
       question: "Does the generator block AI crawlers?",
-      answer: "Yes. You can toggle AI crawlers like GPTBot, ClaudeBot, CCBot, and Google-Extended on or off, and the generator writes the correct user-agent groups for you.",
+      answer:
+        "Yes. You can toggle AI crawlers like GPTBot, ClaudeBot, CCBot, and Google-Extended on or off, and the generator writes the correct user-agent groups for you.",
     },
     {
       question: "Will the generated robots.txt be valid?",
-      answer: "Yes. Output is validated as you build, so you get a syntactically correct file that follows robots.txt best practices, including an absolute sitemap URL.",
+      answer:
+        "Yes. Output is validated as you build, so you get a syntactically correct file that follows robots.txt best practices, including an absolute sitemap URL.",
     },
     {
       question: "Where do I put the generated robots.txt?",
-      answer: "Place it at the root of your domain so it's served at https://yourdomain.com/robots.txt. It must be at the root — crawlers don't read robots.txt from subdirectories.",
+      answer:
+        "Place it at the root of your domain so it's served at https://yourdomain.com/robots.txt. It must be at the root — crawlers don't read robots.txt from subdirectories.",
     },
   ],
   related: [
     { title: "Robots.txt Validator", href: "/validate", description: "Check an existing file." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "Copy-paste templates." },
-    { title: "robots.txt syntax", href: "/robots-txt-syntax", description: "Understand each directive." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Fine-tune AI crawler access." },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "Copy-paste templates.",
+    },
+    {
+      title: "robots.txt syntax",
+      href: "/robots-txt-syntax",
+      description: "Understand each directive.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Fine-tune AI crawler access.",
+    },
   ],
   nextReading: { title: "Robots.txt Validator", href: "/robots-txt-validator" },
 };

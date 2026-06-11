@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "claudebot-robots-txt",
   h1: "Block ClaudeBot in robots.txt",
-  description: "What ClaudeBot is, why it matters, and the exact robots.txt rules to allow or block Anthropic's crawler.",
+  description:
+    "What ClaudeBot is, why it matters, and the exact robots.txt rules to allow or block Anthropic's crawler.",
   heroCta: "ai-manager",
   lead: (
     <>
@@ -35,7 +36,12 @@ const page: ContentPage = {
           kind: "table",
           head: ["Property", "Value"],
           rows: [
-            ["User-agent", <code key="u" className="font-mono">ClaudeBot</code>],
+            [
+              "User-agent",
+              <code key="u" className="font-mono">
+                ClaudeBot
+              </code>,
+            ],
             ["Operator", "Anthropic"],
             ["Purpose", "Model training data collection"],
             ["Honors robots.txt", "Yes (per Anthropic docs)"],
@@ -61,10 +67,15 @@ const page: ContentPage = {
       heading: "How to block ClaudeBot",
       blocks: [
         { kind: "p", content: "Block ClaudeBot across your whole site:" },
-        { kind: "snippet", code: "User-agent: ClaudeBot\nDisallow: /", caption: "Block ClaudeBot entirely" },
+        {
+          kind: "snippet",
+          code: "User-agent: ClaudeBot\nDisallow: /",
+          caption: "Block ClaudeBot entirely",
+        },
         {
           kind: "p",
-          content: "Block ClaudeBot alongside other AI crawlers by listing several user-agents in one group:",
+          content:
+            "Block ClaudeBot alongside other AI crawlers by listing several user-agents in one group:",
         },
         {
           kind: "snippet",
@@ -98,10 +109,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Confusing the two Anthropic bots", body: "ClaudeBot is training; Claude-SearchBot fetches pages for cited answers. Block them independently." },
-            { title: "Wrong casing or spelling", body: "User-agent matching is case-insensitive, but the token must still read ClaudeBot — not Claude or ClaudeAI." },
-            { title: "Expecting it to remove indexed pages", body: "Blocking ClaudeBot affects training only, never search indexing." },
-            { title: "Putting the rule under the wrong group", body: "Disallow: / belongs under User-agent: ClaudeBot, not the catch-all *." },
+            {
+              title: "Confusing the two Anthropic bots",
+              body: "ClaudeBot is training; Claude-SearchBot fetches pages for cited answers. Block them independently.",
+            },
+            {
+              title: "Wrong casing or spelling",
+              body: "User-agent matching is case-insensitive, but the token must still read ClaudeBot — not Claude or ClaudeAI.",
+            },
+            {
+              title: "Expecting it to remove indexed pages",
+              body: "Blocking ClaudeBot affects training only, never search indexing.",
+            },
+            {
+              title: "Putting the rule under the wrong group",
+              body: "Disallow: / belongs under User-agent: ClaudeBot, not the catch-all *.",
+            },
           ],
         },
       ],
@@ -110,26 +133,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I block ClaudeBot?",
-      answer: "Add User-agent: ClaudeBot followed by Disallow: / to robots.txt. Anthropic documents that ClaudeBot respects robots.txt, so this opts your site out of Claude training.",
+      answer:
+        "Add User-agent: ClaudeBot followed by Disallow: / to robots.txt. Anthropic documents that ClaudeBot respects robots.txt, so this opts your site out of Claude training.",
     },
     {
       question: "Will blocking ClaudeBot affect my Google ranking?",
-      answer: "No. ClaudeBot is Anthropic's crawler and is unrelated to Googlebot. Blocking it has no effect on search rankings or indexing.",
+      answer:
+        "No. ClaudeBot is Anthropic's crawler and is unrelated to Googlebot. Blocking it has no effect on search rankings or indexing.",
     },
     {
       question: "What is the difference between ClaudeBot and Claude-SearchBot?",
-      answer: "ClaudeBot collects training data for Anthropic's models. Claude-SearchBot fetches live pages so Claude can cite them when answering questions. They are separate user-agents and can be controlled separately.",
+      answer:
+        "ClaudeBot collects training data for Anthropic's models. Claude-SearchBot fetches live pages so Claude can cite them when answering questions. They are separate user-agents and can be controlled separately.",
     },
     {
       question: "Should I also block anthropic-ai and Claude-Web?",
-      answer: "Those are older or legacy tokens. Listing them alongside ClaudeBot does no harm and adds coverage, but ClaudeBot is the current crawler to focus on.",
+      answer:
+        "Those are older or legacy tokens. Listing them alongside ClaudeBot does no harm and adds coverage, but ClaudeBot is the current crawler to focus on.",
     },
   ],
   related: [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-    { title: "Block GPTBot", href: "/gptbot-robots-txt", description: "OpenAI's training crawler." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Block ClaudeBot with one click." },
-    { title: "Robots.txt Generator", href: "/generate", description: "Build a file with AI rules." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Every AI crawler compared.",
+    },
+    {
+      title: "Block GPTBot",
+      href: "/gptbot-robots-txt",
+      description: "OpenAI's training crawler.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Block ClaudeBot with one click.",
+    },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Build a file with AI rules.",
+    },
   ],
   nextReading: { title: "PerplexityBot in robots.txt", href: "/perplexitybot-robots-txt" },
 };

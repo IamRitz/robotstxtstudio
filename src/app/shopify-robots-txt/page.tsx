@@ -11,14 +11,15 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "shopify-robots-txt",
   h1: "Shopify robots.txt",
-  description: "How Shopify's robots.txt works, how to edit it with robots.txt.liquid, and what to change.",
+  description:
+    "How Shopify's robots.txt works, how to edit it with robots.txt.liquid, and what to change.",
   heroCta: "analyzer",
   lead: (
     <>
-      Shopify generates robots.txt automatically and, for years, wouldn&apos;t let you touch it. Since
-      the introduction of <code className="font-mono text-foreground">robots.txt.liquid</code>, you can
-      customize it — carefully. Here&apos;s what Shopify blocks by default and what you should and
-      shouldn&apos;t change.
+      Shopify generates robots.txt automatically and, for years, wouldn&apos;t let you touch it.
+      Since the introduction of <code className="font-mono text-foreground">robots.txt.liquid</code>
+      , you can customize it — carefully. Here&apos;s what Shopify blocks by default and what you
+      should and shouldn&apos;t change.
     </>
   ),
   cta: "validator",
@@ -88,10 +89,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Unblocking checkout and cart", body: "These pages are noise for crawlers and create duplicate content. Keep Shopify's disallows." },
-            { title: "Blocking collection or product URLs you want ranked", body: "Over-eager filtering can hide pages you actually want indexed. Test before shipping." },
-            { title: "Editing robots.txt on a non-primary domain", body: "robots.txt applies per host. Make sure you're editing the canonical domain." },
-            { title: "Assuming you can't change it at all", body: "Outdated advice — robots.txt.liquid has allowed customization for a while." },
+            {
+              title: "Unblocking checkout and cart",
+              body: "These pages are noise for crawlers and create duplicate content. Keep Shopify's disallows.",
+            },
+            {
+              title: "Blocking collection or product URLs you want ranked",
+              body: "Over-eager filtering can hide pages you actually want indexed. Test before shipping.",
+            },
+            {
+              title: "Editing robots.txt on a non-primary domain",
+              body: "robots.txt applies per host. Make sure you're editing the canonical domain.",
+            },
+            {
+              title: "Assuming you can't change it at all",
+              body: "Outdated advice — robots.txt.liquid has allowed customization for a while.",
+            },
           ],
         },
       ],
@@ -100,26 +113,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Can you edit robots.txt on Shopify?",
-      answer: "Yes. Add a robots.txt.liquid template to your theme to customize the generated robots.txt. You can append rules or filter Shopify's defaults with Liquid.",
+      answer:
+        "Yes. Add a robots.txt.liquid template to your theme to customize the generated robots.txt. You can append rules or filter Shopify's defaults with Liquid.",
     },
     {
       question: "What does Shopify block in robots.txt by default?",
-      answer: "Shopify disallows checkout, cart, account, and internal search/filter URLs to save crawl budget and avoid duplicate content, and it declares your sitemap. The defaults are well-tuned for most stores.",
+      answer:
+        "Shopify disallows checkout, cart, account, and internal search/filter URLs to save crawl budget and avoid duplicate content, and it declares your sitemap. The defaults are well-tuned for most stores.",
     },
     {
       question: "How do I block AI crawlers on Shopify?",
-      answer: "Add a robots.txt.liquid template and append groups for GPTBot, ClaudeBot, CCBot, and Google-Extended with Disallow: /. This keeps your store content out of AI training without affecting search engines.",
+      answer:
+        "Add a robots.txt.liquid template and append groups for GPTBot, ClaudeBot, CCBot, and Google-Extended with Disallow: /. This keeps your store content out of AI training without affecting search engines.",
     },
     {
       question: "Should I remove Shopify's default disallow rules?",
-      answer: "Usually not. They prevent crawlers wasting budget on checkout, cart, and filtered URLs. Append your own rules instead of removing Shopify's, unless you have a specific, tested reason.",
+      answer:
+        "Usually not. They prevent crawlers wasting budget on checkout, cart, and filtered URLs. Append your own rules instead of removing Shopify's, unless you have a specific, tested reason.",
     },
   ],
   related: [
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit your live Shopify file." },
-    { title: "WordPress robots.txt", href: "/wordpress-robots-txt", description: "The WordPress equivalent." },
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Crawl budget for ecommerce." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Generate the AI block rules." },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "Audit your live Shopify file.",
+    },
+    {
+      title: "WordPress robots.txt",
+      href: "/wordpress-robots-txt",
+      description: "The WordPress equivalent.",
+    },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Crawl budget for ecommerce.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Generate the AI block rules.",
+    },
   ],
   nextReading: { title: "Magento robots.txt", href: "/magento-robots-txt" },
 };

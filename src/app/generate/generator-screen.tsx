@@ -13,6 +13,7 @@ import {
   type Workspace,
 } from "@/lib/workspace";
 import { WorkspaceBar } from "@/components/workspace-bar";
+import { cn } from "@/lib/utils";
 import { DiffView } from "@/components/diff-view";
 import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
 import type { CrawlerCategory, GeneratorConfig, WebsiteType } from "@/types";
@@ -71,7 +72,12 @@ function readSavedUi(): SavedGeneratorUi {
   }
 }
 
-export function GeneratorScreen() {
+export function GeneratorScreen({
+  focusSection,
+}: {
+  /** Deep-link target (17F.2): "sitemap" lands on the sitemap field, in view. */
+  focusSection?: string;
+}) {
   const [config, setConfig] = useState<GeneratorConfig>(() => applyPreset("blog"));
   const [newPath, setNewPath] = useState("");
   /** The shared working file these controls are seeded from, if any (17D). */
@@ -80,6 +86,22 @@ export function GeneratorScreen() {
   const [open, setOpen] = useState<Record<CrawlerCategory, boolean> | null>(null);
   /** Live-sync (17E): the workspace text WE last wrote; null = not syncing. */
   const syncRef = useRef<string | null>(null);
+  /** Briefly emphasized field (deep-link landing — 17F.2). */
+  const [highlightSitemap, setHighlightSitemap] = useState(false);
+
+  useEffect(() => {
+    if (focusSection !== "sitemap") return;
+    setHighlightSitemap(true);
+    const scroll = window.setTimeout(() => {
+      document.getElementById("sitemap")?.scrollIntoView({ block: "center" });
+      document.getElementById("sitemap")?.focus({ preventScroll: true });
+    }, 80);
+    const clear = window.setTimeout(() => setHighlightSitemap(false), 2200);
+    return () => {
+      window.clearTimeout(scroll);
+      window.clearTimeout(clear);
+    };
+  }, [focusSection]);
 
   // Seed from the shared workspace (17D); uncommitted control state survives
   // back/forward per tab, dropped when the underlying workspace text changed.
@@ -431,7 +453,7 @@ export function GeneratorScreen() {
                     setConfig((c) => ({ ...c, sitemapUrl: e.target.value || undefined }))
                   }
                   placeholder="https://example.com/sitemap.xml"
-                  className="mt-1.5"
+                  className={cn("mt-1.5", highlightSitemap && "ring-2 ring-brand")}
                 />
               </div>
             </div>

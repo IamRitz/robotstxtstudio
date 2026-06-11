@@ -3,12 +3,12 @@ import Link from "next/link";
 import { TrustPageLayout, type TrustPage } from "@/components/trust-page-layout";
 import { webPageSchema } from "@/lib/seo";
 
-const X_URL = "https://x.com/robotstudio";
+const X_URL = "https://x.com/robotstxtstudio";
 
 export const metadata: Metadata = {
   title: "Contact Robots.txt Studio",
   description:
-    "Get in touch with Robots.txt Studio — feedback, bug reports, and corrections to our crawler classifications. Reach us on X at @robotstudio.",
+    "Get in touch with Robots.txt Studio — feedback, bug reports, and corrections to our crawler classifications. Reach us on X at @robotstxtstudio.",
   alternates: { canonical: "/contact" },
 };
 
@@ -17,7 +17,8 @@ const page: TrustPage = {
   title: "Contact",
   lead: (
     <>
-      Questions, feedback, a bug, or a correction to our crawler data? We&apos;d like to hear from you.
+      Questions, feedback, a bug, or a correction to our crawler data? We&apos;d like to hear from
+      you.
     </>
   ),
   sections: [
@@ -30,8 +31,13 @@ const page: TrustPage = {
           content: (
             <>
               The fastest way to reach us is on X:{" "}
-              <a href={X_URL} className="text-brand hover:underline" target="_blank" rel="noopener noreferrer">
-                @robotstudio
+              <a
+                href={X_URL}
+                className="text-brand hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @robotstxtstudio
               </a>
               . Send us a message or mention us — we read everything.
             </>
@@ -63,8 +69,10 @@ const page: TrustPage = {
           body: (
             <>
               Before flagging an inaccuracy, you may find our{" "}
-              <Link href="/methodology" className="text-brand hover:underline">methodology</Link> useful — it
-              explains how we classify crawlers and source our data.
+              <Link href="/methodology" className="text-brand hover:underline">
+                methodology
+              </Link>{" "}
+              useful — it explains how we classify crawlers and source our data.
             </>
           ),
         },
@@ -76,24 +84,34 @@ const page: TrustPage = {
       blocks: [
         {
           kind: "p",
-          content:
-            "Many questions are answered faster by the tools and guides themselves:",
+          content: "Many questions are answered faster by the tools and guides themselves:",
         },
         {
           kind: "list",
           items: [
             <>
               Not sure how a rule behaves? Use the{" "}
-              <Link href="/url-tester" className="text-brand hover:underline">URL Tester</Link> or{" "}
-              <Link href="/explain" className="text-brand hover:underline">Explainer</Link>.
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>{" "}
+              or{" "}
+              <Link href="/explain" className="text-brand hover:underline">
+                Explainer
+              </Link>
+              .
             </>,
             <>
               Want to know which bots crawl your site? See the{" "}
-              <Link href="/crawlers" className="text-brand hover:underline">Crawler Directory</Link>.
+              <Link href="/crawlers" className="text-brand hover:underline">
+                Crawler Directory
+              </Link>
+              .
             </>,
             <>
               New to robots.txt? Start with{" "}
-              <Link href="/what-is-robots-txt" className="text-brand hover:underline">What Is robots.txt?</Link>
+              <Link href="/what-is-robots-txt" className="text-brand hover:underline">
+                What Is robots.txt?
+              </Link>
             </>,
           ],
         },
@@ -106,7 +124,11 @@ const page: TrustPage = {
     },
   ],
   related: [
-    { title: "About Robots.txt Studio", href: "/about", description: "What we are and who it's for." },
+    {
+      title: "About Robots.txt Studio",
+      href: "/about",
+      description: "What we are and who it's for.",
+    },
     { title: "Our Methodology", href: "/methodology", description: "How our analysis works." },
     { title: "Crawler Directory", href: "/crawlers", description: "Every crawler we track." },
     { title: "Privacy Policy", href: "/privacy", description: "How we handle data." },
@@ -114,7 +136,8 @@ const page: TrustPage = {
   schema: [
     webPageSchema("ContactPage", {
       name: "Contact Robots.txt Studio",
-      description: "Reach Robots.txt Studio on X at @robotstudio for feedback, bugs, and crawler-data corrections.",
+      description:
+        "Reach Robots.txt Studio on X at @robotstxtstudio for feedback, bugs, and crawler-data corrections.",
       path: "/contact",
     }),
   ],

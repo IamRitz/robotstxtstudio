@@ -103,7 +103,10 @@ describe("category breakdowns", () => {
 describe("score changes after fixes", () => {
   it("raises the affected dimensions after Fix All Safe, leaving advisory ones", () => {
     const before = audit(SAMPLE);
-    const fixed = applyTextEdits(SAMPLE, collectSafeEdits(validateRobots(parseRobots(SAMPLE)).issues));
+    const fixed = applyTextEdits(
+      SAMPLE,
+      collectSafeEdits(validateRobots(parseRobots(SAMPLE)).issues),
+    );
     const after = audit(fixed);
 
     expect(after.dimensions.find((d) => d.dimension === "seo")!.value).toBe(100); // http→https fixed

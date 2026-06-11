@@ -11,13 +11,17 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-vs-noindex",
   h1: "robots.txt vs noindex",
-  description: "The difference between blocking crawling (robots.txt) and blocking indexing (noindex) — and when to use each.",
+  description:
+    "The difference between blocking crawling (robots.txt) and blocking indexing (noindex) — and when to use each.",
   heroCta: "tester",
   lead: (
     <>
-      This is the single most consequential robots.txt distinction. <strong className="text-foreground">robots.txt
-      controls crawling; noindex controls indexing.</strong> They solve different problems, and using
-      the wrong one — or both together — is how pages end up stuck in Google with no description.
+      This is the single most consequential robots.txt distinction.{" "}
+      <strong className="text-foreground">
+        robots.txt controls crawling; noindex controls indexing.
+      </strong>{" "}
+      They solve different problems, and using the wrong one — or both together — is how pages end
+      up stuck in Google with no description.
     </>
   ),
   cta: "analyzer",
@@ -82,11 +86,22 @@ const page: ContentPage = {
       heading: "Examples",
       blocks: [
         { kind: "p", content: "Deindex a thank-you page (allow crawl, add noindex):" },
-        { kind: "snippet", code: "<!-- In the page <head> -->\n<meta name=\"robots\" content=\"noindex\">", caption: "noindex meta tag" },
+        {
+          kind: "snippet",
+          code: '<!-- In the page <head> -->\n<meta name="robots" content="noindex">',
+          caption: "noindex meta tag",
+        },
         { kind: "p", content: "Or via HTTP header (good for non-HTML like PDFs):" },
         { kind: "snippet", code: "X-Robots-Tag: noindex", caption: "noindex HTTP header" },
-        { kind: "p", content: "Stop crawlers spending budget on internal search (crawl control, not deindex):" },
-        { kind: "snippet", code: "User-agent: *\nDisallow: /search", caption: "robots.txt crawl control" },
+        {
+          kind: "p",
+          content: "Stop crawlers spending budget on internal search (crawl control, not deindex):",
+        },
+        {
+          kind: "snippet",
+          code: "User-agent: *\nDisallow: /search",
+          caption: "robots.txt crawl control",
+        },
       ],
     },
     {
@@ -96,10 +111,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Using Disallow to remove a page from Google", body: "It blocks crawling, not indexing. The URL can still appear. Use noindex." },
-            { title: "Disallowing a page that has noindex", body: "Google can't see the noindex if it can't crawl the page. Allow the crawl." },
-            { title: "Trusting noindex for AI bots", body: "Most AI crawlers act on robots.txt, not noindex. Use Disallow for them." },
-            { title: "Using robots.txt for private data", body: "Listed paths are public. Use authentication for anything sensitive." },
+            {
+              title: "Using Disallow to remove a page from Google",
+              body: "It blocks crawling, not indexing. The URL can still appear. Use noindex.",
+            },
+            {
+              title: "Disallowing a page that has noindex",
+              body: "Google can't see the noindex if it can't crawl the page. Allow the crawl.",
+            },
+            {
+              title: "Trusting noindex for AI bots",
+              body: "Most AI crawlers act on robots.txt, not noindex. Use Disallow for them.",
+            },
+            {
+              title: "Using robots.txt for private data",
+              body: "Listed paths are public. Use authentication for anything sensitive.",
+            },
           ],
         },
       ],
@@ -108,26 +135,42 @@ const page: ContentPage = {
   faqs: [
     {
       question: "What is the difference between robots.txt and noindex?",
-      answer: "robots.txt Disallow controls crawling — whether a bot fetches a URL. noindex controls indexing — whether a search engine stores the page in its results. robots.txt does not remove pages from Google; noindex does.",
+      answer:
+        "robots.txt Disallow controls crawling — whether a bot fetches a URL. noindex controls indexing — whether a search engine stores the page in its results. robots.txt does not remove pages from Google; noindex does.",
     },
     {
       question: "Should I use robots.txt or noindex to remove a page from Google?",
-      answer: "Use noindex, and make sure the page is not blocked in robots.txt so Google can crawl it and see the tag. A robots.txt Disallow can actually keep a URL in the index without a description.",
+      answer:
+        "Use noindex, and make sure the page is not blocked in robots.txt so Google can crawl it and see the tag. A robots.txt Disallow can actually keep a URL in the index without a description.",
     },
     {
       question: "Why is my noindex page still in Google?",
-      answer: "Most often because the page is also blocked in robots.txt, so Google never crawls it and never sees the noindex. Remove the Disallow, keep the noindex, and let Google recrawl.",
+      answer:
+        "Most often because the page is also blocked in robots.txt, so Google never crawls it and never sees the noindex. Remove the Disallow, keep the noindex, and let Google recrawl.",
     },
     {
       question: "Can I use robots.txt and noindex together?",
-      answer: "Generally no — they conflict. Blocking a page in robots.txt prevents Google from reading its noindex. Use one or the other based on whether your goal is crawl control (robots.txt) or de-indexing (noindex).",
+      answer:
+        "Generally no — they conflict. Blocking a page in robots.txt prevents Google from reading its noindex. Use one or the other based on whether your goal is crawl control (robots.txt) or de-indexing (noindex).",
     },
   ],
   related: [
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Best practices in depth." },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Best practices in depth.",
+    },
     { title: "URL Tester", href: "/url-tester", description: "Check if a page is crawlable." },
-    { title: "robots.txt vs sitemap", href: "/robots-txt-vs-sitemap", description: "Another key distinction." },
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit crawl rules on a live site." },
+    {
+      title: "robots.txt vs sitemap",
+      href: "/robots-txt-vs-sitemap",
+      description: "Another key distinction.",
+    },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "Audit crawl rules on a live site.",
+    },
   ],
   nextReading: { title: "robots.txt vs sitemap", href: "/robots-txt-vs-sitemap" },
 };

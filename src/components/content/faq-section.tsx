@@ -15,7 +15,10 @@ export function FaqSection({ faqs }: { faqs: readonly FaqItem[] }) {
           <details key={i} className="group">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-semibold text-foreground">
               {f.question}
-              <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
+              <ChevronDown
+                className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                aria-hidden
+              />
             </summary>
             <p className="px-4 pb-4 text-sm leading-7 text-muted-foreground">{f.answer}</p>
           </details>

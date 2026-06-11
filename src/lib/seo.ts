@@ -12,7 +12,7 @@ export const SITE = {
   shortName: "Robots.txt Studio",
   description:
     "A modern all-in-one robots.txt toolkit: generator, validator, tester, explainer, AI crawler manager, and live checker for GPTBot, ClaudeBot, PerplexityBot and more.",
-  twitter: "@robotstudio",
+  twitter: "@robotstxtstudio",
   locale: "en_US",
 } as const;
 
@@ -205,7 +205,10 @@ export interface ItemListEntry {
 }
 
 /** ItemList / CollectionPage schema for directory + gallery hub pages. */
-export function itemListSchema(name: string, items: readonly ItemListEntry[]): Record<string, unknown> {
+export function itemListSchema(
+  name: string,
+  items: readonly ItemListEntry[],
+): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -232,7 +235,10 @@ export interface DefinedTerm {
 }
 
 /** DefinedTermSet schema for the glossary. */
-export function definedTermSetSchema(name: string, terms: readonly DefinedTerm[]): Record<string, unknown> {
+export function definedTermSetSchema(
+  name: string,
+  terms: readonly DefinedTerm[],
+): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "DefinedTermSet",

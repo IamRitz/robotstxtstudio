@@ -15,9 +15,9 @@ const page: ContentPage = {
   description: "How to check, validate, and audit a robots.txt file — and the tools to do it.",
   lead: (
     <>
-      A robots.txt checker answers two questions: is my file valid, and does it actually block what I
-      think it blocks? This guide covers both — syntax checking and URL testing — plus how to audit a
-      live site and act on what you find.
+      A robots.txt checker answers two questions: is my file valid, and does it actually block what
+      I think it blocks? This guide covers both — syntax checking and URL testing — plus how to
+      audit a live site and act on what you find.
     </>
   ),
   cta: "validator",
@@ -110,8 +110,8 @@ const page: ContentPage = {
               <Link href="/analyze" className="text-brand hover:underline">
                 Analyzer
               </Link>
-              . It handles redirects, missing files, and wrong content types gracefully, then returns
-              a visibility score and prioritized findings.
+              . It handles redirects, missing files, and wrong content types gracefully, then
+              returns a visibility score and prioritized findings.
             </>
           ),
         },
@@ -124,9 +124,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Error: conflicting rules", body: "A path is both allowed and disallowed — decide which you want and remove the other." },
-            { title: "Warning: missing sitemap", body: "Add a Sitemap line with the absolute https URL." },
-            { title: "Info: AI crawler inherits default", body: "Set an explicit policy for major AI bots so it's intentional." },
+            {
+              title: "Error: conflicting rules",
+              body: "A path is both allowed and disallowed — decide which you want and remove the other.",
+            },
+            {
+              title: "Warning: missing sitemap",
+              body: "Add a Sitemap line with the absolute https URL.",
+            },
+            {
+              title: "Info: AI crawler inherits default",
+              body: "Set an explicit policy for major AI bots so it's intentional.",
+            },
           ],
         },
         {
@@ -147,15 +156,18 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I check if my robots.txt is valid?",
-      answer: "Paste it into a validator. It parses the file, flags syntax errors and best-practice issues by severity with line numbers, and gives a health score.",
+      answer:
+        "Paste it into a validator. It parses the file, flags syntax errors and best-practice issues by severity with line numbers, and gives a health score.",
     },
     {
       question: "How do I test if a URL is blocked by robots.txt?",
-      answer: "Use a URL tester: provide the robots.txt, the URL, and a crawler. It applies the real matching rules and returns allowed or blocked along with the rule that decided it.",
+      answer:
+        "Use a URL tester: provide the robots.txt, the URL, and a crawler. It applies the real matching rules and returns allowed or blocked along with the rule that decided it.",
     },
     {
       question: "How do I check a competitor's robots.txt?",
-      answer: "Enter their domain into the Analyzer. It fetches the live file and breaks down which crawlers are blocked, how AI bots are handled, and any issues.",
+      answer:
+        "Enter their domain into the Analyzer. It fetches the live file and breaks down which crawlers are blocked, how AI bots are handled, and any issues.",
     },
     {
       question: "What's the difference between a robots.txt checker and a validator?",
@@ -164,7 +176,11 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "Robots.txt Validator", href: "/validate", description: "Syntax and health checking." },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Syntax and health checking.",
+    },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit a live site." },
     { title: "URL Tester", href: "/url-tester", description: "Test if a URL is blocked." },
   ],

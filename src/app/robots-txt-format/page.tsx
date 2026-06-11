@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-format",
   h1: "robots.txt Format",
-  description: "The correct robots.txt file format: structure, ordering, encoding, and a valid template.",
+  description:
+    "The correct robots.txt file format: structure, ordering, encoding, and a valid template.",
   lead: (
     <>
       “Format” is about the shape of the file rather than the meaning of each rule: how groups are
@@ -109,9 +110,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Multiple directives on one line", body: "User-agent: * Disallow: / is invalid; each directive needs its own line." },
-            { title: "Indented directives", body: "Leading whitespace can confuse some parsers; keep directives flush-left." },
-            { title: "Smart quotes / rich text", body: "Save as plain text, not from a word processor that inserts curly quotes." },
+            {
+              title: "Multiple directives on one line",
+              body: "User-agent: * Disallow: / is invalid; each directive needs its own line.",
+            },
+            {
+              title: "Indented directives",
+              body: "Leading whitespace can confuse some parsers; keep directives flush-left.",
+            },
+            {
+              title: "Smart quotes / rich text",
+              body: "Save as plain text, not from a word processor that inserts curly quotes.",
+            },
           ],
         },
       ],
@@ -130,17 +140,31 @@ const page: ContentPage = {
     },
     {
       question: "Can robots.txt have comments?",
-      answer: "Yes. Anything after a # is a comment, on its own line or after a directive. Comments are ignored by crawlers but help maintainers.",
+      answer:
+        "Yes. Anything after a # is a comment, on its own line or after a directive. Comments are ignored by crawlers but help maintainers.",
     },
     {
       question: "Where does the Sitemap line go?",
-      answer: "Anywhere in the file — it's file-level, not part of any group. Putting it at the top or bottom is purely a style choice.",
+      answer:
+        "Anywhere in the file — it's file-level, not part of any group. Putting it at the top or bottom is purely a style choice.",
     },
   ],
   related: [
-    { title: "robots.txt syntax", href: "/robots-txt-syntax", description: "Directive-level reference." },
-    { title: "The robots.txt file", href: "/robots-txt-file", description: "Where it lives and how to create it." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "Complete files to copy." },
+    {
+      title: "robots.txt syntax",
+      href: "/robots-txt-syntax",
+      description: "Directive-level reference.",
+    },
+    {
+      title: "The robots.txt file",
+      href: "/robots-txt-file",
+      description: "Where it lives and how to create it.",
+    },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "Complete files to copy.",
+    },
   ],
 };
 

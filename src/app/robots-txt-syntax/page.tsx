@@ -31,11 +31,36 @@ const page: ContentPage = {
           kind: "table",
           head: ["Directive", "Purpose"],
           rows: [
-            [<code key="a" className="font-mono">User-agent</code>, "Starts a group; names the crawler the following rules apply to (* = all)."],
-            [<code key="b" className="font-mono">Disallow</code>, "A path prefix the crawler must not request. Empty value = allow everything."],
-            [<code key="c" className="font-mono">Allow</code>, "A path prefix that overrides a broader Disallow (used for exceptions)."],
-            [<code key="d" className="font-mono">Sitemap</code>, "Absolute URL of an XML sitemap. File-level, not tied to a group."],
-            [<code key="e" className="font-mono">Crawl-delay</code>, "Seconds between requests. Honored by Bing/Yandex; ignored by Google."],
+            [
+              <code key="a" className="font-mono">
+                User-agent
+              </code>,
+              "Starts a group; names the crawler the following rules apply to (* = all).",
+            ],
+            [
+              <code key="b" className="font-mono">
+                Disallow
+              </code>,
+              "A path prefix the crawler must not request. Empty value = allow everything.",
+            ],
+            [
+              <code key="c" className="font-mono">
+                Allow
+              </code>,
+              "A path prefix that overrides a broader Disallow (used for exceptions).",
+            ],
+            [
+              <code key="d" className="font-mono">
+                Sitemap
+              </code>,
+              "Absolute URL of an XML sitemap. File-level, not tied to a group.",
+            ],
+            [
+              <code key="e" className="font-mono">
+                Crawl-delay
+              </code>,
+              "Seconds between requests. Honored by Bing/Yandex; ignored by Google.",
+            ],
           ],
         },
       ],
@@ -126,9 +151,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Missing the colon", body: "Disallow /admin (no colon) is not a valid directive and is ignored." },
-            { title: "Relative sitemap URL", body: "Sitemap: /sitemap.xml is invalid — it must be a full absolute URL." },
-            { title: "Crawl-delay: 0", body: "Has no effect and Google ignores Crawl-delay entirely. Use Search Console crawl settings instead." },
+            {
+              title: "Missing the colon",
+              body: "Disallow /admin (no colon) is not a valid directive and is ignored.",
+            },
+            {
+              title: "Relative sitemap URL",
+              body: "Sitemap: /sitemap.xml is invalid — it must be a full absolute URL.",
+            },
+            {
+              title: "Crawl-delay: 0",
+              body: "Has no effect and Google ignores Crawl-delay entirely. Use Search Console crawl settings instead.",
+            },
           ],
         },
         {
@@ -154,7 +188,8 @@ const page: ContentPage = {
     },
     {
       question: "What does Disallow: / mean?",
-      answer: "It blocks the entire site for the matching crawler — every path. Use it deliberately (for example, to block an AI crawler).",
+      answer:
+        "It blocks the entire site for the matching crawler — every path. Use it deliberately (for example, to block an AI crawler).",
     },
     {
       question: "What does the * wildcard do in robots.txt?",
@@ -163,13 +198,26 @@ const page: ContentPage = {
     },
     {
       question: "What is the $ symbol in robots.txt?",
-      answer: "It anchors a pattern to the end of the URL. /page$ matches /page exactly but not /page/sub or /page2.",
+      answer:
+        "It anchors a pattern to the end of the URL. /page$ matches /page exactly but not /page/sub or /page2.",
     },
   ],
   related: [
-    { title: "robots.txt format", href: "/robots-txt-format", description: "Structure and encoding." },
-    { title: "How robots.txt works", href: "/how-does-robots-txt-work", description: "Precedence and matching." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "See the syntax in context." },
+    {
+      title: "robots.txt format",
+      href: "/robots-txt-format",
+      description: "Structure and encoding.",
+    },
+    {
+      title: "How robots.txt works",
+      href: "/how-does-robots-txt-work",
+      description: "Precedence and matching.",
+    },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "See the syntax in context.",
+    },
   ],
 };
 

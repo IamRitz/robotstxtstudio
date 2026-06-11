@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseRobots } from "@/parser";
 import type { TextEdit, ValidationIssue } from "@/types";
-import {
-  applyTextEdits,
-  collectSafeEdits,
-  fixableIssues,
-  safelyFixableIssues,
-} from "./apply-fix";
+import { applyTextEdits, collectSafeEdits, fixableIssues, safelyFixableIssues } from "./apply-fix";
 import { validateRobots } from "./validate";
 
 const issue = (over: Partial<ValidationIssue>): ValidationIssue => ({
@@ -55,14 +50,25 @@ describe("applyTextEdits", () => {
   });
 
   it("keeps the first replacement when two non-delete edits hit the same line", () => {
-    expect(applyTextEdits(src, [{ line: 2, replacement: "X" }, { line: 2, replacement: "Y" }])).toBe("a\nX\nc");
+    expect(
+      applyTextEdits(src, [
+        { line: 2, replacement: "X" },
+        { line: 2, replacement: "Y" },
+      ]),
+    ).toBe("a\nX\nc");
   });
 });
 
 describe("issue selectors", () => {
   const issues = [
-    issue({ id: "1", fix: { description: "d", edits: [{ line: 1, replacement: "" }], safe: true } }),
-    issue({ id: "2", fix: { description: "d", edits: [{ line: 2, replacement: "" }], safe: false } }),
+    issue({
+      id: "1",
+      fix: { description: "d", edits: [{ line: 1, replacement: "" }], safe: true },
+    }),
+    issue({
+      id: "2",
+      fix: { description: "d", edits: [{ line: 2, replacement: "" }], safe: false },
+    }),
     issue({ id: "3", fix: { description: "advice only" } }), // no edits
     issue({ id: "4" }), // no fix
   ];

@@ -43,7 +43,14 @@ export function HealthGauge({
       aria-label={`Score ${Math.round(clamped)} of 100, ${BAND_LABEL[band]}`}
     >
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--muted)" strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--muted)"
+          strokeWidth={stroke}
+        />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -57,7 +64,9 @@ export function HealthGauge({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-xl font-bold tabular-nums text-foreground">{Math.round(clamped)}</span>
+        <span className="text-xl font-bold tabular-nums text-foreground">
+          {Math.round(clamped)}
+        </span>
         <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
           {label ?? "/100"}
         </span>

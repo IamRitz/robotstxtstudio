@@ -33,6 +33,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     // analyze() is designed not to throw; this is a last-resort guard so an
     // unexpected failure returns JSON, never an unhandled 500 HTML page.
     console.error("[api/analyze] unexpected error", error);
-    return NextResponse.json({ error: "Analysis failed unexpectedly. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Analysis failed unexpectedly. Please try again." },
+      { status: 500 },
+    );
   }
 }

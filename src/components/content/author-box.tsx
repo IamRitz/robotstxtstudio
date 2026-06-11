@@ -3,7 +3,11 @@ import { AUTHOR, CONTENT_UPDATED } from "@/config/content";
 import { Card } from "@/components/ui/card";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 /** Compact author + last-updated line shown under the page lead (EEAT). */

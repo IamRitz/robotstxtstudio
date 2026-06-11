@@ -13,9 +13,17 @@ interface StatusVisual {
 
 /** Shared visual config — keeps status colors/icons consistent everywhere. */
 export const STATUS_VISUALS: Record<StatusKey, StatusVisual> = {
-  allowed: { label: "Allowed", icon: CheckCircle2, chip: "bg-status-allowed-bg text-status-allowed-fg" },
+  allowed: {
+    label: "Allowed",
+    icon: CheckCircle2,
+    chip: "bg-status-allowed-bg text-status-allowed-fg",
+  },
   blocked: { label: "Blocked", icon: XCircle, chip: "bg-status-blocked-bg text-status-blocked-fg" },
-  warning: { label: "Warning", icon: AlertTriangle, chip: "bg-status-warning-bg text-status-warning-fg" },
+  warning: {
+    label: "Warning",
+    icon: AlertTriangle,
+    chip: "bg-status-warning-bg text-status-warning-fg",
+  },
   info: { label: "Info", icon: Info, chip: "bg-status-info-bg text-status-info-fg" },
 };
 

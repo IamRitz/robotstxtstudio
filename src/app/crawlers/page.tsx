@@ -21,7 +21,10 @@ const rows = directoryRows();
 function nameCell(name: string, href: ReturnType<typeof directoryRows>[number]["href"]) {
   if (!href) return <span className="font-medium text-foreground">{name}</span>;
   return (
-    <Link href={href} className="inline-flex items-center gap-1 font-medium text-brand hover:underline">
+    <Link
+      href={href}
+      className="inline-flex items-center gap-1 font-medium text-brand hover:underline"
+    >
       {name}
       <ArrowRight className="size-3" aria-hidden />
     </Link>
@@ -140,10 +143,26 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "The AI crawlers in depth." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Allow or block crawlers in one click." },
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "See who can crawl any live site." },
-    { title: "Why robots.txt Is Important", href: "/why-robots-txt-is-important", description: "The case for crawler control." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "The AI crawlers in depth.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Allow or block crawlers in one click.",
+    },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "See who can crawl any live site.",
+    },
+    {
+      title: "Why robots.txt Is Important",
+      href: "/why-robots-txt-is-important",
+      description: "The case for crawler control.",
+    },
   ],
   nextReading: { title: "AI Crawler Directory", href: "/ai-crawlers-directory" },
   extraSchema: [
@@ -151,7 +170,11 @@ const page: ContentPage = {
       "Crawler Directory",
       rows
         .filter((r) => r.href)
-        .map((r) => ({ name: r.crawler.name, path: r.href as string, description: r.crawler.description })),
+        .map((r) => ({
+          name: r.crawler.name,
+          path: r.href as string,
+          description: r.crawler.description,
+        })),
     ),
   ],
 };

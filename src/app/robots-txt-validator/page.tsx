@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-validator",
   h1: "Robots.txt Validator",
-  description: "Check your robots.txt for syntax errors and best-practice issues, with severity, line numbers, and a health score.",
+  description:
+    "Check your robots.txt for syntax errors and best-practice issues, with severity, line numbers, and a health score.",
   heroCta: "validator",
   lead: (
     <>
@@ -84,26 +85,38 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I check if my robots.txt is valid?",
-      answer: "Paste your file into the validator or fetch it from your live site. It parses the file, flags syntax errors and best-practice issues by severity with line numbers, and gives an overall health score.",
+      answer:
+        "Paste your file into the validator or fetch it from your live site. It parses the file, flags syntax errors and best-practice issues by severity with line numbers, and gives an overall health score.",
     },
     {
       question: "What does the validator catch?",
-      answer: "Syntax errors (like missing colons or malformed sitemaps), conflicting allow/disallow rules, best-practice warnings (missing sitemap, Crawl-delay: 0, duplicates), and risky patterns such as an accidental Disallow: /.",
+      answer:
+        "Syntax errors (like missing colons or malformed sitemaps), conflicting allow/disallow rules, best-practice warnings (missing sitemap, Crawl-delay: 0, duplicates), and risky patterns such as an accidental Disallow: /.",
     },
     {
       question: "Is the robots.txt validator free?",
-      answer: "Yes. Validation is free and requires no sign-up. You can paste a file or fetch it live from any domain.",
+      answer:
+        "Yes. Validation is free and requires no sign-up. You can paste a file or fetch it live from any domain.",
     },
     {
       question: "Does a valid robots.txt mean my URLs are crawlable?",
-      answer: "Not necessarily. Validation confirms the file is well-formed and follows best practices, but a valid file can still block important URLs. Use the URL Tester to confirm specific pages are allowed.",
+      answer:
+        "Not necessarily. Validation confirms the file is well-formed and follows best practices, but a valid file can still block important URLs. Use the URL Tester to confirm specific pages are allowed.",
     },
   ],
   related: [
     { title: "URL Tester", href: "/url-tester", description: "Test if a specific URL is blocked." },
     { title: "Robots.txt Generator", href: "/generate", description: "Rebuild a clean file." },
-    { title: "robots.txt checker", href: "/robots-txt-checker", description: "Validate, test, and audit." },
-    { title: "robots.txt syntax", href: "/robots-txt-syntax", description: "Understand each directive." },
+    {
+      title: "robots.txt checker",
+      href: "/robots-txt-checker",
+      description: "Validate, test, and audit.",
+    },
+    {
+      title: "robots.txt syntax",
+      href: "/robots-txt-syntax",
+      description: "Understand each directive.",
+    },
   ],
   nextReading: { title: "Robots.txt Analyzer", href: "/robots-txt-analyzer" },
 };

@@ -64,7 +64,9 @@ export function SiteFooter() {
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
               {TOOL_LINKS.map((t) => (
                 <li key={t.href}>
-                  <Link href={t.href} className="hover:text-foreground">{t.label}</Link>
+                  <Link href={t.href} className="hover:text-foreground">
+                    {t.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -75,7 +77,9 @@ export function SiteFooter() {
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
               {SOLUTION_LINKS.map((s) => (
                 <li key={s.href}>
-                  <Link href={s.href} className="hover:text-foreground">{s.label}</Link>
+                  <Link href={s.href} className="hover:text-foreground">
+                    {s.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -96,8 +100,13 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted-foreground">© {year} {BRAND.name}</p>
-          <nav aria-label="Company" className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
+            © {year} {BRAND.name}
+          </p>
+          <nav
+            aria-label="Company"
+            className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground"
+          >
             {TRUST_LINKS.map((l) => (
               <Link key={l.href} href={l.href} className="hover:text-foreground">
                 {l.label}

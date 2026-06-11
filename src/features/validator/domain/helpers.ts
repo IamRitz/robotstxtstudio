@@ -57,9 +57,7 @@ export function hasWildcardGroup(file: RobotsFile): boolean {
 export function crawlDelayDirectiveLine(file: RobotsFile, group: RobotsGroup): number | undefined {
   return file.directives.find(
     (d) =>
-      d.field === "crawl-delay" &&
-      d.line >= group.lineRange.start &&
-      d.line <= group.lineRange.end,
+      d.field === "crawl-delay" && d.line >= group.lineRange.start && d.line <= group.lineRange.end,
   )?.line;
 }
 

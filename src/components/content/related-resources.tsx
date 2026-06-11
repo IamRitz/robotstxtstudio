@@ -22,7 +22,8 @@ export function RelatedResources({ related }: { related: readonly RelatedLink[] 
                 <p className="mt-1 text-xs text-muted-foreground">{r.description}</p>
               ) : null}
               <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand">
-                Read <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                Read{" "}
+                <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
               </span>
             </Card>
           </Link>

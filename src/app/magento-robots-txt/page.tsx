@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "magento-robots-txt",
   h1: "Magento robots.txt",
-  description: "A practical robots.txt for Magento 2 / Adobe Commerce that controls faceted-navigation crawl waste.",
+  description:
+    "A practical robots.txt for Magento 2 / Adobe Commerce that controls faceted-navigation crawl waste.",
   heroCta: "generator",
   lead: (
     <>
-      Magento&apos;s biggest crawl problem is faceted navigation: filters and sort parameters multiply
-      a handful of category pages into thousands of near-duplicate URLs. A well-tuned robots.txt is the
-      first line of defense. Here&apos;s a practical Magento 2 setup.
+      Magento&apos;s biggest crawl problem is faceted navigation: filters and sort parameters
+      multiply a handful of category pages into thousands of near-duplicate URLs. A well-tuned
+      robots.txt is the first line of defense. Here&apos;s a practical Magento 2 setup.
     </>
   ),
   cta: "validator",
@@ -80,10 +81,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Blocking /media/, /static/, or /pub/static/", body: "These hold CSS, JS, and product images. Blocking them breaks rendering and image search. Keep them crawlable." },
-            { title: "Forgetting per-store-view files", body: "Multi-site Magento serves different robots.txt per domain. Configure each one." },
-            { title: "Relying only on robots.txt for facets", body: "Combine with canonical tags and URL parameter handling for clean indexing." },
-            { title: "Shipping the default sample", body: "Magento's example includes paths that may not match your setup. Review every line." },
+            {
+              title: "Blocking /media/, /static/, or /pub/static/",
+              body: "These hold CSS, JS, and product images. Blocking them breaks rendering and image search. Keep them crawlable.",
+            },
+            {
+              title: "Forgetting per-store-view files",
+              body: "Multi-site Magento serves different robots.txt per domain. Configure each one.",
+            },
+            {
+              title: "Relying only on robots.txt for facets",
+              body: "Combine with canonical tags and URL parameter handling for clean indexing.",
+            },
+            {
+              title: "Shipping the default sample",
+              body: "Magento's example includes paths that may not match your setup. Review every line.",
+            },
           ],
         },
       ],
@@ -104,26 +117,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Where is the robots.txt file in Magento 2?",
-      answer: "Magento 2 manages it from the admin under Content → Design → Configuration → Search Engine Robots. It's served at /robots.txt per store view, so multi-domain stores configure each one separately.",
+      answer:
+        "Magento 2 manages it from the admin under Content → Design → Configuration → Search Engine Robots. It's served at /robots.txt per store view, so multi-domain stores configure each one separately.",
     },
     {
       question: "How do I stop Magento faceted navigation wasting crawl budget?",
-      answer: "Disallow the filter and sort parameter patterns (e.g. /*?color=, /*?p=, /*?order=) in robots.txt, and pair that with canonical tags and parameter handling so crawlers focus on real product and category pages.",
+      answer:
+        "Disallow the filter and sort parameter patterns (e.g. /*?color=, /*?p=, /*?order=) in robots.txt, and pair that with canonical tags and parameter handling so crawlers focus on real product and category pages.",
     },
     {
       question: "Should I block /media/ or /static/ in Magento?",
-      answer: "No. Those directories hold CSS, JavaScript, and product images that Google needs to render pages and power image search. Blocking them can hurt rankings.",
+      answer:
+        "No. Those directories hold CSS, JavaScript, and product images that Google needs to render pages and power image search. Blocking them can hurt rankings.",
     },
     {
       question: "What should a Magento robots.txt include?",
-      answer: "Disallow checkout, customer, cart, and catalog search; disallow the faceted-navigation parameters your store uses; keep assets crawlable; and declare your sitemap with the canonical https URL.",
+      answer:
+        "Disallow checkout, customer, cart, and catalog search; disallow the faceted-navigation parameters your store uses; keep assets crawlable; and declare your sitemap with the canonical https URL.",
     },
   ],
   related: [
-    { title: "Robots.txt Generator", href: "/generate", description: "Build a Magento-ready file." },
-    { title: "Shopify robots.txt", href: "/shopify-robots-txt", description: "Another ecommerce platform." },
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Crawl budget in depth." },
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit your live Magento file." },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Build a Magento-ready file.",
+    },
+    {
+      title: "Shopify robots.txt",
+      href: "/shopify-robots-txt",
+      description: "Another ecommerce platform.",
+    },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Crawl budget in depth.",
+    },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "Audit your live Magento file.",
+    },
   ],
   nextReading: { title: "Next.js robots.txt", href: "/nextjs-robots-txt" },
 };

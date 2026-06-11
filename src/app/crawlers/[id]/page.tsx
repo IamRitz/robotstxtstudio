@@ -43,10 +43,23 @@ function relatedLinks(profile: CrawlerProfile): RelatedLink[] {
   for (const rid of profile.relatedCrawlerIds) {
     const rc = profileCrawler(rid);
     const href = crawlerHref(rid);
-    if (rc && href) out.push({ title: rc.name, href, description: `${rc.owner} — ${rc.category.replace("-", " ")}.` });
+    if (rc && href)
+      out.push({
+        title: rc.name,
+        href,
+        description: `${rc.owner} — ${rc.category.replace("-", " ")}.`,
+      });
   }
-  out.push({ title: "Crawler Directory", href: "/crawlers", description: "Every crawler, compared." });
-  out.push({ title: "AI Crawler Manager", href: "/ai-crawlers", description: "Allow or block crawlers in one click." });
+  out.push({
+    title: "Crawler Directory",
+    href: "/crawlers",
+    description: "Every crawler, compared.",
+  });
+  out.push({
+    title: "AI Crawler Manager",
+    href: "/ai-crawlers",
+    description: "Allow or block crawlers in one click.",
+  });
   // Dedupe by href, cap at 5.
   const seen = new Set<string>();
   return out.filter((l) => (seen.has(l.href) ? false : (seen.add(l.href), true))).slice(0, 5);
@@ -64,7 +77,12 @@ function buildSections(crawler: Crawler, profile: CrawlerProfile): ContentSectio
           kind: "table",
           head: ["Property", "Value"],
           rows: [
-            ["User-agent", <code key="u" className="font-mono">{ua}</code>],
+            [
+              "User-agent",
+              <code key="u" className="font-mono">
+                {ua}
+              </code>,
+            ],
             ["Operator", crawler.owner],
             ["Category", CATEGORY_LABELS[crawler.category]],
             ["Honors robots.txt", triLabel(profile.honors)],
@@ -102,7 +120,10 @@ function buildSections(crawler: Crawler, profile: CrawlerProfile): ContentSectio
     {
       id: "why",
       heading: "Why site owners care",
-      blocks: [{ kind: "list", items: profile.whyItMatters }, { kind: "cta", tool: "analyzer" }],
+      blocks: [
+        { kind: "list", items: profile.whyItMatters },
+        { kind: "cta", tool: "analyzer" },
+      ],
     },
     {
       id: "control",
@@ -112,12 +133,18 @@ function buildSections(crawler: Crawler, profile: CrawlerProfile): ContentSectio
           kind: "p",
           content: `Add a group targeting the ${ua} user-agent. Disallow: / blocks it from your whole site; an empty Disallow: allows it.`,
         },
-        { kind: "snippet", code: `User-agent: ${ua}\nDisallow: /`, caption: `Block ${crawler.name}` },
+        {
+          kind: "snippet",
+          code: `User-agent: ${ua}\nDisallow: /`,
+          caption: `Block ${crawler.name}`,
+        },
         { kind: "snippet", code: `User-agent: ${ua}\nDisallow:`, caption: `Allow ${crawler.name}` },
         {
           kind: "callout",
           status: profile.affectsRanking ? "warning" : "info",
-          title: profile.affectsRanking ? "This crawler affects your search ranking" : "No effect on search ranking",
+          title: profile.affectsRanking
+            ? "This crawler affects your search ranking"
+            : "No effect on search ranking",
           body: profile.affectsRankingNote,
         },
       ],
@@ -163,9 +190,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     heroCta: "ai-manager",
     lead: (
       <>
-        <code className="font-mono text-foreground">{crawler.userAgent}</code> is{" "}
-        {crawler.owner}&apos;s crawler. Here&apos;s exactly what it does, whether it respects robots.txt,
-        and the rules to control it. To apply a policy in one click, use the{" "}
+        <code className="font-mono text-foreground">{crawler.userAgent}</code> is {crawler.owner}
+        &apos;s crawler. Here&apos;s exactly what it does, whether it respects robots.txt, and the
+        rules to control it. To apply a policy in one click, use the{" "}
         <Link href="/ai-crawlers" className="text-brand hover:underline">
           AI Crawler Manager
         </Link>
@@ -182,10 +209,22 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         `How to block ${crawler.name} in robots.txt`,
         `Stop ${crawler.name} (${crawler.owner}) from crawling your site by adding a rule to your robots.txt file.`,
         [
-          { name: "Open robots.txt", text: "Open (or create) the robots.txt file at the root of your domain, e.g. https://example.com/robots.txt." },
-          { name: "Add the crawler group", text: `Add a new line: User-agent: ${crawler.userAgent}` },
-          { name: "Disallow the crawler", text: "On the next line add Disallow: / to block your entire site, or list specific paths to block only those." },
-          { name: "Verify the rule", text: "Save the file and confirm the crawler is blocked using the Robots.txt Analyzer or URL Tester." },
+          {
+            name: "Open robots.txt",
+            text: "Open (or create) the robots.txt file at the root of your domain, e.g. https://example.com/robots.txt.",
+          },
+          {
+            name: "Add the crawler group",
+            text: `Add a new line: User-agent: ${crawler.userAgent}`,
+          },
+          {
+            name: "Disallow the crawler",
+            text: "On the next line add Disallow: / to block your entire site, or list specific paths to block only those.",
+          },
+          {
+            name: "Verify the rule",
+            text: "Save the file and confirm the crawler is blocked using the Robots.txt Analyzer or URL Tester.",
+          },
         ],
       ),
     ],

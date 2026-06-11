@@ -49,9 +49,9 @@ const page: ContentPage = {
   heroCta: "ai-manager",
   lead: (
     <>
-      AI companies crawl your site to train models and answer questions about it. This directory lists
-      the crawlers that matter, what each one actually does, whether it respects robots.txt, and the
-      exact rules to allow or block it. To apply any of this in one click, use the{" "}
+      AI companies crawl your site to train models and answer questions about it. This directory
+      lists the crawlers that matter, what each one actually does, whether it respects robots.txt,
+      and the exact rules to allow or block it. To apply any of this in one click, use the{" "}
       <Link href="/ai-crawlers" className="text-brand hover:underline">
         AI Crawler Manager
       </Link>
@@ -71,9 +71,18 @@ const page: ContentPage = {
         },
         {
           kind: "table",
-          head: ["Crawler", "Company", "Trains AI", "AI search", "Honors robots.txt", "Recommended"],
+          head: [
+            "Crawler",
+            "Company",
+            "Trains AI",
+            "AI search",
+            "Honors robots.txt",
+            "Recommended",
+          ],
           rows: AI_CRAWLERS.map((c) => [
-            <a key={c.id} href={`#${c.id}`} className="font-medium text-brand hover:underline">{c.name}</a>,
+            <a key={c.id} href={`#${c.id}`} className="font-medium text-brand hover:underline">
+              {c.name}
+            </a>,
             c.company,
             triLabel(c.training),
             triLabel(c.search),
@@ -137,10 +146,26 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Allow or block every crawler with one click." },
-    { title: "Block GPTBot", href: "/gptbot-robots-txt", description: "OpenAI's training crawler, in depth." },
-    { title: "Why robots.txt is important", href: "/why-robots-txt-is-important", description: "The strategic case for crawler control." },
-    { title: "Robots.txt Analyzer", href: "/analyze", description: "Confirm a crawler is really blocked." },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Allow or block every crawler with one click.",
+    },
+    {
+      title: "Block GPTBot",
+      href: "/gptbot-robots-txt",
+      description: "OpenAI's training crawler, in depth.",
+    },
+    {
+      title: "Why robots.txt is important",
+      href: "/why-robots-txt-is-important",
+      description: "The strategic case for crawler control.",
+    },
+    {
+      title: "Robots.txt Analyzer",
+      href: "/analyze",
+      description: "Confirm a crawler is really blocked.",
+    },
   ],
   nextReading: { title: "Block GPTBot in robots.txt", href: "/gptbot-robots-txt" },
 };

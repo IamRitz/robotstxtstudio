@@ -52,11 +52,14 @@ const page: TrustPage = {
           content: (
             <>
               When you use{" "}
-              <Link href="/analyze" className="text-brand hover:underline">Analyze</Link> or the
-              fetch-from-URL option, the domain you enter is sent to our server so it can request that
-              site&apos;s publicly available <code className="font-mono">/robots.txt</code> file. We
-              process the response in memory to produce your report and return it to you. We do not
-              persist the domain, the fetched file, or the report.
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyze
+              </Link>{" "}
+              or the fetch-from-URL option, the domain you enter is sent to our server so it can
+              request that site&apos;s publicly available{" "}
+              <code className="font-mono">/robots.txt</code> file. We process the response in memory
+              to produce your report and return it to you. We do not persist the domain, the fetched
+              file, or the report.
             </>
           ),
         },
@@ -111,7 +114,10 @@ const page: TrustPage = {
           content: (
             <>
               Questions about this policy? Reach us via the{" "}
-              <Link href="/contact" className="text-brand hover:underline">contact page</Link>.
+              <Link href="/contact" className="text-brand hover:underline">
+                contact page
+              </Link>
+              .
             </>
           ),
         },
@@ -131,7 +137,11 @@ const page: TrustPage = {
   related: [
     { title: "Terms of Service", href: "/terms", description: "The terms for using the service." },
     { title: "Our Methodology", href: "/methodology", description: "How analysis is performed." },
-    { title: "About Robots.txt Studio", href: "/about", description: "What we are and who it's for." },
+    {
+      title: "About Robots.txt Studio",
+      href: "/about",
+      description: "What we are and who it's for.",
+    },
     { title: "Contact", href: "/contact", description: "Get in touch." },
   ],
   schema: [

@@ -11,14 +11,15 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "nextjs-robots-txt",
   h1: "Next.js robots.txt",
-  description: "How to add robots.txt to a Next.js app — the robots.ts metadata route vs a static file.",
+  description:
+    "How to add robots.txt to a Next.js app — the robots.ts metadata route vs a static file.",
   heroCta: "validator",
   lead: (
     <>
       Next.js gives you two clean ways to ship robots.txt: a static file in{" "}
       <code className="font-mono text-foreground">public/</code>, or a typed{" "}
-      <code className="font-mono text-foreground">app/robots.ts</code> metadata route that generates it
-      programmatically. Here&apos;s when to use each, with working code.
+      <code className="font-mono text-foreground">app/robots.ts</code> metadata route that generates
+      it programmatically. Here&apos;s when to use each, with working code.
     </>
   ),
   cta: "analyzer",
@@ -36,8 +37,18 @@ const page: ContentPage = {
           kind: "table",
           head: ["Approach", "Use when"],
           rows: [
-            [<code key="a" className="font-mono">public/robots.txt</code>, "Rules are static and simple"],
-            [<code key="b" className="font-mono">app/robots.ts</code>, "Rules are dynamic, env-aware, or generated"],
+            [
+              <code key="a" className="font-mono">
+                public/robots.txt
+              </code>,
+              "Rules are static and simple",
+            ],
+            [
+              <code key="b" className="font-mono">
+                app/robots.ts
+              </code>,
+              "Rules are dynamic, env-aware, or generated",
+            ],
           ],
         },
       ],
@@ -65,7 +76,8 @@ const page: ContentPage = {
       blocks: [
         {
           kind: "p",
-          content: "Drop a plain file at public/robots.txt and Next.js serves it verbatim at /robots.txt:",
+          content:
+            "Drop a plain file at public/robots.txt and Next.js serves it verbatim at /robots.txt:",
         },
         {
           kind: "snippet",
@@ -103,10 +115,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Shipping a dev Disallow: / to production", body: "If you env-gate robots.txt, double-check the production branch returns the allow rules." },
-            { title: "Having both a static file and robots.ts", body: "The static public file silently overrides the route. Keep only one." },
-            { title: "Hardcoding the wrong host", body: "Use an absolute https sitemap URL that matches your canonical domain." },
-            { title: "Blocking /_next/static", body: "That holds your JS and CSS chunks. Blocking it breaks rendering for crawlers." },
+            {
+              title: "Shipping a dev Disallow: / to production",
+              body: "If you env-gate robots.txt, double-check the production branch returns the allow rules.",
+            },
+            {
+              title: "Having both a static file and robots.ts",
+              body: "The static public file silently overrides the route. Keep only one.",
+            },
+            {
+              title: "Hardcoding the wrong host",
+              body: "Use an absolute https sitemap URL that matches your canonical domain.",
+            },
+            {
+              title: "Blocking /_next/static",
+              body: "That holds your JS and CSS chunks. Blocking it breaks rendering for crawlers.",
+            },
           ],
         },
       ],
@@ -115,26 +139,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I add robots.txt to a Next.js app?",
-      answer: "Either place a static file at public/robots.txt, or add app/robots.ts exporting a default function that returns a MetadataRoute.Robots object. Next.js serves either at /robots.txt. Use robots.ts when the rules need to be dynamic.",
+      answer:
+        "Either place a static file at public/robots.txt, or add app/robots.ts exporting a default function that returns a MetadataRoute.Robots object. Next.js serves either at /robots.txt. Use robots.ts when the rules need to be dynamic.",
     },
     {
       question: "Should I use app/robots.ts or a static file?",
-      answer: "Use a static public/robots.txt for simple, unchanging rules. Use app/robots.ts when rules depend on the environment (e.g. blocking preview deploys), a CMS, or your base URL — it's typed and generated at build time.",
+      answer:
+        "Use a static public/robots.txt for simple, unchanging rules. Use app/robots.ts when rules depend on the environment (e.g. blocking preview deploys), a CMS, or your base URL — it's typed and generated at build time.",
     },
     {
       question: "Why is my Next.js robots.txt not updating?",
-      answer: "A static public/robots.txt overrides app/robots.ts. If you have both, the route is ignored. Remove the static file, or edit the file that's actually being served — confirm with the Analyzer.",
+      answer:
+        "A static public/robots.txt overrides app/robots.ts. If you have both, the route is ignored. Remove the static file, or edit the file that's actually being served — confirm with the Analyzer.",
     },
     {
       question: "How do I block AI crawlers in Next.js?",
-      answer: "In app/robots.ts, add a rule with userAgent set to an array like ['GPTBot', 'CCBot', 'Google-Extended'] and disallow '/'. In a static file, add the equivalent User-agent groups.",
+      answer:
+        "In app/robots.ts, add a rule with userAgent set to an array like ['GPTBot', 'CCBot', 'Google-Extended'] and disallow '/'. In a static file, add the equivalent User-agent groups.",
     },
   ],
   related: [
-    { title: "Robots.txt Validator", href: "/validate", description: "Validate your generated output." },
-    { title: "robots.txt format", href: "/robots-txt-format", description: "What correct output looks like." },
-    { title: "WordPress robots.txt", href: "/wordpress-robots-txt", description: "The CMS equivalent." },
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Which AI bots to block." },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Validate your generated output.",
+    },
+    {
+      title: "robots.txt format",
+      href: "/robots-txt-format",
+      description: "What correct output looks like.",
+    },
+    {
+      title: "WordPress robots.txt",
+      href: "/wordpress-robots-txt",
+      description: "The CMS equivalent.",
+    },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Which AI bots to block.",
+    },
   ],
   nextReading: { title: "robots.txt vs noindex", href: "/robots-txt-vs-noindex" },
 };

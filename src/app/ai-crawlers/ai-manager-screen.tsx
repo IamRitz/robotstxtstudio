@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, FileText, Megaphone, Search, ShieldCheck } from "lucide-react";
-import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
+import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory, getCrawler } from "@/config/crawlers";
 import { TEMPLATE_LABELS } from "@/features/generator";
 import {
   analyzePolicySet,
@@ -120,7 +120,12 @@ function readSavedUi(): SavedManagerUi {
   }
 }
 
-export function AiManagerScreen() {
+export function AiManagerScreen({
+  focusCrawlerId,
+}: {
+  /** Deep-link target (17F.2): land on this crawler — expanded, in view, marked. */
+  focusCrawlerId?: string;
+}) {
   const [policySet, setPolicySet] = useState<PolicySet>(emptyPolicySet);
   const [query, setQuery] = useState("");
   /** The active starter template, highlighted until the policy diverges from it. */
@@ -131,6 +136,8 @@ export function AiManagerScreen() {
   const [open, setOpen] = useState<Record<CrawlerCategory, boolean> | null>(null);
   /** Live-sync (17E): the workspace text WE last wrote; null = not syncing. */
   const syncRef = useRef<string | null>(null);
+  /** Briefly emphasized crawler row (deep-link landing — 17F.2). */
+  const [highlightId, setHighlightId] = useState<string | null>(null);
 
   // Seed from the shared workspace (17D): toggles reflect the working file's
   // decisions. Uncommitted intent survives back/forward via sessionStorage, but
@@ -139,16 +146,34 @@ export function AiManagerScreen() {
     const current = getWorkspace();
     setWs(current);
     const saved = readSavedUi();
+    let seeded = emptyPolicySet();
     if (saved.policySet && (saved.basedOnText ?? null) === (current?.text ?? null)) {
+      seeded = saved.policySet;
       setPolicySet(saved.policySet);
       setTemplate(saved.template ?? null);
-      return;
-    }
-    if (current) {
-      setPolicySet(policySetFromFile(parseRobots(current.text)));
+    } else if (current) {
+      seeded = policySetFromFile(parseRobots(current.text));
+      setPolicySet(seeded);
       setTemplate(null);
     }
-  }, []);
+    // Deep-link landing (17F.2): expand the crawler's group, bring the row into
+    // view, and mark it briefly so the eye lands on the thing needing a decision.
+    const focus = focusCrawlerId ? getCrawler(focusCrawlerId) : undefined;
+    if (focus) {
+      setOpen({ ...defaultOpenMap(seeded), [focus.category]: true });
+      setHighlightId(focus.id);
+      const scroll = window.setTimeout(() => {
+        document
+          .querySelector(`[data-crawler-row="${focus.id}"]`)
+          ?.scrollIntoView({ block: "center" });
+      }, 80);
+      const clear = window.setTimeout(() => setHighlightId(null), 2200);
+      return () => {
+        window.clearTimeout(scroll);
+        window.clearTimeout(clear);
+      };
+    }
+  }, [focusCrawlerId]);
 
   useEffect(() => {
     try {
@@ -438,7 +463,15 @@ export function AiManagerScreen() {
                   {crawlers.map((crawler) => {
                     const state = getPermission(policySet, crawler.id);
                     return (
-                      <li key={crawler.id} className="flex items-center gap-3 px-4 py-3">
+                      <li
+                        key={crawler.id}
+                        data-crawler-row={crawler.id}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3",
+                          highlightId === crawler.id &&
+                            "bg-brand-muted shadow-[inset_2px_0_0_0_var(--brand)]",
+                        )}
+                      >
                         <div className="min-w-0 flex-1">
                           <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
                           <p className="mt-1 text-xs text-muted-foreground">

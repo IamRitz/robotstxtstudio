@@ -16,8 +16,17 @@ export function Callout({
 }) {
   const { icon: Icon, chip } = STATUS_VISUALS[status];
   return (
-    <div role="status" className={cn("flex items-start gap-3 rounded-xl border border-border bg-card p-4", className)}>
-      <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full", chip)} aria-hidden>
+    <div
+      role="status"
+      className={cn(
+        "flex items-start gap-3 rounded-xl border border-border bg-card p-4",
+        className,
+      )}
+    >
+      <span
+        className={cn("flex size-6 shrink-0 items-center justify-center rounded-full", chip)}
+        aria-hidden
+      >
         <Icon className="size-3.5" />
       </span>
       <div className="min-w-0">

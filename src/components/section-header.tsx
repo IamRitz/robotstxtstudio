@@ -13,7 +13,11 @@ export function SectionHeader({
 }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      {icon ? <span className="text-muted-foreground [&_svg]:size-4" aria-hidden>{icon}</span> : null}
+      {icon ? (
+        <span className="text-muted-foreground [&_svg]:size-4" aria-hidden>
+          {icon}
+        </span>
+      ) : null}
       <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
         {children}
       </span>

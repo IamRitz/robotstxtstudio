@@ -127,7 +127,8 @@ export const blocksRenderingAssets: Rule = ({ file }) => {
     for (const rule of group.rules) {
       if (rule.type !== "disallow") continue;
       const p = rule.path.toLowerCase();
-      const isAsset = /\.(css|js)$/.test(p) || p.includes("/wp-includes") || p === "/assets/" || p === "/static/";
+      const isAsset =
+        /\.(css|js)$/.test(p) || p.includes("/wp-includes") || p === "/assets/" || p === "/static/";
       if (!isAsset) continue;
       issues.push(
         makeIssue({
@@ -162,6 +163,8 @@ export const noindexUnsupported: Rule = ({ file }) =>
           edits: [{ line: d.line, replacement: "" }],
           safe: false,
         },
-        ...(LEARN_MORE["noindex-unsupported"] ? { learnMoreUrl: LEARN_MORE["noindex-unsupported"] } : {}),
+        ...(LEARN_MORE["noindex-unsupported"]
+          ? { learnMoreUrl: LEARN_MORE["noindex-unsupported"] }
+          : {}),
       }),
     );

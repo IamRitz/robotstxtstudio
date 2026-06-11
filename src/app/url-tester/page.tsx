@@ -14,7 +14,12 @@ export const metadata: Metadata = {
 export default function UrlTesterPage() {
   return (
     <AppShell>
-      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "URL Tester", path: "/url-tester" }])} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "URL Tester", path: "/url-tester" },
+        ])}
+      />
       <JsonLd data={toolAppSchema("tester")} />
       <TesterScreen />
       <ToolRelatedRail tool="tester" />

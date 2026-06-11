@@ -106,7 +106,7 @@
     --status-blocked-dot: oklch(0.704 0.191 22.216);
 
     --status-warning-fg: oklch(0.86 0.15 86);
-    --status-warning-bg: oklch(0.30 0.06 70);
+    --status-warning-bg: oklch(0.3 0.06 70);
     --status-warning-dot: oklch(0.769 0.188 70.08);
 
     --status-info-fg: oklch(0.78 0.12 260);
@@ -203,7 +203,9 @@ body {
   [tabindex]:focus-visible {
     outline: none;
     border-radius: var(--radius-sm);
-    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--brand);
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 4px var(--brand);
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -60,7 +60,7 @@ test("refresh and Back keep the workspace, including applied fixes", async ({ pa
   expect(calls).toBe(1);
 });
 
-test("clear history returns the homepage to the first-run state", async ({ page }) => {
+test("clear history removes the archive but keeps the active workspace strip", async ({ page }) => {
   await page.route("**/api/analyze", (route) => route.fulfill({ json: ANALYSIS_REPORT }));
   await page.goto("/analyze?domain=example.com&fresh=1");
   await expect(page.getByTestId("score-current")).toBeVisible();
@@ -68,7 +68,7 @@ test("clear history returns the homepage to the first-run state", async ({ page 
   await page.goto("/");
   await expect(page.getByTestId("continue-working")).toBeVisible();
   await page.getByRole("button", { name: "Clear history" }).click();
-  // The stranger view (locked teaser) comes back; nothing lingers.
+  // History ≠ workspace (17F.5): the archive list goes, active work stays.
   await expect(page.getByTestId("continue-working")).toBeHidden();
-  await expect(page.getByText("Unlock your full crawler report")).toBeVisible();
+  await expect(page.getByTestId("workspace-resume")).toBeVisible();
 });

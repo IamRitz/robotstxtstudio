@@ -130,7 +130,8 @@ const page: ContentPage = {
     },
     {
       question: "What does an empty Disallow line mean?",
-      answer: "Disallow: with no value places no restriction — it effectively allows everything. It's the opposite of Disallow: /, which blocks everything.",
+      answer:
+        "Disallow: with no value places no restriction — it effectively allows everything. It's the opposite of Disallow: /, which blocks everything.",
     },
     {
       question: "How are Allow and Disallow conflicts resolved?",
@@ -139,13 +140,26 @@ const page: ContentPage = {
     },
     {
       question: "Do comments affect how a file is read?",
-      answer: "No. Everything after # is ignored by crawlers. Comments only help humans understand the file.",
+      answer:
+        "No. Everything after # is ignored by crawlers. Comments only help humans understand the file.",
     },
   ],
   related: [
-    { title: "Robots.txt Explainer", href: "/explain", description: "Plain-English breakdown of any file." },
-    { title: "How robots.txt works", href: "/how-does-robots-txt-work", description: "The matching algorithm." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "Read real-world files." },
+    {
+      title: "Robots.txt Explainer",
+      href: "/explain",
+      description: "Plain-English breakdown of any file.",
+    },
+    {
+      title: "How robots.txt works",
+      href: "/how-does-robots-txt-work",
+      description: "The matching algorithm.",
+    },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "Read real-world files.",
+    },
   ],
 };
 

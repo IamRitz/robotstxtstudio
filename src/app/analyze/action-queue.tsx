@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Link from "next/link";
+import type { Route } from "next";
 import { ArrowUpRight, Check, ExternalLink, Wrench } from "lucide-react";
 import type { Severity, ValidationIssue } from "@/types";
 import { applyTextEdits, whyItMatters } from "@/features/validator";
 import { recommendedActionFor } from "@/features/live-checker";
+import { getCrawler } from "@/config/crawlers";
 import { impactDetail, issuePoints } from "@/app/validate/issue-panel";
 import { trackActionQueueClicked } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -13,14 +15,30 @@ import { STATUS_VISUALS, severityToStatus } from "@/components/severity";
 
 const SEVERITY_RANK: Record<Severity, number> = { error: 0, warning: 1, info: 2 };
 
-/** Deep-link target for a finding without an in-app fix, if any. */
-function deepLinkFor(
-  issue: ValidationIssue,
-): { href: "/ai-crawlers" | "/generate"; label: string } | null {
+const SITEMAP_CODES = new Set(["missing-sitemap", "sitemap-not-https", "invalid-sitemap-url"]);
+
+/**
+ * Deep-link target for a finding without an in-app fix (17F.2: targeted, not
+ * page-level). AI issue ids embed the crawler id (`…inherits-default:claudebot`),
+ * so the link can land on — and highlight — the exact toggle; sitemap findings
+ * land on the Generator's sitemap field.
+ */
+function deepLinkFor(issue: ValidationIssue): { href: Route; label: string } | null {
   const action = recommendedActionFor(issue.code);
-  if (action?.kind === "open-crawler-manager")
-    return { href: "/ai-crawlers", label: "Open AI Manager" };
-  if (action?.kind === "open-generator") return { href: "/generate", label: "Open Generator" };
+  if (action?.kind === "open-crawler-manager") {
+    const crawler = getCrawler(issue.id.split(":")[1] ?? "");
+    return crawler
+      ? {
+          href: `/ai-crawlers?focus=${crawler.id}` as Route,
+          label: `Open AI Manager → ${crawler.name}`,
+        }
+      : { href: "/ai-crawlers" as Route, label: "Open AI Manager" };
+  }
+  if (action?.kind === "open-generator") {
+    return SITEMAP_CODES.has(issue.code)
+      ? { href: "/generate?focus=sitemap" as Route, label: "Open Generator → Sitemap" }
+      : { href: "/generate" as Route, label: "Open Generator" };
+  }
   return null;
 }
 

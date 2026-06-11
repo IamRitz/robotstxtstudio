@@ -10,14 +10,31 @@ import { cn } from "@/lib/utils";
 
 /** Band → status palette (theme-aware tokens). Excellent/Good = green, Needs
  *  Attention = amber, Poor = red. Static class strings (Tailwind-safe). */
-const BAND_VISUAL: Record<
-  HealthBand,
-  { ring: string; text: string; chip: string; bar: string }
-> = {
-  excellent: { ring: "var(--status-allowed-dot)", text: "text-status-allowed-fg", chip: "bg-status-allowed-bg text-status-allowed-fg", bar: "bg-status-allowed-dot" },
-  good: { ring: "var(--status-allowed-dot)", text: "text-status-allowed-fg", chip: "bg-status-allowed-bg text-status-allowed-fg", bar: "bg-status-allowed-dot" },
-  "needs-attention": { ring: "var(--status-warning-dot)", text: "text-status-warning-fg", chip: "bg-status-warning-bg text-status-warning-fg", bar: "bg-status-warning-dot" },
-  poor: { ring: "var(--status-blocked-dot)", text: "text-status-blocked-fg", chip: "bg-status-blocked-bg text-status-blocked-fg", bar: "bg-status-blocked-dot" },
+const BAND_VISUAL: Record<HealthBand, { ring: string; text: string; chip: string; bar: string }> = {
+  excellent: {
+    ring: "var(--status-allowed-dot)",
+    text: "text-status-allowed-fg",
+    chip: "bg-status-allowed-bg text-status-allowed-fg",
+    bar: "bg-status-allowed-dot",
+  },
+  good: {
+    ring: "var(--status-allowed-dot)",
+    text: "text-status-allowed-fg",
+    chip: "bg-status-allowed-bg text-status-allowed-fg",
+    bar: "bg-status-allowed-dot",
+  },
+  "needs-attention": {
+    ring: "var(--status-warning-dot)",
+    text: "text-status-warning-fg",
+    chip: "bg-status-warning-bg text-status-warning-fg",
+    bar: "bg-status-warning-dot",
+  },
+  poor: {
+    ring: "var(--status-blocked-dot)",
+    text: "text-status-blocked-fg",
+    chip: "bg-status-blocked-bg text-status-blocked-fg",
+    bar: "bg-status-blocked-dot",
+  },
 };
 
 /** Count a number up to `target` (skipped under prefers-reduced-motion). */
@@ -26,7 +43,8 @@ function useCountUp(target: number): number {
   const prev = useRef(target);
   useEffect(() => {
     const reduce =
-      typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduce || prev.current === target) {
       setValue(target);
       prev.current = target;
@@ -49,7 +67,9 @@ function useCountUp(target: number): number {
 
 function BandChip({ band }: { band: HealthBand }) {
   return (
-    <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", BAND_VISUAL[band].chip)}>
+    <span
+      className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", BAND_VISUAL[band].chip)}
+    >
       {HEALTH_BAND_LABEL[band]}
     </span>
   );
@@ -64,9 +84,21 @@ function OverallRing({ value, band }: { value: number; band: HealthBand }) {
   const c = 2 * Math.PI * r;
   const offset = c * (1 - Math.max(0, Math.min(100, value)) / 100);
   return (
-    <div className="relative inline-flex shrink-0 items-center justify-center" style={{ width: size, height: size }} role="img" aria-label={`Overall health ${value} of 100, ${HEALTH_BAND_LABEL[band]}`}>
+    <div
+      className="relative inline-flex shrink-0 items-center justify-center"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={`Overall health ${value} of 100, ${HEALTH_BAND_LABEL[band]}`}
+    >
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--muted)" strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="var(--muted)"
+          strokeWidth={stroke}
+        />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -82,7 +114,9 @@ function OverallRing({ value, band }: { value: number; band: HealthBand }) {
       </svg>
       <div className="absolute flex flex-col items-center">
         <span className="text-3xl font-bold tabular-nums text-foreground">{display}</span>
-        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">/100</span>
+        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+          /100
+        </span>
       </div>
     </div>
   );
@@ -97,7 +131,14 @@ function Trend({ values }: { values: readonly number[] }) {
       {values.map((v, i) => (
         <span key={i} className="inline-flex items-center gap-1.5">
           {i > 0 ? <span aria-hidden>→</span> : null}
-          <span className={cn("tabular-nums", i === values.length - 1 && "font-semibold text-status-allowed-fg")}>{v}</span>
+          <span
+            className={cn(
+              "tabular-nums",
+              i === values.length - 1 && "font-semibold text-status-allowed-fg",
+            )}
+          >
+            {v}
+          </span>
         </span>
       ))}
     </p>
@@ -114,13 +155,21 @@ function CategoryCard({ d }: { d: DimensionScore }) {
           <BandChip band={d.band} />
         </span>
         <span className="flex items-center gap-2">
-          <span className="font-mono text-sm font-bold tabular-nums text-foreground">{d.value}</span>
-          <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
+          <span className="font-mono text-sm font-bold tabular-nums text-foreground">
+            {d.value}
+          </span>
+          <ChevronDown
+            className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
+            aria-hidden
+          />
         </span>
       </summary>
 
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
-        <div className={cn("h-full rounded-full transition-[width] duration-500", v.bar)} style={{ width: `${d.value}%` }} />
+        <div
+          className={cn("h-full rounded-full transition-[width] duration-500", v.bar)}
+          style={{ width: `${d.value}%` }}
+        />
       </div>
       <p className="mt-2 text-xs text-muted-foreground">{d.explanation}</p>
 
@@ -130,15 +179,21 @@ function CategoryCard({ d }: { d: DimensionScore }) {
             <li key={ded.code} className="flex items-baseline justify-between gap-2 text-xs">
               <span className="text-foreground">
                 {ded.label}
-                {ded.count > 1 ? <span className="text-muted-foreground"> ×{ded.count}</span> : null}
+                {ded.count > 1 ? (
+                  <span className="text-muted-foreground"> ×{ded.count}</span>
+                ) : null}
               </span>
-              <span className="shrink-0 font-mono tabular-nums text-status-blocked-fg">−{ded.points}</span>
+              <span className="shrink-0 font-mono tabular-nums text-status-blocked-fg">
+                −{ded.points}
+              </span>
             </li>
           ))}
           {d.potential > d.value ? (
             <li className="flex items-baseline justify-between gap-2 border-t border-border pt-1.5 text-xs">
               <span className="font-medium text-status-allowed-fg">Potential after fixes</span>
-              <span className="shrink-0 font-mono font-semibold tabular-nums text-foreground">{d.potential}</span>
+              <span className="shrink-0 font-mono font-semibold tabular-nums text-foreground">
+                {d.potential}
+              </span>
             </li>
           ) : null}
         </ul>
@@ -154,7 +209,13 @@ function CategoryCard({ d }: { d: DimensionScore }) {
  * deduction-based category scores, an executive summary, and the in-session score
  * trend. Every number is traceable to a rule (see the category breakdowns).
  */
-export function AuditDashboard({ report, trend }: { report: AuditReport; trend: readonly number[] }) {
+export function AuditDashboard({
+  report,
+  trend,
+}: {
+  report: AuditReport;
+  trend: readonly number[];
+}) {
   const { overall, summary, dimensions } = report;
   return (
     <section className="space-y-6" aria-label="Audit report">
@@ -171,17 +232,21 @@ export function AuditDashboard({ report, trend }: { report: AuditReport; trend: 
             {summary.estimatedAfterSafeFixes > overall.value ? (
               <p className="mt-2 text-xs text-muted-foreground">
                 Estimated{" "}
-                <span className="font-semibold text-status-allowed-fg">{summary.estimatedAfterSafeFixes}</span>{" "}
+                <span className="font-semibold text-status-allowed-fg">
+                  {summary.estimatedAfterSafeFixes}
+                </span>{" "}
                 after applying safe fixes.
               </p>
             ) : null}
           </div>
         </div>
 
-        {(summary.strengths.length > 0 || summary.weaknesses.length > 0) ? (
+        {summary.strengths.length > 0 || summary.weaknesses.length > 0 ? (
           <div className="mt-6 grid gap-4 border-t border-border pt-5 sm:grid-cols-2">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Strengths</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Strengths
+              </p>
               <ul className="mt-2 space-y-1 text-xs text-foreground">
                 {summary.strengths.length > 0 ? (
                   summary.strengths.map((s, i) => <li key={i}>✓ {s}</li>)
@@ -191,7 +256,9 @@ export function AuditDashboard({ report, trend }: { report: AuditReport; trend: 
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Weaknesses</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Weaknesses
+              </p>
               <ul className="mt-2 space-y-1 text-xs text-foreground">
                 {summary.weaknesses.length > 0 ? (
                   summary.weaknesses.map((w, i) => <li key={i}>• {w}</li>)

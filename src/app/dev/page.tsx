@@ -47,13 +47,19 @@ export default function ComponentLibraryPage() {
         breadcrumb={["Robots.txt Studio", "Dev", "Components"]}
         title="Component Library"
         subtitle="Phase 10A shared UI — design tokens, primitives, and shared components."
-        actions={<Button variant="outline"><Wrench /> Dev only</Button>}
+        actions={
+          <Button variant="outline">
+            <Wrench /> Dev only
+          </Button>
+        }
       />
 
       <div className="grid gap-8">
         <Block label="Buttons">
           <div className="flex flex-wrap items-center gap-3">
-            <Button variant="brand"><Download /> Primary CTA</Button>
+            <Button variant="brand">
+              <Download /> Primary CTA
+            </Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="outline">Blue Outline</Button>
             <Button variant="destructive">Destructive</Button>
@@ -124,14 +130,31 @@ export default function ComponentLibraryPage() {
           <SectionHeader>Issues & recommendations</SectionHeader>
           <div className="grid gap-3">
             <IssueCard
-              issue={{ id: "conflicting-rules:4", code: "conflicting-rules", severity: "error", title: "Conflicting Allow/Disallow", message: '"/x" is both allowed and disallowed.', line: 4 }}
+              issue={{
+                id: "conflicting-rules:4",
+                code: "conflicting-rules",
+                severity: "error",
+                title: "Conflicting Allow/Disallow",
+                message: '"/x" is both allowed and disallowed.',
+                line: 4,
+              }}
               actions={<a className="font-medium text-brand">Fix this</a>}
             />
             <IssueCard
-              issue={{ id: "missing-sitemap", code: "missing-sitemap", severity: "warning", title: "No sitemap declared", message: "Declaring a sitemap helps crawlers discover pages." }}
+              issue={{
+                id: "missing-sitemap",
+                code: "missing-sitemap",
+                severity: "warning",
+                title: "No sitemap declared",
+                message: "Declaring a sitemap helps crawlers discover pages.",
+              }}
             />
             <RecommendationCard
-              recommendation={{ severity: "info", title: "GPTBot inherits the default rules", description: "Add an explicit Allow or Disallow for GPTBot." }}
+              recommendation={{
+                severity: "info",
+                title: "GPTBot inherits the default rules",
+                description: "Add an explicit Allow or Disallow for GPTBot.",
+              }}
               actionLabel="Open AI Crawler Manager"
             />
           </div>
@@ -145,8 +168,12 @@ export default function ComponentLibraryPage() {
               <InfoPanel title="What this file does">
                 Blocks GPTBot from your entire site; allows all other crawlers except /admin/.
               </InfoPanel>
-              <Callout status="allowed" title="robots.txt is valid">No errors found.</Callout>
-              <Callout status="warning" title="1 warning">Missing sitemap.</Callout>
+              <Callout status="allowed" title="robots.txt is valid">
+                No errors found.
+              </Callout>
+              <Callout status="warning" title="1 warning">
+                Missing sitemap.
+              </Callout>
             </div>
           </div>
         </section>
@@ -154,9 +181,22 @@ export default function ComponentLibraryPage() {
         <section className="space-y-3">
           <SectionHeader>States</SectionHeader>
           <div className="grid gap-4 lg:grid-cols-3">
-            <EmptyState title="No robots.txt detected" description="Enter a domain above to fetch and analyze its robots.txt." action={<Button size="sm">Fetch &amp; Analyze</Button>} />
-            <ErrorState message="The site did not respond in time." action={<Button variant="secondary" size="sm">Retry</Button>} />
-            <Card className="p-6"><LoadingState /></Card>
+            <EmptyState
+              title="No robots.txt detected"
+              description="Enter a domain above to fetch and analyze its robots.txt."
+              action={<Button size="sm">Fetch &amp; Analyze</Button>}
+            />
+            <ErrorState
+              message="The site did not respond in time."
+              action={
+                <Button variant="secondary" size="sm">
+                  Retry
+                </Button>
+              }
+            />
+            <Card className="p-6">
+              <LoadingState />
+            </Card>
             <LoadingCard className="lg:col-span-3" />
           </div>
         </section>

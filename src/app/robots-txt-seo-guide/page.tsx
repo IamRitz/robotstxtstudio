@@ -41,9 +41,15 @@ const page: ContentPage = {
           kind: "table",
           head: ["Goal", "Use"],
           rows: [
-            ["Stop a page appearing in Google", <span key="a">noindex meta tag / X-Robots-Tag (allow crawling)</span>],
+            [
+              "Stop a page appearing in Google",
+              <span key="a">noindex meta tag / X-Robots-Tag (allow crawling)</span>,
+            ],
             ["Stop crawlers fetching a section", <span key="b">robots.txt Disallow</span>],
-            ["Keep content out of AI datasets", <span key="c">robots.txt Disallow for AI user-agents</span>],
+            [
+              "Keep content out of AI datasets",
+              <span key="c">robots.txt Disallow for AI user-agents</span>,
+            ],
           ],
         },
       ],
@@ -71,10 +77,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Blocking CSS and JavaScript", body: "Google renders pages to evaluate them. Disallowing assets produces broken renders and can lower rankings." },
-            { title: "Using Disallow to remove pages", body: "It prevents crawling, not indexing — and blocks Google from seeing your noindex. Allow crawling + noindex instead." },
-            { title: "Blocking pages that have inbound links", body: "They can still appear as URL-only results. Use noindex." },
-            { title: "Leaving Disallow: / in production", body: "The classic staging leak that deindexes a whole site." },
+            {
+              title: "Blocking CSS and JavaScript",
+              body: "Google renders pages to evaluate them. Disallowing assets produces broken renders and can lower rankings.",
+            },
+            {
+              title: "Using Disallow to remove pages",
+              body: "It prevents crawling, not indexing — and blocks Google from seeing your noindex. Allow crawling + noindex instead.",
+            },
+            {
+              title: "Blocking pages that have inbound links",
+              body: "They can still appear as URL-only results. Use noindex.",
+            },
+            {
+              title: "Leaving Disallow: / in production",
+              body: "The classic staging leak that deindexes a whole site.",
+            },
           ],
         },
       ],
@@ -153,7 +171,8 @@ const page: ContentPage = {
     },
     {
       question: "Should I disallow CSS and JavaScript?",
-      answer: "No. Google needs to render pages with their CSS and JS. Blocking assets leads to incomplete rendering and can harm rankings.",
+      answer:
+        "No. Google needs to render pages with their CSS and JS. Blocking assets leads to incomplete rendering and can harm rankings.",
     },
     {
       question: "Is robots.txt good or bad for SEO?",
@@ -162,9 +181,17 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "Why robots.txt is important", href: "/why-robots-txt-is-important", description: "The strategic case." },
+    {
+      title: "Why robots.txt is important",
+      href: "/why-robots-txt-is-important",
+      description: "The strategic case.",
+    },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Score and audit a live file." },
-    { title: "robots.txt checker", href: "/robots-txt-checker", description: "Validate before you ship." },
+    {
+      title: "robots.txt checker",
+      href: "/robots-txt-checker",
+      description: "Validate before you ship.",
+    },
   ],
 };
 

@@ -68,7 +68,11 @@ function LinkGrid({ items }: { items: readonly LinkItem[] }) {
               <p className="mt-1 text-xs text-muted-foreground">{item.description}</p>
             ) : null}
             <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand">
-              Open <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
+              Open{" "}
+              <ArrowRight
+                className="size-3 transition-transform group-hover:translate-x-0.5"
+                aria-hidden
+              />
             </span>
           </Card>
         </Link>

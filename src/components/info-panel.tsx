@@ -18,7 +18,9 @@ export function InfoPanel({
     <div className={cn("rounded-xl border-l-4 border-brand bg-brand-muted p-4", className)}>
       {title ? (
         <div className="mb-1 flex items-center gap-2">
-          <span className="text-brand [&_svg]:size-3.5" aria-hidden>{icon ?? <Zap />}</span>
+          <span className="text-brand [&_svg]:size-3.5" aria-hidden>
+            {icon ?? <Zap />}
+          </span>
           <span className="text-xs font-semibold text-brand">{title}</span>
         </div>
       ) : null}

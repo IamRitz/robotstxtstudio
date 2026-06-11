@@ -85,9 +85,11 @@ const page: TrustPage = {
           body: (
             <>
               The{" "}
-              <Link href="/url-tester" className="text-brand hover:underline">URL Tester</Link> shows the
-              matched rule and a four-step trace for every verdict, so you can see exactly why a URL is
-              blocked or allowed.
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>{" "}
+              shows the matched rule and a four-step trace for every verdict, so you can see exactly
+              why a URL is blocked or allowed.
             </>
           ),
         },
@@ -106,9 +108,18 @@ const page: TrustPage = {
           kind: "table",
           head: ["Dimension", "Examples of what we check"],
           rows: [
-            ["Syntax", "Missing colons, invalid or unsupported directives, empty values, duplicates."],
-            ["AI crawler config", "Whether major AI crawlers are addressed; conflicting allow/disallow."],
-            ["Best practices", "Sitemap declared over HTTPS, crawl-delay sanity, conflicting rules."],
+            [
+              "Syntax",
+              "Missing colons, invalid or unsupported directives, empty values, duplicates.",
+            ],
+            [
+              "AI crawler config",
+              "Whether major AI crawlers are addressed; conflicting allow/disallow.",
+            ],
+            [
+              "Best practices",
+              "Sitemap declared over HTTPS, crawl-delay sanity, conflicting rules.",
+            ],
           ],
         },
       ],
@@ -147,11 +158,20 @@ const page: TrustPage = {
           kind: "table",
           head: ["Category", "What it means"],
           rows: [
-            ["Search engine", "Builds a search index that can send you traffic (Googlebot, Bingbot)."],
+            [
+              "Search engine",
+              "Builds a search index that can send you traffic (Googlebot, Bingbot).",
+            ],
             ["AI training", "Collects content to train AI models (GPTBot, ClaudeBot, CCBot)."],
-            ["AI search", "Fetches pages to answer or cite in AI products (PerplexityBot, Google-Extended)."],
+            [
+              "AI search",
+              "Fetches pages to answer or cite in AI products (PerplexityBot, Google-Extended).",
+            ],
             ["SEO", "Powers third-party SEO tools (AhrefsBot, SemrushBot)."],
-            ["Social", "Builds link previews for social platforms (facebookexternalhit, Twitterbot)."],
+            [
+              "Social",
+              "Builds link previews for social platforms (facebookexternalhit, Twitterbot).",
+            ],
             ["Data", "Other data-collection crawlers (Amazonbot, Diffbot)."],
           ],
         },
@@ -194,9 +214,12 @@ const page: TrustPage = {
           kind: "p",
           content: (
             <>
-              If a crawler&apos;s behavior or documentation has changed, or you spot an error, please{" "}
-              <Link href="/contact" className="text-brand hover:underline">contact us</Link> — we keep
-              classifications current.
+              If a crawler&apos;s behavior or documentation has changed, or you spot an error,
+              please{" "}
+              <Link href="/contact" className="text-brand hover:underline">
+                contact us
+              </Link>{" "}
+              — we keep classifications current.
             </>
           ),
         },
@@ -205,9 +228,21 @@ const page: TrustPage = {
   ],
   related: [
     { title: "Crawler Directory", href: "/crawlers", description: "Every crawler we classify." },
-    { title: "Robots.txt Validator", href: "/validate", description: "The validation engine in action." },
-    { title: "URL Tester", href: "/url-tester", description: "See the matching algorithm with a trace." },
-    { title: "About Robots.txt Studio", href: "/about", description: "What we are and who it's for." },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "The validation engine in action.",
+    },
+    {
+      title: "URL Tester",
+      href: "/url-tester",
+      description: "See the matching algorithm with a trace.",
+    },
+    {
+      title: "About Robots.txt Studio",
+      href: "/about",
+      description: "What we are and who it's for.",
+    },
   ],
   schema: [
     articleSchema({

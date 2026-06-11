@@ -18,9 +18,12 @@ const page: TrustPage = {
   updated: UPDATED,
   lead: (
     <>
-      These terms govern your use of Robots.txt Studio. By using the site and its tools, you agree to
-      them. Please read them alongside our{" "}
-      <Link href="/privacy" className="text-brand hover:underline">Privacy Policy</Link>.
+      These terms govern your use of Robots.txt Studio. By using the site and its tools, you agree
+      to them. Please read them alongside our{" "}
+      <Link href="/privacy" className="text-brand hover:underline">
+        Privacy Policy
+      </Link>
+      .
     </>
   ),
   sections: [
@@ -46,7 +49,8 @@ const page: TrustPage = {
       blocks: [
         {
           kind: "p",
-          content: "When using the site — particularly the features that fetch a domain you specify — you agree to:",
+          content:
+            "When using the site — particularly the features that fetch a domain you specify — you agree to:",
         },
         {
           kind: "list",
@@ -88,8 +92,12 @@ const page: TrustPage = {
           title: "How our analysis works",
           body: (
             <>
-              The standards, matching rules, and limitations behind our results are documented on the{" "}
-              <Link href="/methodology" className="text-brand hover:underline">methodology page</Link>.
+              The standards, matching rules, and limitations behind our results are documented on
+              the{" "}
+              <Link href="/methodology" className="text-brand hover:underline">
+                methodology page
+              </Link>
+              .
             </>
           ),
         },
@@ -119,7 +127,10 @@ const page: TrustPage = {
           content: (
             <>
               Questions about these terms? Reach us via the{" "}
-              <Link href="/contact" className="text-brand hover:underline">contact page</Link>.
+              <Link href="/contact" className="text-brand hover:underline">
+                contact page
+              </Link>
+              .
             </>
           ),
         },
@@ -129,7 +140,11 @@ const page: TrustPage = {
   related: [
     { title: "Privacy Policy", href: "/privacy", description: "What we process — and don't." },
     { title: "Our Methodology", href: "/methodology", description: "How analysis is performed." },
-    { title: "About Robots.txt Studio", href: "/about", description: "What we are and who it's for." },
+    {
+      title: "About Robots.txt Studio",
+      href: "/about",
+      description: "What we are and who it's for.",
+    },
     { title: "Contact", href: "/contact", description: "Get in touch." },
   ],
   schema: [

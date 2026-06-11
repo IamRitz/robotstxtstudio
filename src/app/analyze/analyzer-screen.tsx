@@ -38,7 +38,13 @@ import {
   saveRecentAnalysis,
   type RecentAnalysis,
 } from "@/lib/recent-analyses";
-import { getWorkspace, isWorkspaceDirty, setWorkspace, workspaceLabel } from "@/lib/workspace";
+import {
+  getWorkspace,
+  isWorkspaceDirty,
+  setWorkspace,
+  WORKSPACE_SOURCE_LABEL,
+  workspaceLabel,
+} from "@/lib/workspace";
 import { DimensionChipStrip } from "@/components/dimension-chip-strip";
 import { RobotsEditor, type EditorAnnotation } from "@/components/robots-editor";
 import { affectsDimension, issueLine } from "@/app/validate/issue-panel";
@@ -266,6 +272,14 @@ function Report({
     const ws = getWorkspace();
     return ws?.domain === report.domain ? ws.appliedFixes : [];
   });
+  /** At-a-glance provenance (17F.4): this report includes another tool's edits. */
+  const [crossToolNote] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    const ws = getWorkspace();
+    return ws && ws.domain === report.domain && ws.source !== "analyzer"
+      ? `includes changes from ${WORKSPACE_SOURCE_LABEL[ws.source]}`
+      : null;
+  });
   // The chip filter survives navigation within the tab (back/forward, resume).
   const [dimension, setDimension] = useState<ScoreDimension | null>(() => {
     if (typeof window === "undefined") return null;
@@ -465,6 +479,7 @@ function Report({
         fetch={report.fetch}
         fetchedAt={report.fetchedAt}
         sourceBytes={new TextEncoder().encode(workingText).length}
+        crossToolNote={crossToolNote}
         onFixAllSafe={fixAllSafe}
         onUndo={undo}
         onDownload={() => downloadText(workingText)}

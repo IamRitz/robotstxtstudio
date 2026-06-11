@@ -36,7 +36,11 @@ Sitemap: https://example.com/sitemap.xml`;
 /** A before → after stat with a signed, colored delta. */
 function DeltaStat({ d }: { d: ScoreDelta }) {
   const tone =
-    d.delta > 0 ? "text-status-allowed-fg" : d.delta < 0 ? "text-status-blocked-fg" : "text-muted-foreground";
+    d.delta > 0
+      ? "text-status-allowed-fg"
+      : d.delta < 0
+        ? "text-status-blocked-fg"
+        : "text-muted-foreground";
   const Icon = d.delta > 0 ? TrendingUp : d.delta < 0 ? TrendingDown : Minus;
   return (
     <div className="rounded-xl border border-border bg-card p-4">
@@ -45,7 +49,12 @@ function DeltaStat({ d }: { d: ScoreDelta }) {
         <span className="font-mono text-sm tabular-nums text-muted-foreground">{d.before}</span>
         <ArrowRight className="size-3 text-muted-foreground" aria-hidden />
         <span className="font-mono text-lg font-bold tabular-nums text-foreground">{d.after}</span>
-        <span className={cn("ml-auto inline-flex items-center gap-1 font-mono text-xs font-semibold tabular-nums", tone)}>
+        <span
+          className={cn(
+            "ml-auto inline-flex items-center gap-1 font-mono text-xs font-semibold tabular-nums",
+            tone,
+          )}
+        >
           <Icon className="size-3" aria-hidden />
           {d.delta > 0 ? `+${d.delta}` : d.delta}
         </span>
@@ -58,9 +67,17 @@ function DeltaStat({ d }: { d: ScoreDelta }) {
 function AccessRow({ row }: { row: CrawlerAccessDelta }) {
   return (
     <li className={cn("flex items-center gap-3 px-3 py-2", row.changed && "bg-muted/50")}>
-      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{row.name}</span>
+      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+        {row.name}
+      </span>
       <StatusBadge status={row.before === "allowed" ? "allowed" : "blocked"} />
-      <ArrowRight className={cn("size-3 shrink-0", row.changed ? "text-foreground" : "text-muted-foreground/40")} aria-hidden />
+      <ArrowRight
+        className={cn(
+          "size-3 shrink-0",
+          row.changed ? "text-foreground" : "text-muted-foreground/40",
+        )}
+        aria-hidden
+      />
       <StatusBadge status={row.after === "allowed" ? "allowed" : "blocked"} />
     </li>
   );
@@ -92,11 +109,21 @@ export function CompareScreen() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-4">
           <SectionHeader className="mb-3">Site A (before)</SectionHeader>
-          <RobotsSourceField value={textA} onChange={setTextA} rows={10} label="Site A robots.txt" />
+          <RobotsSourceField
+            value={textA}
+            onChange={setTextA}
+            rows={10}
+            label="Site A robots.txt"
+          />
         </Card>
         <Card className="p-4">
           <SectionHeader className="mb-3">Site B (after)</SectionHeader>
-          <RobotsSourceField value={textB} onChange={setTextB} rows={10} label="Site B robots.txt" />
+          <RobotsSourceField
+            value={textB}
+            onChange={setTextB}
+            rows={10}
+            label="Site B robots.txt"
+          />
         </Card>
       </div>
 
@@ -155,7 +182,9 @@ export function CompareScreen() {
                   <ul className="space-y-2">
                     {cmp.findingsResolved.map((f) => (
                       <li key={f.code} className="flex items-baseline gap-2 text-xs">
-                        <span className="text-status-allowed-fg" aria-hidden>✓</span>
+                        <span className="text-status-allowed-fg" aria-hidden>
+                          ✓
+                        </span>
                         <span className="text-foreground">{f.title}</span>
                       </li>
                     ))}
@@ -172,7 +201,9 @@ export function CompareScreen() {
                   <ul className="space-y-2">
                     {cmp.findingsAdded.map((f) => (
                       <li key={f.code} className="flex items-baseline gap-2 text-xs">
-                        <span className="text-status-blocked-fg" aria-hidden>+</span>
+                        <span className="text-status-blocked-fg" aria-hidden>
+                          +
+                        </span>
                         <span className="text-foreground">{f.title}</span>
                       </li>
                     ))}

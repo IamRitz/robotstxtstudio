@@ -11,13 +11,15 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "wordpress-robots-txt",
   h1: "WordPress robots.txt",
-  description: "A practical, correct robots.txt for WordPress — with the mistakes most plugins still get wrong.",
+  description:
+    "A practical, correct robots.txt for WordPress — with the mistakes most plugins still get wrong.",
   heroCta: "generator",
   lead: (
     <>
       WordPress generates a virtual robots.txt by default, and most SEO plugins let you edit it. The
-      defaults are mostly fine — but a few stubborn mistakes (blocking <code className="font-mono text-foreground">/wp-content/</code>,
-      breaking admin-ajax) still cause real damage. Here&apos;s the version that works.
+      defaults are mostly fine — but a few stubborn mistakes (blocking{" "}
+      <code className="font-mono text-foreground">/wp-content/</code>, breaking admin-ajax) still
+      cause real damage. Here&apos;s the version that works.
     </>
   ),
   cta: "validator",
@@ -63,11 +65,26 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Disallow: /wp-content/", body: "This blocks your CSS, JS, and images. Google renders pages — broken rendering can tank rankings. Never block it." },
-            { title: "Blocking admin-ajax.php", body: "Many front-end features (lazy load, filters, add-to-cart) use it. Always Allow: /wp-admin/admin-ajax.php." },
-            { title: "Disallowing /wp-includes/", body: "Old advice that blocks core scripts needed for rendering. Drop it." },
-            { title: "Leaving the staging block live", body: "WordPress under development often ships Disallow: / — confirm production doesn't." },
-            { title: "Using Disallow to hide /wp-admin/ for security", body: "robots.txt is public and advertises the path. Security comes from authentication, not Disallow." },
+            {
+              title: "Disallow: /wp-content/",
+              body: "This blocks your CSS, JS, and images. Google renders pages — broken rendering can tank rankings. Never block it.",
+            },
+            {
+              title: "Blocking admin-ajax.php",
+              body: "Many front-end features (lazy load, filters, add-to-cart) use it. Always Allow: /wp-admin/admin-ajax.php.",
+            },
+            {
+              title: "Disallowing /wp-includes/",
+              body: "Old advice that blocks core scripts needed for rendering. Drop it.",
+            },
+            {
+              title: "Leaving the staging block live",
+              body: "WordPress under development often ships Disallow: / — confirm production doesn't.",
+            },
+            {
+              title: "Using Disallow to hide /wp-admin/ for security",
+              body: "robots.txt is public and advertises the path. Security comes from authentication, not Disallow.",
+            },
           ],
         },
       ],
@@ -104,26 +121,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "What is the best robots.txt for WordPress?",
-      answer: "Disallow /wp-admin/, explicitly Allow /wp-admin/admin-ajax.php, leave wp-content crawlable, and declare your sitemap. Add AI crawler groups if you want to opt out of model training.",
+      answer:
+        "Disallow /wp-admin/, explicitly Allow /wp-admin/admin-ajax.php, leave wp-content crawlable, and declare your sitemap. Add AI crawler groups if you want to opt out of model training.",
     },
     {
       question: "Should I block wp-content in robots.txt?",
-      answer: "No. wp-content holds your themes' CSS and JavaScript and your images. Google needs them to render and evaluate pages, so blocking wp-content can hurt rankings.",
+      answer:
+        "No. wp-content holds your themes' CSS and JavaScript and your images. Google needs them to render and evaluate pages, so blocking wp-content can hurt rankings.",
     },
     {
       question: "Where is the WordPress robots.txt file?",
-      answer: "By default WordPress serves a virtual robots.txt at /robots.txt with no physical file. If you or an SEO plugin create a real file in the site root, that static file replaces the virtual one.",
+      answer:
+        "By default WordPress serves a virtual robots.txt at /robots.txt with no physical file. If you or an SEO plugin create a real file in the site root, that static file replaces the virtual one.",
     },
     {
       question: "How do I edit robots.txt in WordPress?",
-      answer: "Use your SEO plugin (Yoast, Rank Math, All in One SEO) which provides a robots.txt editor, or upload a static robots.txt to the site root. Avoid doing both, since the static file overrides the plugin.",
+      answer:
+        "Use your SEO plugin (Yoast, Rank Math, All in One SEO) which provides a robots.txt editor, or upload a static robots.txt to the site root. Avoid doing both, since the static file overrides the plugin.",
     },
   ],
   related: [
-    { title: "Robots.txt Generator", href: "/generate", description: "Build a WordPress-ready file." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "More copy-paste templates." },
-    { title: "Shopify robots.txt", href: "/shopify-robots-txt", description: "The ecommerce equivalent." },
-    { title: "Robots.txt Validator", href: "/validate", description: "Check your file is correct." },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Build a WordPress-ready file.",
+    },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "More copy-paste templates.",
+    },
+    {
+      title: "Shopify robots.txt",
+      href: "/shopify-robots-txt",
+      description: "The ecommerce equivalent.",
+    },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Check your file is correct.",
+    },
   ],
   nextReading: { title: "Shopify robots.txt", href: "/shopify-robots-txt" },
 };

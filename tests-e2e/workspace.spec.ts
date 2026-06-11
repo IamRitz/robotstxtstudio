@@ -67,11 +67,20 @@ test("edits in Validate reach the Manager; Manager apply flows back to Validate"
   expect(after).toContain("Disallow: /private/");
 });
 
-test("discarding the working file returns tools to their defaults", async ({ page }) => {
+test("discarding the working file confirms, then returns tools to their defaults", async ({
+  page,
+}) => {
   await page.goto("/validate");
   await page.getByRole("textbox", { name: "robots.txt" }).fill("User-agent: GPTBot\nDisallow: /");
   await expect(page.getByTestId("workspace-bar")).toBeVisible();
 
+  // 17F.3: cancelling the confirmation keeps the workspace untouched.
+  page.once("dialog", (d) => void d.dismiss());
+  await page.getByRole("button", { name: "Discard working file" }).click();
+  await expect(page.getByTestId("workspace-bar")).toBeVisible();
+
+  // Accepting discards for real.
+  page.once("dialog", (d) => void d.accept());
   await page.getByRole("button", { name: "Discard working file" }).click();
   await expect(page.getByTestId("workspace-bar")).toBeHidden();
   // Back to the sample.
@@ -82,4 +91,50 @@ test("discarding the working file returns tools to their defaults", async ({ pag
   await expect(page.getByTestId("workspace-bar")).toBeHidden();
   await page.getByRole("button", { name: "Expand all" }).click();
   await expect(page.getByRole("switch", { name: "Allow GPTBot" })).toBeChecked();
+});
+
+// Phase 17F — visibility & navigation refinements.
+
+test("workspace bar shows provenance and the recent-fix receipts (17F.1)", async ({ page }) => {
+  await page.route("**/api/analyze", (route) => route.fulfill({ json: ANALYSIS_REPORT }));
+  await page.goto("/analyze?domain=example.com&fresh=1");
+  await page.getByRole("button", { name: /Fix \d+ safe/ }).click();
+
+  await page.goto("/validate");
+  const bar = page.getByTestId("workspace-bar");
+  await expect(bar).toContainText("Working file: example.com");
+  await expect(bar).toContainText("last changed in Analyzer");
+  await bar.getByText(/Recent changes/).click();
+  await expect(bar.getByText("Fixed: Crawl-delay: 0 (no-op)")).toBeVisible();
+});
+
+test("smart deep link lands on the exact crawler (17F.2)", async ({ page }) => {
+  await page.route("**/api/analyze", (route) => route.fulfill({ json: ANALYSIS_REPORT }));
+  await page.goto("/analyze?domain=example.com&fresh=1");
+
+  const link = page
+    .getByTestId("issue-list")
+    .getByRole("link", { name: "Open AI Manager → ClaudeBot" });
+  await expect(link).toBeVisible();
+  await link.click();
+
+  await expect(page).toHaveURL(/\/ai-crawlers\?focus=claudebot/);
+  // Landed: the group is expanded and the exact toggle is on screen.
+  await expect(page.getByRole("switch", { name: "Allow ClaudeBot" })).toBeInViewport();
+});
+
+test("homepage resume strip restores the active workspace (17F.5)", async ({ page }) => {
+  await page.goto("/validate");
+  await page.getByRole("textbox", { name: "robots.txt" }).fill("User-agent: GPTBot\nDisallow: /");
+
+  await page.goto("/");
+  const strip = page.getByTestId("workspace-resume");
+  await expect(strip).toContainText("Continue working on untitled robots.txt");
+  await expect(strip).toContainText("Last changed in Validate");
+  await strip.getByRole("link", { name: /Resume/ }).click();
+
+  await expect(page).toHaveURL(/\/validate/);
+  await expect(page.getByRole("textbox", { name: "robots.txt" })).toHaveValue(
+    "User-agent: GPTBot\nDisallow: /",
+  );
 });

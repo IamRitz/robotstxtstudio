@@ -8,7 +8,10 @@ function statuses(status: AiCrawlerStatus["status"]): AiCrawlerStatus[] {
   return MAJOR_AI_CRAWLERS.map((crawler) => ({ crawler, status }));
 }
 
-function issue(severity: ValidationIssue["severity"], code: ValidationIssue["code"]): ValidationIssue {
+function issue(
+  severity: ValidationIssue["severity"],
+  code: ValidationIssue["code"],
+): ValidationIssue {
   return { id: `${code}`, severity, code, title: code, message: code };
 }
 
@@ -56,7 +59,9 @@ describe("computeHealth", () => {
   });
 
   it("lowers the overall band as problems accumulate", () => {
-    const errors: ValidationIssue[] = Array.from({ length: 4 }, () => issue("error", "conflicting-rules"));
+    const errors: ValidationIssue[] = Array.from({ length: 4 }, () =>
+      issue("error", "conflicting-rules"),
+    );
     const health = computeHealth(errors, statuses("missing"));
     expect(health.value).toBeLessThan(60);
     expect(health.band).toBe("poor");

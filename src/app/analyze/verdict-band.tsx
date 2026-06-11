@@ -52,6 +52,7 @@ export function VerdictBand({
   fetch,
   fetchedAt,
   sourceBytes,
+  crossToolNote,
   onFixAllSafe,
   onUndo,
   onDownload,
@@ -76,6 +77,8 @@ export function VerdictBand({
   fetch: FetchResult;
   fetchedAt: string;
   sourceBytes: number;
+  /** Workspace provenance cue, e.g. "includes changes from Validate" (17F.4). */
+  crossToolNote?: string | null;
   onFixAllSafe: () => void;
   onUndo: () => void;
   onDownload: () => void;
@@ -186,6 +189,7 @@ export function VerdictBand({
               → <span className="font-semibold text-status-allowed-fg">{healthPotential}</span>
             </>
           ) : null}
+          {crossToolNote ? <span className="text-brand"> · {crossToolNote}</span> : null}
         </span>
         <span className="hidden md:inline">
           {domain} · {fetchMeta(fetch, fetchedAt, sourceBytes)}

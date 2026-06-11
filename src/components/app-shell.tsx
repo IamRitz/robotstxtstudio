@@ -12,7 +12,9 @@ export function AppShell({ children, className }: { children: ReactNode; classNa
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main className={cn("mx-auto w-full max-w-6xl flex-1 px-4 py-8 pb-24 sm:px-6 lg:pb-8", className)}>
+      <main
+        className={cn("mx-auto w-full max-w-6xl flex-1 px-4 py-8 pb-24 sm:px-6 lg:pb-8", className)}
+      >
         {children}
       </main>
       <SiteFooter />

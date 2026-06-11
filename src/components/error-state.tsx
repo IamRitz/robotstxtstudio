@@ -22,7 +22,10 @@ export function ErrorState({
         className,
       )}
     >
-      <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-status-blocked-bg text-status-blocked-fg" aria-hidden>
+      <span
+        className="mb-3 flex size-10 items-center justify-center rounded-xl bg-status-blocked-bg text-status-blocked-fg"
+        aria-hidden
+      >
         <AlertOctagon className="size-5" />
       </span>
       <p className="text-sm font-semibold text-foreground">{title}</p>

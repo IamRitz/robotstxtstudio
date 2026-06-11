@@ -14,7 +14,12 @@ export const metadata: Metadata = {
 export default function ComparePage() {
   return (
     <AppShell>
-      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Compare", path: "/compare" }])} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Compare", path: "/compare" },
+        ])}
+      />
       <CompareScreen />
     </AppShell>
   );

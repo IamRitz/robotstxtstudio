@@ -11,13 +11,15 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "perplexitybot-robots-txt",
   h1: "PerplexityBot in robots.txt",
-  description: "What PerplexityBot is, the trade-off of blocking it, and the exact robots.txt rules.",
+  description:
+    "What PerplexityBot is, the trade-off of blocking it, and the exact robots.txt rules.",
   heroCta: "ai-manager",
   lead: (
     <>
-      <code className="font-mono text-foreground">PerplexityBot</code> fetches pages for Perplexity&apos;s
-      AI answer engine. Unlike pure training crawlers, blocking it is a genuine trade-off: you stay out
-      of AI answers, but you also forgo the referral traffic those citations can send.
+      <code className="font-mono text-foreground">PerplexityBot</code> fetches pages for
+      Perplexity&apos;s AI answer engine. Unlike pure training crawlers, blocking it is a genuine
+      trade-off: you stay out of AI answers, but you also forgo the referral traffic those citations
+      can send.
     </>
   ),
   cta: "analyzer",
@@ -35,7 +37,12 @@ const page: ContentPage = {
           kind: "table",
           head: ["Property", "Value"],
           rows: [
-            ["User-agent", <code key="u" className="font-mono">PerplexityBot</code>],
+            [
+              "User-agent",
+              <code key="u" className="font-mono">
+                PerplexityBot
+              </code>,
+            ],
             ["Operator", "Perplexity"],
             ["Purpose", "AI answer engine — fetch & cite pages"],
             ["Sends referral traffic", "Yes, via citations"],
@@ -64,9 +71,17 @@ const page: ContentPage = {
       heading: "How to allow or block PerplexityBot",
       blocks: [
         { kind: "p", content: "Block PerplexityBot across the whole site:" },
-        { kind: "snippet", code: "User-agent: PerplexityBot\nDisallow: /", caption: "Block PerplexityBot" },
+        {
+          kind: "snippet",
+          code: "User-agent: PerplexityBot\nDisallow: /",
+          caption: "Block PerplexityBot",
+        },
         { kind: "p", content: "Allow it explicitly (the default) with an empty Disallow:" },
-        { kind: "snippet", code: "User-agent: PerplexityBot\nDisallow:", caption: "Allow PerplexityBot" },
+        {
+          kind: "snippet",
+          code: "User-agent: PerplexityBot\nDisallow:",
+          caption: "Allow PerplexityBot",
+        },
       ],
     },
     {
@@ -93,9 +108,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Treating it like a training crawler", body: "Blocking PerplexityBot costs you referral traffic, unlike blocking GPTBot. Decide deliberately." },
-            { title: "Relying on robots.txt alone", body: "Given reported non-compliance, add server-side enforcement if the content is sensitive." },
-            { title: "Not verifying", body: "Always confirm the block took effect — run your domain through the Analyzer." },
+            {
+              title: "Treating it like a training crawler",
+              body: "Blocking PerplexityBot costs you referral traffic, unlike blocking GPTBot. Decide deliberately.",
+            },
+            {
+              title: "Relying on robots.txt alone",
+              body: "Given reported non-compliance, add server-side enforcement if the content is sensitive.",
+            },
+            {
+              title: "Not verifying",
+              body: "Always confirm the block took effect — run your domain through the Analyzer.",
+            },
           ],
         },
       ],
@@ -104,25 +128,41 @@ const page: ContentPage = {
   faqs: [
     {
       question: "Should I block PerplexityBot?",
-      answer: "It depends. Blocking it keeps your content out of Perplexity's AI answers but also gives up the referral traffic its citations can send. If you want discovery, allow it; if you want control or license content, block it.",
+      answer:
+        "It depends. Blocking it keeps your content out of Perplexity's AI answers but also gives up the referral traffic its citations can send. If you want discovery, allow it; if you want control or license content, block it.",
     },
     {
       question: "Does PerplexityBot respect robots.txt?",
-      answer: "Only partially. Perplexity states it honors robots.txt, but researchers have reported it fetching pages without doing so in some cases. For sensitive content, pair robots.txt with server-side blocking and verify with the Analyzer.",
+      answer:
+        "Only partially. Perplexity states it honors robots.txt, but researchers have reported it fetching pages without doing so in some cases. For sensitive content, pair robots.txt with server-side blocking and verify with the Analyzer.",
     },
     {
       question: "Does blocking PerplexityBot affect SEO?",
-      answer: "No. PerplexityBot is unrelated to Googlebot or Bingbot, so blocking it does not change your search rankings. It only affects whether you appear in Perplexity's answers.",
+      answer:
+        "No. PerplexityBot is unrelated to Googlebot or Bingbot, so blocking it does not change your search rankings. It only affects whether you appear in Perplexity's answers.",
     },
     {
       question: "How do I block PerplexityBot in robots.txt?",
-      answer: "Add User-agent: PerplexityBot followed by Disallow: /. Because compliance has been inconsistent, confirm the block on a live site and consider firewall rules as a backup.",
+      answer:
+        "Add User-agent: PerplexityBot followed by Disallow: /. Because compliance has been inconsistent, confirm the block on a live site and consider firewall rules as a backup.",
     },
   ],
   related: [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-    { title: "Google-Extended", href: "/google-extended-robots-txt", description: "Google's AI training token." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Manage AI crawlers in one place." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Every AI crawler compared.",
+    },
+    {
+      title: "Google-Extended",
+      href: "/google-extended-robots-txt",
+      description: "Google's AI training token.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Manage AI crawlers in one place.",
+    },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Verify a crawler is blocked." },
   ],
   nextReading: { title: "Google-Extended in robots.txt", href: "/google-extended-robots-txt" },

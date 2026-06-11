@@ -42,7 +42,9 @@ export function TrustPageLayout({ page }: { page: TrustPage }) {
 
       <article className="mx-auto max-w-3xl">
         <Breadcrumb items={[BRAND.name, page.title]} className="mb-3" />
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {page.title}
+        </h1>
         <p className="mt-3 text-base text-muted-foreground">{page.lead}</p>
         {page.updated ? (
           <p className="mt-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">

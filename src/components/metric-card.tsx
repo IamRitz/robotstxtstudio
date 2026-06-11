@@ -20,7 +20,11 @@ export function MetricCard({
     <Card className={cn("p-4", className)}>
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs text-muted-foreground">{label}</span>
-        {icon ? <span className="text-muted-foreground [&_svg]:size-4" aria-hidden>{icon}</span> : null}
+        {icon ? (
+          <span className="text-muted-foreground [&_svg]:size-4" aria-hidden>
+            {icon}
+          </span>
+        ) : null}
       </div>
       <div className="mt-1 text-2xl font-bold tabular-nums text-foreground">{value}</div>
       {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}

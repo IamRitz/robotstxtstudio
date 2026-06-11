@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-analyzer",
   h1: "Robots.txt Analyzer",
-  description: "Fetch and audit any site's live robots.txt — crawler access, AI status, sitemap, and a health score in one report.",
+  description:
+    "Fetch and audit any site's live robots.txt — crawler access, AI status, sitemap, and a health score in one report.",
   heroCta: "analyzer",
   lead: (
     <>
-      Enter a domain and get its live robots.txt audited in one report: which crawlers are blocked, how
-      AI bots are handled, whether a sitemap is declared, and a visibility score with prioritized
-      findings. Works on your own site or any competitor&apos;s.
+      Enter a domain and get its live robots.txt audited in one report: which crawlers are blocked,
+      how AI bots are handled, whether a sitemap is declared, and a visibility score with
+      prioritized findings. Works on your own site or any competitor&apos;s.
     </>
   ),
   cta: "analyzer",
@@ -76,25 +77,37 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I analyze a website's robots.txt?",
-      answer: "Enter the domain into the analyzer. It fetches the live robots.txt, parses it, and reports which crawlers are blocked, how AI bots are handled, whether a sitemap is declared, and an overall visibility score.",
+      answer:
+        "Enter the domain into the analyzer. It fetches the live robots.txt, parses it, and reports which crawlers are blocked, how AI bots are handled, whether a sitemap is declared, and an overall visibility score.",
     },
     {
       question: "Can I check a competitor's robots.txt?",
-      answer: "Yes. The analyzer works on any public domain. Enter a competitor's URL to see whether they block AI crawlers, which sections they disallow, and any issues in their file.",
+      answer:
+        "Yes. The analyzer works on any public domain. Enter a competitor's URL to see whether they block AI crawlers, which sections they disallow, and any issues in their file.",
     },
     {
       question: "What does the visibility health score mean?",
-      answer: "It's a summary metric combining crawler access, AI crawler handling, sitemap presence, and risk findings into a single score, so you can gauge a file's health at a glance before reading the details.",
+      answer:
+        "It's a summary metric combining crawler access, AI crawler handling, sitemap presence, and risk findings into a single score, so you can gauge a file's health at a glance before reading the details.",
     },
     {
       question: "Is the robots.txt analyzer free?",
-      answer: "Yes. You can analyze any live domain for free with no sign-up. It handles redirects, missing files, and unusual responses gracefully.",
+      answer:
+        "Yes. You can analyze any live domain for free with no sign-up. It handles redirects, missing files, and unusual responses gracefully.",
     },
   ],
   related: [
     { title: "Robots.txt Validator", href: "/validate", description: "Validate a pasted file." },
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Understand the AI bots it detects." },
-    { title: "how to find robots.txt", href: "/how-to-find-robots-txt", description: "Locate any site's file." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Understand the AI bots it detects.",
+    },
+    {
+      title: "how to find robots.txt",
+      href: "/how-to-find-robots-txt",
+      description: "Locate any site's file.",
+    },
     { title: "URL Tester", href: "/url-tester", description: "Test a specific URL." },
   ],
   nextReading: { title: "Robots.txt Tester", href: "/robots-txt-tester" },

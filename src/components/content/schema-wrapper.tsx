@@ -25,7 +25,9 @@ export function SchemaWrapper({ page }: { page: ContentPage }) {
         })}
       />
       {page.faqs.length > 0 ? <JsonLd data={faqSchema(page.faqs)} /> : null}
-      {page.extraSchema?.map((schema, i) => <JsonLd key={i} data={schema} />)}
+      {page.extraSchema?.map((schema, i) => (
+        <JsonLd key={i} data={schema} />
+      ))}
     </>
   );
 }

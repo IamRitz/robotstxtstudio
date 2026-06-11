@@ -36,7 +36,11 @@ export const duplicateRules: Rule = ({ file }) => {
             title: "Duplicate rule",
             message: `"${rule.raw.trim()}" (line ${rule.line}) duplicates an earlier rule in the same group and can be removed.`,
             line: rule.line,
-            fix: { description: "Remove the duplicate rule", edits: [{ line: rule.line, replacement: "" }], safe: true },
+            fix: {
+              description: "Remove the duplicate rule",
+              edits: [{ line: rule.line, replacement: "" }],
+              safe: true,
+            },
           }),
         );
       }
@@ -207,7 +211,9 @@ export const sitemapNotHttps: Rule = ({ file }) =>
         line: s.line,
         fix: {
           description: "Upgrade the Sitemap URL to https://",
-          edits: [{ line: s.line, replacement: `Sitemap: ${s.url.replace(/^http:\/\//i, "https://")}` }],
+          edits: [
+            { line: s.line, replacement: `Sitemap: ${s.url.replace(/^http:\/\//i, "https://")}` },
+          ],
           safe: true,
         },
       }),

@@ -34,16 +34,34 @@ const page: TrustPage = {
           kind: "list",
           items: [
             <>
-              <Link href="/analyze" className="text-brand hover:underline">Analyze</Link> — fetch and audit any live site&apos;s robots.txt with a visibility score.
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyze
+              </Link>{" "}
+              — fetch and audit any live site&apos;s robots.txt with a visibility score.
             </>,
             <>
-              <Link href="/generate" className="text-brand hover:underline">Generate</Link> and{" "}
-              <Link href="/ai-crawlers" className="text-brand hover:underline">control AI crawlers</Link> — build a correct file and decide who may crawl.
+              <Link href="/generate" className="text-brand hover:underline">
+                Generate
+              </Link>{" "}
+              and{" "}
+              <Link href="/ai-crawlers" className="text-brand hover:underline">
+                control AI crawlers
+              </Link>{" "}
+              — build a correct file and decide who may crawl.
             </>,
             <>
-              <Link href="/validate" className="text-brand hover:underline">Validate</Link>,{" "}
-              <Link href="/url-tester" className="text-brand hover:underline">test URLs</Link>, and{" "}
-              <Link href="/explain" className="text-brand hover:underline">explain</Link> — prove correctness and understand any file.
+              <Link href="/validate" className="text-brand hover:underline">
+                Validate
+              </Link>
+              ,{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                test URLs
+              </Link>
+              , and{" "}
+              <Link href="/explain" className="text-brand hover:underline">
+                explain
+              </Link>{" "}
+              — prove correctness and understand any file.
             </>,
           ],
         },
@@ -95,7 +113,10 @@ const page: TrustPage = {
             <>
               The exact standards, parsing rules, matching algorithm, scoring, and crawler
               classifications are documented on our{" "}
-              <Link href="/methodology" className="text-brand hover:underline">methodology page</Link>.
+              <Link href="/methodology" className="text-brand hover:underline">
+                methodology page
+              </Link>
+              .
             </>
           ),
         },
@@ -119,8 +140,16 @@ const page: TrustPage = {
     },
   ],
   related: [
-    { title: "Our Methodology", href: "/methodology", description: "How robots.txt analysis is performed." },
-    { title: "Crawler Directory", href: "/crawlers", description: "Every crawler we track, classified." },
+    {
+      title: "Our Methodology",
+      href: "/methodology",
+      description: "How robots.txt analysis is performed.",
+    },
+    {
+      title: "Crawler Directory",
+      href: "/crawlers",
+      description: "Every crawler we track, classified.",
+    },
     { title: "Contact", href: "/contact", description: "Reach us or report an inaccuracy." },
     { title: "Privacy Policy", href: "/privacy", description: "What we process — and don't." },
   ],

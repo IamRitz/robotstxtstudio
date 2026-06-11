@@ -81,9 +81,10 @@ describe("validateRobots — warning rules", () => {
     expect(codesFor("User-agent: *\nDisallow: /")).toContain("overly-broad-disallow");
   });
   it("excessive-rules for a very large group", () => {
-    const many = ["User-agent: *", ...Array.from({ length: 51 }, (_, i) => `Disallow: /p${i}`)].join(
-      "\n",
-    );
+    const many = [
+      "User-agent: *",
+      ...Array.from({ length: 51 }, (_, i) => `Disallow: /p${i}`),
+    ].join("\n");
     expect(codesFor(many)).toContain("excessive-rules");
   });
   it("unsupported-directive for a vendor directive", () => {

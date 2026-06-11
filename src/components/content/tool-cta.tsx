@@ -9,11 +9,18 @@ import { classifyPath, trackCtaClicked } from "@/lib/analytics";
 
 /** Prominent CTA card linking into a tool. The `compact` variant is a slim banner
  *  used above-the-fold and mid-article; the default is the full footer CTA. */
-export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "full" | "compact" }) {
+export function ToolCTA({
+  tool,
+  variant = "full",
+}: {
+  tool: ToolId;
+  variant?: "full" | "compact";
+}) {
   const t = TOOLS[tool];
   const Icon = t.icon;
   const pathname = usePathname();
-  const onCta = () => trackCtaClicked(tool, pathname ?? "", classifyPath(pathname ?? "/"), `tool-cta:${variant}`);
+  const onCta = () =>
+    trackCtaClicked(tool, pathname ?? "", classifyPath(pathname ?? "/"), `tool-cta:${variant}`);
 
   if (variant === "compact") {
     return (
@@ -29,7 +36,11 @@ export function ToolCTA({ tool, variant = "full" }: { tool: ToolId; variant?: "f
           <span className="min-w-0 text-sm font-semibold text-foreground">{t.title}</span>
         </span>
         <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-brand">
-          {t.cta} <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          {t.cta}{" "}
+          <ArrowRight
+            className="size-3.5 transition-transform group-hover:translate-x-0.5"
+            aria-hidden
+          />
         </span>
       </Link>
     );

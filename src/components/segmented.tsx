@@ -21,7 +21,10 @@ export function Segmented<T extends string>({
   size?: "sm" | "md";
 }) {
   return (
-    <div role="tablist" className={cn("inline-flex items-center gap-1 rounded-lg bg-muted p-1", className)}>
+    <div
+      role="tablist"
+      className={cn("inline-flex items-center gap-1 rounded-lg bg-muted p-1", className)}
+    >
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -34,11 +37,15 @@ export function Segmented<T extends string>({
             className={cn(
               "rounded-md font-medium transition-colors",
               size === "sm" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-xs",
-              active ? "bg-brand text-brand-foreground" : "text-muted-foreground hover:text-foreground",
+              active
+                ? "bg-brand text-brand-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {opt.label}
-            {opt.count !== undefined ? <span className="ml-1 tabular-nums opacity-80">{opt.count}</span> : null}
+            {opt.count !== undefined ? (
+              <span className="ml-1 tabular-nums opacity-80">{opt.count}</span>
+            ) : null}
           </button>
         );
       })}

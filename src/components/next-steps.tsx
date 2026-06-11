@@ -14,16 +14,31 @@ export type NextStep =
   /** Navigate to another tool/guide. */
   | { kind: "link"; label: string; description: string; icon: LucideIcon; href: Route }
   /** Carry the current robots.txt into another tool, then navigate. */
-  | { kind: "handoff"; label: string; description: string; icon: LucideIcon; href: Route; text: string }
+  | {
+      kind: "handoff";
+      label: string;
+      description: string;
+      icon: LucideIcon;
+      href: Route;
+      text: string;
+    }
   /** Download the current robots.txt as a file. */
-  | { kind: "download"; label: string; description: string; icon?: LucideIcon; text: string; filename?: string };
+  | {
+      kind: "download";
+      label: string;
+      description: string;
+      icon?: LucideIcon;
+      text: string;
+      filename?: string;
+    };
 
 const CARD = "group h-full p-4 transition-colors hover:border-brand/40 hover:bg-muted/40";
 
 function ActionFooter({ label }: { label: string }) {
   return (
     <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand">
-      {label} <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
+      {label}{" "}
+      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
     </span>
   );
 }

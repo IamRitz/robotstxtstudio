@@ -21,7 +21,11 @@ export const missingColon: Rule = ({ file }) =>
         title: "Malformed line (missing colon)",
         message: `Line ${d.line} is not a valid directive — a directive needs a "field: value" form.`,
         line: d.line,
-        fix: { description: "Remove this malformed line", edits: [{ line: d.line, replacement: "" }], safe: false },
+        fix: {
+          description: "Remove this malformed line",
+          edits: [{ line: d.line, replacement: "" }],
+          safe: false,
+        },
       }),
     );
 
@@ -88,7 +92,11 @@ export const invalidSitemapUrl: Rule = ({ file }) =>
         title: "Malformed Sitemap URL",
         message: `Sitemap on line ${s.line} ("${s.url || "empty"}") must be a full absolute URL, e.g. https://example.com/sitemap.xml.`,
         line: s.line,
-        fix: { description: "Remove the malformed Sitemap line", edits: [{ line: s.line, replacement: "" }], safe: false },
+        fix: {
+          description: "Remove the malformed Sitemap line",
+          edits: [{ line: s.line, replacement: "" }],
+          safe: false,
+        },
         ...(LEARN_MORE["invalid-sitemap-url"]
           ? { learnMoreUrl: LEARN_MORE["invalid-sitemap-url"] }
           : {}),

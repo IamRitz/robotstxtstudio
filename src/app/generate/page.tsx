@@ -7,16 +7,27 @@ import { GeneratorScreen } from "./generator-screen";
 
 export const metadata: Metadata = {
   title: "Robots.txt Generator",
-  description: "Build a robots.txt from presets and crawler rules, with live validation and a plain-English preview.",
+  description:
+    "Build a robots.txt from presets and crawler rules, with live validation and a plain-English preview.",
   alternates: { canonical: "/generate" },
 };
 
-export default function GeneratePage() {
+export default async function GeneratePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ focus?: string }>;
+}) {
+  const { focus } = await searchParams;
   return (
     <AppShell>
-      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Generate", path: "/generate" }])} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Generate", path: "/generate" },
+        ])}
+      />
       <JsonLd data={toolAppSchema("generator")} />
-      <GeneratorScreen />
+      <GeneratorScreen focusSection={focus} />
       <ToolRelatedRail tool="generator" />
     </AppShell>
   );

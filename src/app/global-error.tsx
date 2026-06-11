@@ -35,8 +35,12 @@ export default function GlobalError({
         }}
       >
         <div style={{ maxWidth: "28rem", textAlign: "center" }}>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: "0 0 8px" }}>Something went wrong</h1>
-          <p style={{ fontSize: "0.875rem", color: "#a3a3a3", margin: "0 0 20px", lineHeight: 1.6 }}>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: "0 0 8px" }}>
+            Something went wrong
+          </h1>
+          <p
+            style={{ fontSize: "0.875rem", color: "#a3a3a3", margin: "0 0 20px", lineHeight: 1.6 }}
+          >
             A critical error occurred. Please try again or reload the page.
           </p>
           <button
@@ -55,7 +59,9 @@ export default function GlobalError({
             Try again
           </button>
           {error.digest ? (
-            <p style={{ fontSize: "0.75rem", color: "#737373", marginTop: "16px" }}>Reference: {error.digest}</p>
+            <p style={{ fontSize: "0.75rem", color: "#737373", marginTop: "16px" }}>
+              Reference: {error.digest}
+            </p>
           ) : null}
         </div>
       </body>

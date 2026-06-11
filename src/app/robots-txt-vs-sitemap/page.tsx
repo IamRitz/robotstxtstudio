@@ -11,14 +11,16 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-vs-sitemap",
   h1: "robots.txt vs sitemap",
-  description: "How robots.txt and XML sitemaps differ, why you need both, and how they reference each other.",
+  description:
+    "How robots.txt and XML sitemaps differ, why you need both, and how they reference each other.",
   heroCta: "generator",
   lead: (
     <>
       They&apos;re often mentioned together, but they do opposite jobs.{" "}
-      <strong className="text-foreground">robots.txt restricts what crawlers may fetch; a sitemap
-      suggests what they should fetch.</strong> One is a gate, the other is a map — and they work best
-      together.
+      <strong className="text-foreground">
+        robots.txt restricts what crawlers may fetch; a sitemap suggests what they should fetch.
+      </strong>{" "}
+      One is a gate, the other is a map — and they work best together.
     </>
   ),
   cta: "validator",
@@ -86,10 +88,21 @@ const page: ContentPage = {
       id: "examples",
       heading: "Examples",
       blocks: [
-        { kind: "p", content: "The Sitemap directive must be an absolute URL — relative paths are ignored:" },
-        { kind: "snippet", code: "Sitemap: https://example.com/sitemap.xml", caption: "Correct: absolute URL" },
+        {
+          kind: "p",
+          content: "The Sitemap directive must be an absolute URL — relative paths are ignored:",
+        },
+        {
+          kind: "snippet",
+          code: "Sitemap: https://example.com/sitemap.xml",
+          caption: "Correct: absolute URL",
+        },
         { kind: "p", content: "Multiple sitemaps (or a sitemap index) are fine — one per line:" },
-        { kind: "snippet", code: "Sitemap: https://example.com/sitemap-pages.xml\nSitemap: https://example.com/sitemap-blog.xml", caption: "Multiple sitemaps" },
+        {
+          kind: "snippet",
+          code: "Sitemap: https://example.com/sitemap-pages.xml\nSitemap: https://example.com/sitemap-blog.xml",
+          caption: "Multiple sitemaps",
+        },
       ],
     },
     {
@@ -99,10 +112,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Thinking you must choose one", body: "They're complementary. Most sites benefit from both a robots.txt and a sitemap." },
-            { title: "Listing blocked URLs in the sitemap", body: "Don't include URLs your robots.txt disallows — it's contradictory." },
-            { title: "A relative Sitemap directive", body: "Sitemap: /sitemap.xml is invalid. Use the full https URL." },
-            { title: "Sitemap-only submission", body: "The directive aids discovery, but also submit your sitemap in Search Console for reporting." },
+            {
+              title: "Thinking you must choose one",
+              body: "They're complementary. Most sites benefit from both a robots.txt and a sitemap.",
+            },
+            {
+              title: "Listing blocked URLs in the sitemap",
+              body: "Don't include URLs your robots.txt disallows — it's contradictory.",
+            },
+            {
+              title: "A relative Sitemap directive",
+              body: "Sitemap: /sitemap.xml is invalid. Use the full https URL.",
+            },
+            {
+              title: "Sitemap-only submission",
+              body: "The directive aids discovery, but also submit your sitemap in Search Console for reporting.",
+            },
           ],
         },
       ],
@@ -111,26 +136,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "What is the difference between robots.txt and a sitemap?",
-      answer: "robots.txt restricts which URLs crawlers may fetch; an XML sitemap lists the URLs you want them to fetch and index. robots.txt is a gate, a sitemap is a map. They serve opposite but complementary roles.",
+      answer:
+        "robots.txt restricts which URLs crawlers may fetch; an XML sitemap lists the URLs you want them to fetch and index. robots.txt is a gate, a sitemap is a map. They serve opposite but complementary roles.",
     },
     {
       question: "Do I need both robots.txt and a sitemap?",
-      answer: "Usually yes. A sitemap helps crawlers discover and prioritize your important pages, while robots.txt keeps them off low-value or private sections. Together they make crawling efficient.",
+      answer:
+        "Usually yes. A sitemap helps crawlers discover and prioritize your important pages, while robots.txt keeps them off low-value or private sections. Together they make crawling efficient.",
     },
     {
       question: "Should the sitemap go in robots.txt?",
-      answer: "Adding a Sitemap directive to robots.txt is recommended — it lets crawlers discover your sitemap automatically. It must be an absolute https URL, and you can list more than one.",
+      answer:
+        "Adding a Sitemap directive to robots.txt is recommended — it lets crawlers discover your sitemap automatically. It must be an absolute https URL, and you can list more than one.",
     },
     {
       question: "Can robots.txt and the sitemap conflict?",
-      answer: "Yes. If your sitemap lists URLs that robots.txt blocks, you send crawlers a contradictory signal. Keep them consistent: don't advertise URLs you've disallowed.",
+      answer:
+        "Yes. If your sitemap lists URLs that robots.txt blocks, you send crawlers a contradictory signal. Keep them consistent: don't advertise URLs you've disallowed.",
     },
   ],
   related: [
-    { title: "robots.txt sitemap directive", href: "/robots-txt-sitemap", description: "How to reference a sitemap." },
-    { title: "robots.txt vs noindex", href: "/robots-txt-vs-noindex", description: "Crawling vs indexing." },
-    { title: "Robots.txt Generator", href: "/generate", description: "Add a sitemap line automatically." },
-    { title: "Robots.txt Validator", href: "/validate", description: "Check the Sitemap line is valid." },
+    {
+      title: "robots.txt sitemap directive",
+      href: "/robots-txt-sitemap",
+      description: "How to reference a sitemap.",
+    },
+    {
+      title: "robots.txt vs noindex",
+      href: "/robots-txt-vs-noindex",
+      description: "Crawling vs indexing.",
+    },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Add a sitemap line automatically.",
+    },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Check the Sitemap line is valid.",
+    },
   ],
   nextReading: { title: "Robots.txt Generator", href: "/robots-txt-generator" },
 };

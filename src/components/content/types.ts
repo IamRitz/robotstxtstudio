@@ -12,8 +12,16 @@ export type ContentBlock =
   | { readonly kind: "p"; readonly content: ReactNode }
   | { readonly kind: "list"; readonly items: readonly ReactNode[]; readonly ordered?: boolean }
   | { readonly kind: "snippet"; readonly code: string; readonly caption?: string }
-  | { readonly kind: "callout"; readonly status: StatusKey; readonly title: string; readonly body?: ReactNode }
-  | { readonly kind: "mistakes"; readonly items: ReadonlyArray<{ readonly title: string; readonly body: ReactNode }> }
+  | {
+      readonly kind: "callout";
+      readonly status: StatusKey;
+      readonly title: string;
+      readonly body?: ReactNode;
+    }
+  | {
+      readonly kind: "mistakes";
+      readonly items: ReadonlyArray<{ readonly title: string; readonly body: ReactNode }>;
+    }
   | {
       readonly kind: "table";
       readonly head: readonly string[];

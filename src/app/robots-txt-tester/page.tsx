@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "robots-txt-tester",
   h1: "Robots.txt Tester",
-  description: "Test whether a URL is allowed or blocked for any crawler, with the matched rule and a full trace.",
+  description:
+    "Test whether a URL is allowed or blocked for any crawler, with the matched rule and a full trace.",
   heroCta: "tester",
   lead: (
     <>
-      A valid robots.txt can still block the wrong page. This tester answers the real question — is this
-      URL allowed or blocked for this crawler? — and shows the exact rule that decided it, plus a
-      step-by-step trace so the verdict is never a black box.
+      A valid robots.txt can still block the wrong page. This tester answers the real question — is
+      this URL allowed or blocked for this crawler? — and shows the exact rule that decided it, plus
+      a step-by-step trace so the verdict is never a black box.
     </>
   ),
   cta: "tester",
@@ -76,26 +77,42 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I test if a URL is blocked by robots.txt?",
-      answer: "Provide your robots.txt, enter the URL, and choose a crawler. The tester applies the real matching rules and returns allowed or blocked, along with the exact directive that decided it.",
+      answer:
+        "Provide your robots.txt, enter the URL, and choose a crawler. The tester applies the real matching rules and returns allowed or blocked, along with the exact directive that decided it.",
     },
     {
       question: "Why is my page blocked when the file looks fine?",
-      answer: "Usually because of group selection or precedence — a broad Disallow matched before a more specific Allow, or a wildcard caught more than expected. The tester's trace shows which rule applied and why.",
+      answer:
+        "Usually because of group selection or precedence — a broad Disallow matched before a more specific Allow, or a wildcard caught more than expected. The tester's trace shows which rule applied and why.",
     },
     {
       question: "Can I test different crawlers?",
-      answer: "Yes. Rules can vary by user-agent, so you can test Googlebot, Bingbot, GPTBot, and others against the same URL to confirm each behaves the way you intend.",
+      answer:
+        "Yes. Rules can vary by user-agent, so you can test Googlebot, Bingbot, GPTBot, and others against the same URL to confirm each behaves the way you intend.",
     },
     {
       question: "Is the robots.txt tester free?",
-      answer: "Yes. Testing is free with no sign-up. You can paste a file or fetch it live, then test as many URLs and crawlers as you like.",
+      answer:
+        "Yes. Testing is free with no sign-up. You can paste a file or fetch it live, then test as many URLs and crawlers as you like.",
     },
   ],
   related: [
-    { title: "Robots.txt Validator", href: "/validate", description: "Check the file is well-formed." },
-    { title: "how to read robots.txt", href: "/how-to-read-robots-txt", description: "Understand the rules you're testing." },
+    {
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Check the file is well-formed.",
+    },
+    {
+      title: "how to read robots.txt",
+      href: "/how-to-read-robots-txt",
+      description: "Understand the rules you're testing.",
+    },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit a whole live site." },
-    { title: "robots.txt syntax", href: "/robots-txt-syntax", description: "Wildcards and precedence." },
+    {
+      title: "robots.txt syntax",
+      href: "/robots-txt-syntax",
+      description: "Wildcards and precedence.",
+    },
   ],
   nextReading: { title: "AI Crawler Directory", href: "/ai-crawlers-directory" },
 };

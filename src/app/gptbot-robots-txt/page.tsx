@@ -11,13 +11,14 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "gptbot-robots-txt",
   h1: "Block GPTBot in robots.txt",
-  description: "What GPTBot is, why it matters, and the exact robots.txt rules to allow or block OpenAI's crawler.",
+  description:
+    "What GPTBot is, why it matters, and the exact robots.txt rules to allow or block OpenAI's crawler.",
   heroCta: "ai-manager",
   lead: (
     <>
-      <code className="font-mono text-foreground">GPTBot</code> is OpenAI&apos;s web crawler. It gathers
-      content to train OpenAI&apos;s models. If you don&apos;t want your pages used for training, two
-      lines of robots.txt stop it — without touching your Google ranking.
+      <code className="font-mono text-foreground">GPTBot</code> is OpenAI&apos;s web crawler. It
+      gathers content to train OpenAI&apos;s models. If you don&apos;t want your pages used for
+      training, two lines of robots.txt stop it — without touching your Google ranking.
     </>
   ),
   cta: "validator",
@@ -35,7 +36,12 @@ const page: ContentPage = {
           kind: "table",
           head: ["Property", "Value"],
           rows: [
-            ["User-agent", <code key="u" className="font-mono">GPTBot</code>],
+            [
+              "User-agent",
+              <code key="u" className="font-mono">
+                GPTBot
+              </code>,
+            ],
             ["Operator", "OpenAI"],
             ["Purpose", "Model training data collection"],
             ["Honors robots.txt", "Yes (per OpenAI docs)"],
@@ -66,17 +72,27 @@ const page: ContentPage = {
       blocks: [
         {
           kind: "p",
-          content: "Add a group targeting the GPTBot user-agent with Disallow: / to block your whole site:",
+          content:
+            "Add a group targeting the GPTBot user-agent with Disallow: / to block your whole site:",
         },
-        { kind: "snippet", code: "User-agent: GPTBot\nDisallow: /", caption: "Block GPTBot entirely" },
+        {
+          kind: "snippet",
+          code: "User-agent: GPTBot\nDisallow: /",
+          caption: "Block GPTBot entirely",
+        },
         {
           kind: "p",
           content: "To block only part of your site, list specific paths instead:",
         },
-        { kind: "snippet", code: "User-agent: GPTBot\nDisallow: /premium/\nDisallow: /members/", caption: "Block GPTBot from specific sections" },
+        {
+          kind: "snippet",
+          code: "User-agent: GPTBot\nDisallow: /premium/\nDisallow: /members/",
+          caption: "Block GPTBot from specific sections",
+        },
         {
           kind: "p",
-          content: "To explicitly allow GPTBot (the default if you say nothing), use an empty Disallow:",
+          content:
+            "To explicitly allow GPTBot (the default if you say nothing), use an empty Disallow:",
         },
         { kind: "snippet", code: "User-agent: GPTBot\nDisallow:", caption: "Allow GPTBot" },
       ],
@@ -104,10 +120,22 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Blocking Googlebot by accident", body: "GPTBot is not Googlebot. Make sure your Disallow: / sits under User-agent: GPTBot, not User-agent: *." },
-            { title: "Assuming it deindexes content", body: "Blocking GPTBot stops training, not indexing. It has no effect on whether you appear in any search engine." },
-            { title: "Typos in the token", body: "It must be exactly GPTBot. GPT-Bot, ChatGPT, or OpenAI won't match." },
-            { title: "Forgetting OAI-SearchBot", body: "If your goal is to stay out of all OpenAI products, you also need to decide on OAI-SearchBot." },
+            {
+              title: "Blocking Googlebot by accident",
+              body: "GPTBot is not Googlebot. Make sure your Disallow: / sits under User-agent: GPTBot, not User-agent: *.",
+            },
+            {
+              title: "Assuming it deindexes content",
+              body: "Blocking GPTBot stops training, not indexing. It has no effect on whether you appear in any search engine.",
+            },
+            {
+              title: "Typos in the token",
+              body: "It must be exactly GPTBot. GPT-Bot, ChatGPT, or OpenAI won't match.",
+            },
+            {
+              title: "Forgetting OAI-SearchBot",
+              body: "If your goal is to stay out of all OpenAI products, you also need to decide on OAI-SearchBot.",
+            },
           ],
         },
       ],
@@ -116,25 +144,41 @@ const page: ContentPage = {
   faqs: [
     {
       question: "How do I block GPTBot?",
-      answer: "Add User-agent: GPTBot followed by Disallow: / to your robots.txt. That blocks GPTBot from your entire site. OpenAI documents that GPTBot honors robots.txt.",
+      answer:
+        "Add User-agent: GPTBot followed by Disallow: / to your robots.txt. That blocks GPTBot from your entire site. OpenAI documents that GPTBot honors robots.txt.",
     },
     {
       question: "Does blocking GPTBot hurt my SEO?",
-      answer: "No. GPTBot is OpenAI's training crawler and is completely separate from Googlebot and Bingbot. Blocking it has zero effect on your search rankings or indexing.",
+      answer:
+        "No. GPTBot is OpenAI's training crawler and is completely separate from Googlebot and Bingbot. Blocking it has zero effect on your search rankings or indexing.",
     },
     {
       question: "What is the difference between GPTBot and OAI-SearchBot?",
-      answer: "GPTBot collects training data for OpenAI's models. OAI-SearchBot fetches pages to show and cite in ChatGPT Search. They are separate user-agents, so you can block training while still allowing ChatGPT Search.",
+      answer:
+        "GPTBot collects training data for OpenAI's models. OAI-SearchBot fetches pages to show and cite in ChatGPT Search. They are separate user-agents, so you can block training while still allowing ChatGPT Search.",
     },
     {
       question: "Does GPTBot obey robots.txt?",
-      answer: "Yes. OpenAI states that GPTBot respects robots.txt directives. To confirm your rule is working on a live site, run it through the Analyzer.",
+      answer:
+        "Yes. OpenAI states that GPTBot respects robots.txt directives. To confirm your rule is working on a live site, run it through the Analyzer.",
     },
   ],
   related: [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-    { title: "Block ClaudeBot", href: "/claudebot-robots-txt", description: "Anthropic's training crawler." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Block GPTBot with one click." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Every AI crawler compared.",
+    },
+    {
+      title: "Block ClaudeBot",
+      href: "/claudebot-robots-txt",
+      description: "Anthropic's training crawler.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Block GPTBot with one click.",
+    },
     { title: "Robots.txt Validator", href: "/validate", description: "Check your rule is valid." },
   ],
   nextReading: { title: "Block ClaudeBot in robots.txt", href: "/claudebot-robots-txt" },

@@ -107,6 +107,11 @@ const CODE_LABEL: Partial<Record<ValidationCode, string>> = {
   "sensitive-path-disclosure": "Sensitive path disclosed",
 };
 
+/** Short human label for an issue code (falls back to the code itself). */
+export function codeLabel(code: ValidationCode): string {
+  return CODE_LABEL[code] ?? code;
+}
+
 /** Dimension metadata: order, label, weight, and what the score means. */
 export const DIMENSIONS: ReadonlyArray<{
   readonly key: ScoreDimension;
@@ -118,13 +123,15 @@ export const DIMENSIONS: ReadonlyArray<{
     key: "syntax",
     label: "Syntax",
     weight: 0.3,
-    explanation: "Is the file valid and parseable? Errors here can break how crawlers read your rules.",
+    explanation:
+      "Is the file valid and parseable? Errors here can break how crawlers read your rules.",
   },
   {
     key: "seo",
     label: "SEO",
     weight: 0.25,
-    explanation: "Can search engines discover and crawl your site, with a sitemap and no over-blocking?",
+    explanation:
+      "Can search engines discover and crawl your site, with a sitemap and no over-blocking?",
   },
   {
     key: "ai",
@@ -177,12 +184,19 @@ function scoreDimension(
   issues: readonly ValidationIssue[],
 ): DimensionScore {
   // Aggregate by code for this dimension.
-  const byCode = new Map<ValidationCode, { perOccurrence: number; count: number; recoverable: boolean }>();
+  const byCode = new Map<
+    ValidationCode,
+    { perOccurrence: number; count: number; recoverable: boolean }
+  >();
   let lostNonRecoverable = 0;
   for (const issue of issues) {
     const hit = (DEDUCTIONS[issue.code] ?? []).find((h) => h.dimension === meta.key);
     if (!hit) continue;
-    const entry = byCode.get(issue.code) ?? { perOccurrence: hit.points, count: 0, recoverable: false };
+    const entry = byCode.get(issue.code) ?? {
+      perOccurrence: hit.points,
+      count: 0,
+      recoverable: false,
+    };
     entry.count += 1;
     entry.recoverable = entry.recoverable || isRecoverable(issue);
     byCode.set(issue.code, entry);

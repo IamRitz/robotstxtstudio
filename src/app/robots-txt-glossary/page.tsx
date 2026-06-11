@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SeoContentLayout, type ContentPage, type ContentSection } from "@/components/content";
-import { GLOSSARY, GLOSSARY_GROUPS, GROUP_ORDER, termsInGroup, type GlossaryGroup } from "@/config/glossary";
+import {
+  GLOSSARY,
+  GLOSSARY_GROUPS,
+  GROUP_ORDER,
+  termsInGroup,
+  type GlossaryGroup,
+} from "@/config/glossary";
 import { definedTermSetSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -84,10 +90,26 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "robots.txt Syntax", href: "/robots-txt-syntax", description: "Directives in full detail." },
-    { title: "How Does robots.txt Work?", href: "/how-does-robots-txt-work", description: "Matching and precedence." },
-    { title: "Robots.txt Explainer", href: "/explain", description: "See these terms applied to a real file." },
-    { title: "robots.txt vs noindex", href: "/robots-txt-vs-noindex", description: "Crawling vs indexing, compared." },
+    {
+      title: "robots.txt Syntax",
+      href: "/robots-txt-syntax",
+      description: "Directives in full detail.",
+    },
+    {
+      title: "How Does robots.txt Work?",
+      href: "/how-does-robots-txt-work",
+      description: "Matching and precedence.",
+    },
+    {
+      title: "Robots.txt Explainer",
+      href: "/explain",
+      description: "See these terms applied to a real file.",
+    },
+    {
+      title: "robots.txt vs noindex",
+      href: "/robots-txt-vs-noindex",
+      description: "Crawling vs indexing, compared.",
+    },
   ],
   nextReading: { title: "robots.txt Syntax", href: "/robots-txt-syntax" },
   extraSchema: [

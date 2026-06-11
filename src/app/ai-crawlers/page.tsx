@@ -7,16 +7,27 @@ import { AiManagerScreen } from "./ai-manager-screen";
 
 export const metadata: Metadata = {
   title: "AI Crawler Manager",
-  description: "Control which AI crawlers can access your site — block GPTBot, ClaudeBot, PerplexityBot and more.",
+  description:
+    "Control which AI crawlers can access your site — block GPTBot, ClaudeBot, PerplexityBot and more.",
   alternates: { canonical: "/ai-crawlers" },
 };
 
-export default function AiCrawlersPage() {
+export default async function AiCrawlersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ focus?: string }>;
+}) {
+  const { focus } = await searchParams;
   return (
     <AppShell>
-      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "AI Crawlers", path: "/ai-crawlers" }])} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "AI Crawlers", path: "/ai-crawlers" },
+        ])}
+      />
       <JsonLd data={toolAppSchema("ai-manager")} />
-      <AiManagerScreen />
+      <AiManagerScreen focusCrawlerId={focus} />
       <ToolRelatedRail tool="ai-manager" />
     </AppShell>
   );

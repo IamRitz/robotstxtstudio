@@ -33,7 +33,11 @@ const page: ContentPage = {
           content:
             "A robots.txt file is a set of instructions for automated clients (crawlers, bots, spiders). It lives at one fixed location — the root of your domain — and uses a simple, line-based format defined by the Robots Exclusion Protocol (standardized in 2022 as RFC 9309).",
         },
-        { kind: "snippet", code: "User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: https://example.com/sitemap.xml", caption: "A minimal robots.txt" },
+        {
+          kind: "snippet",
+          code: "User-agent: *\nDisallow: /admin/\nAllow: /\n\nSitemap: https://example.com/sitemap.xml",
+          caption: "A minimal robots.txt",
+        },
         {
           kind: "p",
           content:
@@ -83,12 +87,13 @@ const page: ContentPage = {
           kind: "p",
           content: (
             <>
-              This distinction trips up almost everyone. If your goal is to keep a page out of search
-              results, see our{" "}
+              This distinction trips up almost everyone. If your goal is to keep a page out of
+              search results, see our{" "}
               <Link href="/robots-txt-seo-guide" className="text-brand hover:underline">
                 robots.txt for SEO guide
               </Link>
-              , which covers when to use robots.txt versus <code className="font-mono">noindex</code>.
+              , which covers when to use robots.txt versus{" "}
+              <code className="font-mono">noindex</code>.
             </>
           ),
         },
@@ -103,7 +108,11 @@ const page: ContentPage = {
           content:
             "robots.txt is organized into groups. Each group starts with one or more User-agent lines (which crawler the rules apply to) followed by Allow and Disallow rules (which paths).",
         },
-        { kind: "snippet", code: "User-agent: Googlebot\nDisallow: /private/\n\nUser-agent: GPTBot\nDisallow: /", caption: "Two groups: one for Googlebot, one for GPTBot" },
+        {
+          kind: "snippet",
+          code: "User-agent: Googlebot\nDisallow: /private/\n\nUser-agent: GPTBot\nDisallow: /",
+          caption: "Two groups: one for Googlebot, one for GPTBot",
+        },
         {
           kind: "p",
           content: (
@@ -129,9 +138,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "“Disallow hides my page from Google.”", body: "It blocks crawling, not indexing. Use noindex to remove a page from results." },
-            { title: "“I need robots.txt for security.”", body: "It's public and advisory. Use authentication for anything sensitive." },
-            { title: "“Blocking CSS/JS speeds up my site.”", body: "Disallowing assets stops Google from rendering your pages correctly and can hurt rankings." },
+            {
+              title: "“Disallow hides my page from Google.”",
+              body: "It blocks crawling, not indexing. Use noindex to remove a page from results.",
+            },
+            {
+              title: "“I need robots.txt for security.”",
+              body: "It's public and advisory. Use authentication for anything sensitive.",
+            },
+            {
+              title: "“Blocking CSS/JS speeds up my site.”",
+              body: "Disallowing assets stops Google from rendering your pages correctly and can hurt rankings.",
+            },
           ],
         },
       ],
@@ -160,9 +178,21 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "The robots.txt file", href: "/robots-txt-file", description: "Where it lives and what goes in it." },
-    { title: "How robots.txt works", href: "/how-does-robots-txt-work", description: "Group selection and rule precedence." },
-    { title: "All robots.txt tools", href: "/", description: "Generate, validate, test, and explain." },
+    {
+      title: "The robots.txt file",
+      href: "/robots-txt-file",
+      description: "Where it lives and what goes in it.",
+    },
+    {
+      title: "How robots.txt works",
+      href: "/how-does-robots-txt-work",
+      description: "Group selection and rule precedence.",
+    },
+    {
+      title: "All robots.txt tools",
+      href: "/",
+      description: "Generate, validate, test, and explain.",
+    },
   ],
 };
 

@@ -45,6 +45,13 @@
 > collapsible Advanced section, and post-apply live-sync to the shared
 > workspace. No animations/celebrations/palettes/shortcuts.
 >
+> **Phase 17F SHIPPED** (workspace visibility & navigation): provenance-rich
+> WorkspaceBar ("last changed in {tool} · {when}" + expandable recent-fix
+> receipts), smart deep links landing on the exact crawler/field with a brief
+> mark, discard confirmation, an Analyzer cross-tool cue, and the homepage
+> workspace-resume strip (separate from the analysis archive). All key
+> workspace info measured visible without scrolling on desktop and mobile.
+>
 > Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience
 > (`src/app/page.tsx`). Companion docs: [`ANALYZER.md`](./ANALYZER.md),

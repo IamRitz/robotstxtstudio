@@ -59,7 +59,8 @@ const page: ContentPage = {
               <Link href="/ai-crawlers" className="text-brand hover:underline">
                 AI Crawler Manager
               </Link>{" "}
-              makes this a one-click decision per crawler, with an explanation of what each bot does.
+              makes this a one-click decision per crawler, with an explanation of what each bot
+              does.
             </>
           ),
         },
@@ -126,9 +127,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Using it for privacy", body: "Listed paths are public. Protect sensitive URLs with authentication, not Disallow." },
-            { title: "Blocking to deindex", body: "Disallow doesn't remove indexed pages. Use noindex for that." },
-            { title: "Never re-checking", body: "Re-audit after migrations, replatforming, or CMS updates that can regenerate robots.txt." },
+            {
+              title: "Using it for privacy",
+              body: "Listed paths are public. Protect sensitive URLs with authentication, not Disallow.",
+            },
+            {
+              title: "Blocking to deindex",
+              body: "Disallow doesn't remove indexed pages. Use noindex for that.",
+            },
+            {
+              title: "Never re-checking",
+              body: "Re-audit after migrations, replatforming, or CMS updates that can regenerate robots.txt.",
+            },
           ],
         },
       ],
@@ -157,7 +167,11 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Best practices in depth." },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Best practices in depth.",
+    },
     { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Control AI access." },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit a live site." },
   ],

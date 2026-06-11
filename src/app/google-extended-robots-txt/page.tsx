@@ -11,14 +11,15 @@ export const metadata: Metadata = {
 const page: ContentPage = {
   slug: "google-extended-robots-txt",
   h1: "Google-Extended in robots.txt",
-  description: "How Google-Extended lets you opt out of Gemini training without touching Google Search ranking.",
+  description:
+    "How Google-Extended lets you opt out of Gemini training without touching Google Search ranking.",
   heroCta: "ai-manager",
   lead: (
     <>
-      <code className="font-mono text-foreground">Google-Extended</code> is not a crawler — it&apos;s an
-      opt-out token. It controls whether Google may use your content to train Gemini and ground AI
-      features. Blocking it has zero effect on your Google Search ranking, because Googlebot is
-      separate.
+      <code className="font-mono text-foreground">Google-Extended</code> is not a crawler —
+      it&apos;s an opt-out token. It controls whether Google may use your content to train Gemini
+      and ground AI features. Blocking it has zero effect on your Google Search ranking, because
+      Googlebot is separate.
     </>
   ),
   cta: "validator",
@@ -48,8 +49,20 @@ const page: ContentPage = {
           kind: "table",
           head: ["Token", "Controls", "Affects Search ranking?"],
           rows: [
-            [<code key="a" className="font-mono">Googlebot</code>, "Crawling for Google Search", "Yes — don't block it"],
-            [<code key="b" className="font-mono">Google-Extended</code>, "Use of content for Gemini / AI training", "No — safe to block"],
+            [
+              <code key="a" className="font-mono">
+                Googlebot
+              </code>,
+              "Crawling for Google Search",
+              "Yes — don't block it",
+            ],
+            [
+              <code key="b" className="font-mono">
+                Google-Extended
+              </code>,
+              "Use of content for Gemini / AI training",
+              "No — safe to block",
+            ],
           ],
         },
         {
@@ -72,7 +85,11 @@ const page: ContentPage = {
           caption: "Opt out of Gemini training, keep Google Search",
         },
         { kind: "p", content: "To allow it (the default), use an empty Disallow:" },
-        { kind: "snippet", code: "User-agent: Google-Extended\nDisallow:", caption: "Allow Google AI training" },
+        {
+          kind: "snippet",
+          code: "User-agent: Google-Extended\nDisallow:",
+          caption: "Allow Google AI training",
+        },
       ],
     },
     {
@@ -82,9 +99,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Blocking Googlebot instead", body: "The classic error: Disallow: / under Googlebot deindexes your site. Use Google-Extended for the AI opt-out." },
-            { title: "Expecting a crawl change", body: "You won't see a new bot in your logs — Google-Extended is a policy token, not a separate crawler." },
-            { title: "Assuming it covers other engines", body: "Google-Extended only governs Google. Bing, OpenAI, and Anthropic need their own rules." },
+            {
+              title: "Blocking Googlebot instead",
+              body: "The classic error: Disallow: / under Googlebot deindexes your site. Use Google-Extended for the AI opt-out.",
+            },
+            {
+              title: "Expecting a crawl change",
+              body: "You won't see a new bot in your logs — Google-Extended is a policy token, not a separate crawler.",
+            },
+            {
+              title: "Assuming it covers other engines",
+              body: "Google-Extended only governs Google. Bing, OpenAI, and Anthropic need their own rules.",
+            },
           ],
         },
       ],
@@ -93,26 +119,46 @@ const page: ContentPage = {
   faqs: [
     {
       question: "What does Google-Extended do?",
-      answer: "It lets you opt out of Google using your content to train its AI models (Gemini) and ground AI features. It does not affect crawling for Google Search, which is handled by Googlebot.",
+      answer:
+        "It lets you opt out of Google using your content to train its AI models (Gemini) and ground AI features. It does not affect crawling for Google Search, which is handled by Googlebot.",
     },
     {
       question: "Does blocking Google-Extended hurt my Google ranking?",
-      answer: "No. Google-Extended is completely separate from Googlebot. Blocking it stops AI training use only and has no effect on how you rank or whether you're indexed in Google Search.",
+      answer:
+        "No. Google-Extended is completely separate from Googlebot. Blocking it stops AI training use only and has no effect on how you rank or whether you're indexed in Google Search.",
     },
     {
       question: "How do I block Google-Extended?",
-      answer: "Add User-agent: Google-Extended followed by Disallow: / to robots.txt. Keep Googlebot allowed so you remain in Google Search.",
+      answer:
+        "Add User-agent: Google-Extended followed by Disallow: / to robots.txt. Keep Googlebot allowed so you remain in Google Search.",
     },
     {
       question: "Is Google-Extended a crawler?",
-      answer: "No. It's an opt-out token, not a bot. Googlebot still crawls your pages; Google-Extended only controls whether that content may be used for AI training and grounding.",
+      answer:
+        "No. It's an opt-out token, not a bot. Googlebot still crawls your pages; Google-Extended only controls whether that content may be used for AI training and grounding.",
     },
   ],
   related: [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-    { title: "Block CCBot", href: "/ccbot-robots-txt", description: "The Common Crawl dataset crawler." },
-    { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Crawling vs ranking, explained." },
-    { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Set Google-Extended in one click." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Every AI crawler compared.",
+    },
+    {
+      title: "Block CCBot",
+      href: "/ccbot-robots-txt",
+      description: "The Common Crawl dataset crawler.",
+    },
+    {
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Crawling vs ranking, explained.",
+    },
+    {
+      title: "AI Crawler Manager",
+      href: "/ai-crawlers",
+      description: "Set Google-Extended in one click.",
+    },
   ],
   nextReading: { title: "Block CCBot in robots.txt", href: "/ccbot-robots-txt" },
 };

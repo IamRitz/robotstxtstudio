@@ -40,9 +40,14 @@ export default function NotFound() {
                   <span className="min-w-0">
                     <span className="flex items-center gap-1 text-sm font-semibold text-foreground">
                       {t.title}
-                      <ArrowRight className="size-3 text-brand transition-transform group-hover:translate-x-0.5" aria-hidden />
+                      <ArrowRight
+                        className="size-3 text-brand transition-transform group-hover:translate-x-0.5"
+                        aria-hidden
+                      />
                     </span>
-                    <span className="mt-0.5 block text-xs text-muted-foreground">{t.description}</span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {t.description}
+                    </span>
                   </span>
                 </Card>
               </Link>

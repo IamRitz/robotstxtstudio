@@ -21,7 +21,12 @@ export function CodePanel({
   className?: string;
 }) {
   return (
-    <div className={cn("overflow-hidden rounded-xl bg-surface-dark text-surface-dark-foreground", className)}>
+    <div
+      className={cn(
+        "overflow-hidden rounded-xl bg-surface-dark text-surface-dark-foreground",
+        className,
+      )}
+    >
       {(title || showCopy || actions) && (
         <div className="flex items-center justify-between gap-2 border-b border-surface-dark-foreground/10 px-4 py-2">
           <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-surface-dark-foreground/60">

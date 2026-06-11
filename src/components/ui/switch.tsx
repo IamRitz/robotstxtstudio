@@ -29,7 +29,12 @@ export function Switch({
         className,
       )}
     >
-      <span className={cn("size-4 rounded-full bg-card shadow-sm transition", !checked && "bg-muted-foreground/70")} />
+      <span
+        className={cn(
+          "size-4 rounded-full bg-card shadow-sm transition",
+          !checked && "bg-muted-foreground/70",
+        )}
+      />
     </button>
   );
 }

@@ -19,7 +19,9 @@ import type { ContentPage } from "./types";
 export function SeoContentLayout({ page }: { page: ContentPage }) {
   const index = EDU_PAGES.findIndex((p) => p.slug === page.slug);
   const autoNext = index >= 0 && index < EDU_PAGES.length - 1 ? EDU_PAGES[index + 1] : undefined;
-  const next = page.nextReading ?? (autoNext ? { title: autoNext.title, href: eduPath(autoNext.slug) as Route } : undefined);
+  const next =
+    page.nextReading ??
+    (autoNext ? { title: autoNext.title, href: eduPath(autoNext.slug) as Route } : undefined);
 
   return (
     <AppShell>
@@ -41,7 +43,9 @@ export function SeoContentLayout({ page }: { page: ContentPage }) {
           <div className="order-2 min-w-0 space-y-10 lg:order-1">
             {page.sections.map((s) => (
               <section key={s.id} id={s.id} className="scroll-mt-20">
-                <h2 className="mb-3 text-xl font-bold tracking-tight text-foreground">{s.heading}</h2>
+                <h2 className="mb-3 text-xl font-bold tracking-tight text-foreground">
+                  {s.heading}
+                </h2>
                 <Blocks blocks={s.blocks} />
               </section>
             ))}

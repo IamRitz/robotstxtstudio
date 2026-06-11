@@ -74,8 +74,14 @@ function ReportPreview() {
               <div key={row.label} className="flex items-center gap-3">
                 <span className="w-28 text-xs font-medium text-foreground">{row.label}</span>
                 <div className="flex h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                  <span className="bg-status-allowed-dot" style={{ width: `${(row.allowed / total) * 100}%` }} />
-                  <span className="bg-status-blocked-dot" style={{ width: `${(row.blocked / total) * 100}%` }} />
+                  <span
+                    className="bg-status-allowed-dot"
+                    style={{ width: `${(row.allowed / total) * 100}%` }}
+                  />
+                  <span
+                    className="bg-status-blocked-dot"
+                    style={{ width: `${(row.blocked / total) * 100}%` }}
+                  />
                 </div>
               </div>
             );
@@ -85,15 +91,17 @@ function ReportPreview() {
       <div className="rounded-xl border border-border bg-card p-5">
         <div className="mb-3 h-2 w-24 rounded-full bg-muted" />
         <div className="space-y-3">
-          {["bg-status-warning-dot", "bg-status-blocked-dot", "bg-status-info-dot"].map((tone, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <span className={cn("mt-0.5 size-5 shrink-0 rounded-full", tone)} />
-              <div className="flex-1 space-y-1.5">
-                <div className="h-2 w-2/3 rounded-full bg-muted" />
-                <div className="h-2 w-full rounded-full bg-muted/70" />
+          {["bg-status-warning-dot", "bg-status-blocked-dot", "bg-status-info-dot"].map(
+            (tone, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span className={cn("mt-0.5 size-5 shrink-0 rounded-full", tone)} />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-2 w-2/3 rounded-full bg-muted" />
+                  <div className="h-2 w-full rounded-full bg-muted/70" />
+                </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       </div>
     </div>
@@ -108,7 +116,9 @@ function FauxScoreCard({ eyebrow, value, tone }: { eyebrow: string; value: numbe
         <span className="text-lg font-bold text-foreground">{value}</span>
       </div>
       <div className="space-y-1.5">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{eyebrow}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          {eyebrow}
+        </p>
         <div className="h-2 w-16 rounded-full bg-muted/70" />
       </div>
     </div>

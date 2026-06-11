@@ -52,6 +52,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     // fetchRobots() is designed not to throw; last-resort guard for a JSON 500.
     console.error("[api/fetch-robots] unexpected error", error);
-    return NextResponse.json({ error: "Could not fetch robots.txt. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not fetch robots.txt. Please try again." },
+      { status: 500 },
+    );
   }
 }

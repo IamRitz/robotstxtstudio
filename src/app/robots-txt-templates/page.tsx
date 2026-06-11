@@ -33,8 +33,8 @@ const page: ContentPage = {
   lead: (
     <>
       Pick a template that matches your site, copy it, and drop it at{" "}
-      <code className="font-mono text-foreground">/robots.txt</code>. Every template here is valid and
-      minimal — open the{" "}
+      <code className="font-mono text-foreground">/robots.txt</code>. Every template here is valid
+      and minimal — open the{" "}
       <Link href="/generate" className="text-brand hover:underline">
         Generator
       </Link>{" "}
@@ -96,9 +96,21 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "Robots.txt Generator", href: "/generate", description: "Build a custom file with toggles." },
-    { title: "robots.txt Examples", href: "/robots-txt-examples", description: "Annotated real-world files." },
-    { title: "WordPress robots.txt", href: "/wordpress-robots-txt", description: "The WordPress deep-dive." },
+    {
+      title: "Robots.txt Generator",
+      href: "/generate",
+      description: "Build a custom file with toggles.",
+    },
+    {
+      title: "robots.txt Examples",
+      href: "/robots-txt-examples",
+      description: "Annotated real-world files.",
+    },
+    {
+      title: "WordPress robots.txt",
+      href: "/wordpress-robots-txt",
+      description: "The WordPress deep-dive.",
+    },
     { title: "Robots.txt Validator", href: "/validate", description: "Check any file's health." },
   ],
   nextReading: { title: "Robots.txt Generator", href: "/generate" },

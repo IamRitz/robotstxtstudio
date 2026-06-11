@@ -19,34 +19,102 @@ export interface LinkItem {
 /** Guide slugs most relevant to each tool (educational + transactional clusters). */
 const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
   generator: [
-    { title: "robots.txt Examples", href: "/robots-txt-examples", description: "Copy-paste starting points." },
-    { title: "robots.txt Templates", href: "/robots-txt-templates", description: "Ready-made files by site type." },
-    { title: "robots.txt Syntax", href: "/robots-txt-syntax", description: "Every directive explained." },
+    {
+      title: "robots.txt Examples",
+      href: "/robots-txt-examples",
+      description: "Copy-paste starting points.",
+    },
+    {
+      title: "robots.txt Templates",
+      href: "/robots-txt-templates",
+      description: "Ready-made files by site type.",
+    },
+    {
+      title: "robots.txt Syntax",
+      href: "/robots-txt-syntax",
+      description: "Every directive explained.",
+    },
   ],
   validator: [
-    { title: "robots.txt Checker", href: "/robots-txt-checker", description: "How to audit a robots.txt file." },
-    { title: "robots.txt Syntax", href: "/robots-txt-syntax", description: "Spot invalid directives." },
-    { title: "robots.txt Glossary", href: "/robots-txt-glossary", description: "Look up any term." },
+    {
+      title: "robots.txt Checker",
+      href: "/robots-txt-checker",
+      description: "How to audit a robots.txt file.",
+    },
+    {
+      title: "robots.txt Syntax",
+      href: "/robots-txt-syntax",
+      description: "Spot invalid directives.",
+    },
+    {
+      title: "robots.txt Glossary",
+      href: "/robots-txt-glossary",
+      description: "Look up any term.",
+    },
   ],
   analyzer: [
-    { title: "How to Find robots.txt", href: "/how-to-find-robots-txt", description: "Locate any site's file." },
-    { title: "Why robots.txt Is Important", href: "/why-robots-txt-is-important", description: "What an audit protects." },
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Who's crawling your site." },
+    {
+      title: "How to Find robots.txt",
+      href: "/how-to-find-robots-txt",
+      description: "Locate any site's file.",
+    },
+    {
+      title: "Why robots.txt Is Important",
+      href: "/why-robots-txt-is-important",
+      description: "What an audit protects.",
+    },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Who's crawling your site.",
+    },
   ],
   tester: [
-    { title: "How Does robots.txt Work?", href: "/how-does-robots-txt-work", description: "Group selection & precedence." },
-    { title: "How to Read robots.txt", href: "/how-to-read-robots-txt", description: "Read rules line by line." },
-    { title: "robots.txt Syntax", href: "/robots-txt-syntax", description: "Wildcards and anchors." },
+    {
+      title: "How Does robots.txt Work?",
+      href: "/how-does-robots-txt-work",
+      description: "Group selection & precedence.",
+    },
+    {
+      title: "How to Read robots.txt",
+      href: "/how-to-read-robots-txt",
+      description: "Read rules line by line.",
+    },
+    {
+      title: "robots.txt Syntax",
+      href: "/robots-txt-syntax",
+      description: "Wildcards and anchors.",
+    },
   ],
   "ai-manager": [
-    { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-    { title: "Block GPTBot", href: "/gptbot-robots-txt", description: "OpenAI's training crawler." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Every AI crawler compared.",
+    },
+    {
+      title: "Block GPTBot",
+      href: "/gptbot-robots-txt",
+      description: "OpenAI's training crawler.",
+    },
     { title: "Crawler Directory", href: "/crawlers", description: "All crawlers, search to AI." },
   ],
   explainer: [
-    { title: "How to Read robots.txt", href: "/how-to-read-robots-txt", description: "Understand any file." },
-    { title: "robots.txt Syntax", href: "/robots-txt-syntax", description: "What each line means." },
-    { title: "robots.txt Glossary", href: "/robots-txt-glossary", description: "Definitions for every term." },
+    {
+      title: "How to Read robots.txt",
+      href: "/how-to-read-robots-txt",
+      description: "Understand any file.",
+    },
+    {
+      title: "robots.txt Syntax",
+      href: "/robots-txt-syntax",
+      description: "What each line means.",
+    },
+    {
+      title: "robots.txt Glossary",
+      href: "/robots-txt-glossary",
+      description: "Definitions for every term.",
+    },
   ],
 };
 
@@ -54,7 +122,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
 export function siblingTools(current: ToolId, limit = 3): LinkItem[] {
   return (Object.keys(TOOLS) as ToolId[])
     .filter((id) => id !== current)
-    .map((id) => ({ title: TOOLS[id].title, href: TOOLS[id].href, description: TOOLS[id].description }))
+    .map((id) => ({
+      title: TOOLS[id].title,
+      href: TOOLS[id].href,
+      description: TOOLS[id].description,
+    }))
     .slice(0, limit);
 }
 

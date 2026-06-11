@@ -134,9 +134,18 @@ const page: ContentPage = {
         {
           kind: "mistakes",
           items: [
-            { title: "Wrong location", body: "Placing robots.txt anywhere but the root means it's never read." },
-            { title: "Wrong content type", body: "Serving the file as text/html (e.g. a 200 HTML error page) makes crawlers ignore it." },
-            { title: "BOM / wrong encoding", body: "Save as UTF-8 without a byte-order mark; some parsers mishandle a leading BOM." },
+            {
+              title: "Wrong location",
+              body: "Placing robots.txt anywhere but the root means it's never read.",
+            },
+            {
+              title: "Wrong content type",
+              body: "Serving the file as text/html (e.g. a 200 HTML error page) makes crawlers ignore it.",
+            },
+            {
+              title: "BOM / wrong encoding",
+              body: "Save as UTF-8 without a byte-order mark; some parsers mishandle a leading BOM.",
+            },
           ],
         },
       ],
@@ -165,9 +174,21 @@ const page: ContentPage = {
     },
   ],
   related: [
-    { title: "What is robots.txt?", href: "/what-is-robots-txt", description: "Start with the basics." },
-    { title: "robots.txt examples", href: "/robots-txt-examples", description: "Copy-paste files by platform." },
-    { title: "robots.txt format", href: "/robots-txt-format", description: "Structure and encoding rules." },
+    {
+      title: "What is robots.txt?",
+      href: "/what-is-robots-txt",
+      description: "Start with the basics.",
+    },
+    {
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "Copy-paste files by platform.",
+    },
+    {
+      title: "robots.txt format",
+      href: "/robots-txt-format",
+      description: "Structure and encoding rules.",
+    },
   ],
 };
 

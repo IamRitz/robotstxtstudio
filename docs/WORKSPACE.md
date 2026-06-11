@@ -112,9 +112,22 @@ AI Manager"/"Open Generator") need no payload — the destination seeds itself.
    before/after `DiffView` — the apply click _is_ the confirmation.
 
 `WorkspaceBar` (`src/components/workspace-bar.tsx`) renders on Validate / AI
-Manager / Generator (the Analyzer's verdict band already names the file):
-`Working file: example.com · from Analyzer · edited`, with **Discard working
-file** as the explicit detach (each tool falls back to its default state).
+Manager / Generator: `Working file: example.com · last changed in AI Manager ·
+3m ago · edited` (provenance from `source`/`updatedAt`), with an expandable
+**Recent changes (N)** list of the latest 3 applied fixes (labels via the
+Validator's `codeLabel` — receipts, not a history system) and **Discard working
+file**, which confirms before resetting every tool (17F.3). The Analyzer's
+verdict band carries the inverse cue ("includes changes from Validate") when
+the workspace holds another tool's edits.
+
+**Smart deep links (17F.2):** Action-Queue rows link to the exact object —
+`/ai-crawlers?focus={crawlerId}` (AI issue ids embed the crawler id) expands
+the crawler's group, scrolls the row into view, and marks it briefly;
+`/generate?focus=sitemap` lands focused on the sitemap field. **Homepage
+(17F.5):** when a workspace exists, `ContinueWorking` shows a resume strip
+("Continue working on example.com · Last changed in AI Manager · 3m ago →
+Resume") above — and independent of — the recent-analyses archive; clearing
+history never touches the active workspace.
 
 ## Context preservation
 

@@ -4,7 +4,9 @@ import { getAiCrawlerStatuses } from "./ai-crawlers";
 
 /** Map crawler id → status for terse assertions. */
 function statusMap(text: string): Record<string, string> {
-  return Object.fromEntries(getAiCrawlerStatuses(parseRobots(text)).map((s) => [s.crawler.id, s.status]));
+  return Object.fromEntries(
+    getAiCrawlerStatuses(parseRobots(text)).map((s) => [s.crawler.id, s.status]),
+  );
 }
 
 describe("getAiCrawlerStatuses", () => {
