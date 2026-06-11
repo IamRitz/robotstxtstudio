@@ -60,6 +60,15 @@ would be silently destroyed by write-through. Hence: explicit, previewed apply.
 the import half; the documented lossiness lives only in the apply step, where
 the user sees the exact diff first.
 
+**Live-sync (17E):** after one explicit apply, the working file IS the
+generated file — further regeneration loses nothing, so the Manager/Generator
+switch to write-through ("Live-syncing — every change here updates the working
+file") for the rest of the session. The sync tracks the last text the tool
+wrote; if the workspace changes underneath it (edited in the Validator,
+re-fetched), the texts no longer match and the tool drops back to explicit
+apply. 17D's protection holds exactly where it matters: foreign text is never
+replaced without a previewed click.
+
 ## Navigation flows (all automatic — the workspace is ambient)
 
 ```mermaid

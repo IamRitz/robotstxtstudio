@@ -9,8 +9,8 @@
 ## Why it exists
 
 The product's headline differentiator. Users answer, at a higher abstraction than
-robots.txt: *which AI crawlers can access my site? which are blocked? what happens if
-I change a setting? what rules get generated, and what's the impact?*
+robots.txt: _which AI crawlers can access my site? which are blocked? what happens if
+I change a setting? what rules get generated, and what's the impact?_
 
 ## Crawler categories
 
@@ -32,11 +32,11 @@ Immutable helpers: `emptyPolicySet`, `fromWebsitePreset(template)`, `setPermissi
 `setCategoryPermission`, `blockAllAiCrawlers`, `allowAllAiCrawlers`, `setDisallowPaths`,
 `setSitemapUrl`. Absent permission ⇒ `inherit`.
 
-| State | Meaning | robots.txt effect |
-| --- | --- | --- |
-| `block` | Don't let this crawler in | explicit `Disallow: /` group |
-| `allow` | Deliberately permit | follows the `*` baseline (intent recorded) |
-| `inherit` | No opinion yet | follows the `*` baseline |
+| State     | Meaning                   | robots.txt effect                          |
+| --------- | ------------------------- | ------------------------------------------ |
+| `block`   | Don't let this crawler in | explicit `Disallow: /` group               |
+| `allow`   | Deliberately permit       | follows the `*` baseline (intent recorded) |
+| `inherit` | No opinion yet            | follows the `*` baseline                   |
 
 `allow` and `inherit` render identically (our baseline never blocks `*`), but stay
 distinct at the intent layer so only **undecided** crawlers are nudged.
@@ -64,8 +64,8 @@ toGeneratorConfig → generatePreview (Generator + Validator + Explainer)
 `PolicyImpact = { config, file, text, validation, explanation, crawlers, categories, recommendations }`.
 
 - **`crawlers`** — per crawler `{ crawler, state, access, summary }`, e.g.
-  *"GPTBot will be blocked from accessing your entire site."* /
-  *"PerplexityBot has no explicit rule and will inherit the default policy (currently allowed)."*
+  _"GPTBot will be blocked from accessing your entire site."_ /
+  _"PerplexityBot has no explicit rule and will inherit the default policy (currently allowed)."_
 - **`categories`** — per-category `{ allowed, blocked, inherited, total }`.
 - **`recommendations`** — intent-driven for undecided AI crawlers ("set Allow or
   Block for X"), plus non-AI advisories passed through from the Validator (e.g.
@@ -77,18 +77,31 @@ toGeneratorConfig → generatePreview (Generator + Validator + Explainer)
 {
   "categories": [
     { "category": "search-engine", "allowed": 3, "blocked": 0 },
-    { "category": "ai-training",   "allowed": 0, "blocked": 5 },
-    { "category": "ai-search",     "allowed": 0, "blocked": 3 },
-    { "category": "data",          "allowed": 0, "blocked": 4 }
+    { "category": "ai-training", "allowed": 0, "blocked": 5 },
+    { "category": "ai-search", "allowed": 0, "blocked": 3 },
+    { "category": "data", "allowed": 0, "blocked": 4 },
   ],
   "crawlers": [
-    { "id": "googlebot",     "state": "allow", "access": "allowed", "summary": "Googlebot will be allowed to access your site (it follows the default policy)." },
-    { "id": "gptbot",        "state": "block", "access": "blocked", "summary": "GPTBot will be blocked from accessing your entire site." },
-    { "id": "perplexitybot", "state": "block", "access": "blocked", "summary": "PerplexityBot will be blocked from accessing your entire site." }
+    {
+      "id": "googlebot",
+      "state": "allow",
+      "access": "allowed",
+      "summary": "Googlebot will be allowed to access your site (it follows the default policy).",
+    },
+    {
+      "id": "gptbot",
+      "state": "block",
+      "access": "blocked",
+      "summary": "GPTBot will be blocked from accessing your entire site.",
+    },
+    {
+      "id": "perplexitybot",
+      "state": "block",
+      "access": "blocked",
+      "summary": "PerplexityBot will be blocked from accessing your entire site.",
+    },
   ],
-  "recommendations": [
-    { "severity": "warning", "message": "No Sitemap directive found. …" }
-  ]
+  "recommendations": [{ "severity": "warning", "message": "No Sitemap directive found. …" }],
 }
 ```
 
@@ -115,13 +128,26 @@ category/crawler setters, immutability), config mapping, and impact scenarios
 (explicit allow, explicit block, inheritance, mixed, block-all-AI). Coverage ~99% of
 `crawler-manager/domain`.
 
+## Phase 17E — bulk workflow (shipped)
+
+The screen is built for deciding 21 crawlers fast: every category header carries
+**Allow all / Block all / Reset** (one click per group — `setCategoryPermission`),
+the list has **Expand all / Collapse all**, and groups default-collapse unless
+they hold active work (an explicit decision AND at least one enabled crawler;
+fully-blocked groups read as "done" and collapse). Bulk decisions auto-expand
+their group. After one explicit "Apply to working file", the screen live-syncs
+further changes to the shared workspace (see WORKSPACE.md "Live-sync"). The
+Generator mirrors all of this, plus global Allow/Block-all-crawlers actions and
+a collapsible Advanced-rules section.
+
 ## Phase 15B.5 — polish shipped + Advanced Options proposal
 
 **Shipped (15B.5):** starter templates now show an active highlight (`aria-pressed`
-+ brand variant) and a rationale panel (what the template does + who it's for);
-crawler categories are collapsible (`<details>`, keyboard-accessible); the generated
-output has a "Live" pulse affordance and a brief flash on change; and the two-column
-layout uses `min-w-0` grid items so there is **no horizontal scroll on mobile**.
+
+- brand variant) and a rationale panel (what the template does + who it's for);
+  crawler categories are collapsible (`<details>`, keyboard-accessible); the generated
+  output has a "Live" pulse affordance and a brief flash on change; and the two-column
+  layout uses `min-w-0` grid items so there is **no horizontal scroll on mobile**.
 
 **Proposed (NOT yet built) — Advanced Options.** The AI Manager intentionally stays
 focused on per-crawler allow/block; richer rule editing lives in the Generator today.

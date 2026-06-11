@@ -38,6 +38,13 @@
 > (`tests-e2e/workspace.spec.ts`). This supersedes the original item-9 "workspace
 > convergence" framing — the file converged instead of the layouts.
 >
+> **Phase 17E SHIPPED** (bulk workflow): category-header Allow all / Block all /
+> Reset on the AI Manager and Generator (one click per group), Expand/Collapse
+> all, work-aware default collapse (expanded only for groups with explicit
+> decisions and enabled crawlers), Generator global Allow/Block-all +
+> collapsible Advanced section, and post-apply live-sync to the shared
+> workspace. No animations/celebrations/palettes/shortcuts.
+>
 > Originally a design-only review of
 > the Analyzer (`src/app/analyze/`) and the homepage-as-dashboard experience
 > (`src/app/page.tsx`). Companion docs: [`ANALYZER.md`](./ANALYZER.md),

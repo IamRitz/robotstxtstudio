@@ -12,6 +12,7 @@ import {
   fromWebsitePreset,
   getPermission,
   policySetFromFile,
+  setCategoryPermission,
   setPermission,
   type PermissionState,
   type PolicySet,
@@ -26,7 +27,7 @@ import {
 } from "@/lib/workspace";
 import { WorkspaceBar } from "@/components/workspace-bar";
 import { DiffView } from "@/components/diff-view";
-import type { Crawler, WebsiteType } from "@/types";
+import type { Crawler, CrawlerCategory, WebsiteType } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { CrawlerBadge } from "@/components/crawler-badge";
@@ -64,6 +65,23 @@ const TEMPLATE_RATIONALE: Record<WebsiteType, { what: string; who: string }> = {
     who: "Documentation and knowledge-base sites that want to be the source AI tools quote.",
   },
 };
+
+/**
+ * Default collapse rule (17E): a group starts EXPANDED only when it holds active
+ * work — at least one explicit decision AND at least one enabled crawler.
+ * Untouched groups and fully-blocked ("done") groups start collapsed.
+ */
+function defaultOpenMap(set: PolicySet): Record<CrawlerCategory, boolean> {
+  const map = {} as Record<CrawlerCategory, boolean>;
+  for (const category of CATEGORY_ORDER) {
+    const crawlers = crawlersByCategory(category);
+    const states = crawlers.map((c) => getPermission(set, c.id));
+    const enabled = states.filter((st) => st !== "block").length;
+    const explicit = states.some((st) => st !== "inherit");
+    map[category] = enabled > 0 && explicit;
+  }
+  return map;
+}
 
 function badgeStatus(state: PermissionState) {
   return state === "allow" ? "allowed" : state === "block" ? "blocked" : "info";
@@ -109,6 +127,10 @@ export function AiManagerScreen() {
   const [template, setTemplate] = useState<WebsiteType | null>(null);
   /** The shared working file this screen is seeded from, if any (17D). */
   const [ws, setWs] = useState<Workspace | null>(null);
+  /** Per-category expansion. `null` = derive defaults from the current policy. */
+  const [open, setOpen] = useState<Record<CrawlerCategory, boolean> | null>(null);
+  /** Live-sync (17E): the workspace text WE last wrote; null = not syncing. */
+  const syncRef = useRef<string | null>(null);
 
   // Seed from the shared workspace (17D): toggles reflect the working file's
   // decisions. Uncommitted intent survives back/forward via sessionStorage, but
@@ -149,11 +171,13 @@ export function AiManagerScreen() {
       appliedFixes: ws.appliedFixes,
       source: "ai-manager",
     });
+    syncRef.current = impact.text;
     setWs(getWorkspace());
   };
 
   const discardWorkspace = () => {
     clearWorkspace();
+    syncRef.current = null;
     setWs(null);
     setPolicySet(emptyPolicySet());
     setTemplate(null);
@@ -161,6 +185,27 @@ export function AiManagerScreen() {
 
   const impact = useMemo(() => analyzePolicySet(policySet), [policySet]);
   const justUpdated = useJustUpdated(impact.text);
+
+  // Live-sync (17E): after one explicit apply, the working file is fully
+  // generated — further regeneration loses nothing, so every toggle updates the
+  // workspace immediately. A foreign edit (text ≠ our last write) drops sync.
+  useEffect(() => {
+    if (!ws || syncRef.current === null) return;
+    if (ws.text !== syncRef.current) {
+      syncRef.current = null;
+      return;
+    }
+    if (impact.text === ws.text) return;
+    setWorkspace({
+      domain: ws.domain,
+      originalText: ws.originalText,
+      text: impact.text,
+      appliedFixes: ws.appliedFixes,
+      source: "ai-manager",
+    });
+    syncRef.current = impact.text;
+    setWs(getWorkspace());
+  }, [impact.text, ws]);
 
   // Any manual change means the policy no longer matches a template.
   const toggle = (id: string, checked: boolean) => {
@@ -174,6 +219,21 @@ export function AiManagerScreen() {
   const applyAndClear = (next: PolicySet) => {
     setPolicySet(next);
     setTemplate(null);
+  };
+
+  const openMap = open ?? defaultOpenMap(policySet);
+  const toggleOpen = (category: CrawlerCategory) =>
+    setOpen({ ...openMap, [category]: !openMap[category] });
+  const setAllOpen = (value: boolean) =>
+    setOpen(
+      Object.fromEntries(CATEGORY_ORDER.map((c) => [c, value])) as Record<CrawlerCategory, boolean>,
+    );
+
+  /** Header bulk action: set every crawler in the group in ONE click (17E). */
+  const setCategory = (category: CrawlerCategory, state: PermissionState) => {
+    applyAndClear(setCategoryPermission(policySet, category, state));
+    // Bulk decisions are work happening here — make sure the group is visible.
+    if (!openMap[category] && state !== "inherit") setOpen({ ...openMap, [category]: true });
   };
 
   const matches = (c: Crawler) =>
@@ -293,8 +353,27 @@ export function AiManagerScreen() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
-        {/* Categories (collapsible) */}
+        {/* Categories (collapsible, controlled — 17E) */}
         <div className="min-w-0 space-y-4">
+          <div className="flex items-center justify-end gap-1 text-xs">
+            <button
+              type="button"
+              onClick={() => setAllOpen(true)}
+              className="rounded px-2 py-1 font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              Expand all
+            </button>
+            <span className="text-border" aria-hidden>
+              ·
+            </span>
+            <button
+              type="button"
+              onClick={() => setAllOpen(false)}
+              className="rounded px-2 py-1 font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              Collapse all
+            </button>
+          </div>
           {CATEGORY_ORDER.map((category) => {
             const crawlers = crawlersByCategory(category).filter(matches);
             if (crawlers.length === 0) return null;
@@ -302,10 +381,18 @@ export function AiManagerScreen() {
             return (
               <details
                 key={category}
-                open
+                open={openMap[category]}
                 className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm"
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 border-b border-border bg-muted px-4 py-2 [&::-webkit-details-marker]:hidden">
+                {/* Controlled: the summary click flips React state (no native toggle),
+                    so Expand/Collapse all and the default rules stay authoritative. */}
+                <summary
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleOpen(category);
+                  }}
+                  className="flex cursor-pointer list-none flex-wrap items-center gap-x-3 gap-y-1 border-b border-border bg-muted px-4 py-2 [&::-webkit-details-marker]:hidden"
+                >
                   <span className="flex items-center gap-2">
                     <ChevronDown
                       className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
@@ -315,6 +402,36 @@ export function AiManagerScreen() {
                   </span>
                   <span className="text-xs tabular-nums text-muted-foreground">
                     {summary.allowed} allowed · {summary.blocked} blocked
+                  </span>
+                  {/* Bulk actions live in the header — no scrolling through rows (17E). */}
+                  <span
+                    className="ml-auto flex items-center gap-1 text-xs"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setCategory(category, "allow")}
+                      className="rounded px-1.5 py-0.5 font-medium text-status-allowed-fg hover:bg-status-allowed-bg"
+                      title={`Allow every ${CATEGORY_LABELS[category]} crawler`}
+                    >
+                      Allow all
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCategory(category, "block")}
+                      className="rounded px-1.5 py-0.5 font-medium text-status-blocked-fg hover:bg-status-blocked-bg"
+                      title={`Block every ${CATEGORY_LABELS[category]} crawler`}
+                    >
+                      Block all
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCategory(category, "inherit")}
+                      className="rounded px-1.5 py-0.5 font-medium text-muted-foreground hover:bg-muted"
+                      title={`Reset ${CATEGORY_LABELS[category]} to inherit the default policy`}
+                    >
+                      Reset
+                    </button>
                   </span>
                 </summary>
                 <ul className="divide-y divide-border">
@@ -399,7 +516,9 @@ export function AiManagerScreen() {
               </div>
             ) : ws ? (
               <p className="mt-2 text-xs font-medium text-status-allowed-fg">
-                Working file is up to date with these choices.
+                {syncRef.current !== null
+                  ? "Live-syncing — every change here updates the working file."
+                  : "Working file is up to date with these choices."}
               </p>
             ) : null}
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Check, Download, Megaphone, Plus, ShieldCheck, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Check, ChevronDown, Download, Megaphone, Plus, ShieldCheck, X } from "lucide-react";
 import { applyPreset, generatePreview, TEMPLATE_LABELS } from "@/features/generator";
 import { policySetFromFile, toGeneratorConfig } from "@/features/crawler-manager";
 import { parseRobots } from "@/parser";
@@ -15,7 +15,7 @@ import {
 import { WorkspaceBar } from "@/components/workspace-bar";
 import { DiffView } from "@/components/diff-view";
 import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory } from "@/config/crawlers";
-import type { GeneratorConfig, WebsiteType } from "@/types";
+import type { CrawlerCategory, GeneratorConfig, WebsiteType } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { CrawlerBadge } from "@/components/crawler-badge";
@@ -42,6 +42,19 @@ function download(text: string) {
   URL.revokeObjectURL(url);
 }
 
+/** Same default collapse rule as the AI Manager (17E): expanded only for groups
+ *  with active work — an explicit decision AND at least one enabled crawler. */
+function defaultOpenMap(config: GeneratorConfig): Record<CrawlerCategory, boolean> {
+  const map = {} as Record<CrawlerCategory, boolean>;
+  for (const category of CATEGORY_ORDER) {
+    const crawlers = crawlersByCategory(category);
+    const enabled = crawlers.filter((c) => config.crawlerPolicies[c.id] !== "block").length;
+    const explicit = crawlers.some((c) => c.id in config.crawlerPolicies);
+    map[category] = enabled > 0 && explicit;
+  }
+  return map;
+}
+
 const UI_KEY = "rs:generator-ui";
 
 interface SavedGeneratorUi {
@@ -63,6 +76,10 @@ export function GeneratorScreen() {
   const [newPath, setNewPath] = useState("");
   /** The shared working file these controls are seeded from, if any (17D). */
   const [ws, setWs] = useState<Workspace | null>(null);
+  /** Per-category expansion. `null` = derive defaults from the current config. */
+  const [open, setOpen] = useState<Record<CrawlerCategory, boolean> | null>(null);
+  /** Live-sync (17E): the workspace text WE last wrote; null = not syncing. */
+  const syncRef = useRef<string | null>(null);
 
   // Seed from the shared workspace (17D); uncommitted control state survives
   // back/forward per tab, dropped when the underlying workspace text changed.
@@ -89,6 +106,27 @@ export function GeneratorScreen() {
 
   const preview = useMemo(() => generatePreview(config), [config]);
 
+  // Live-sync (17E): once the working file IS the generated file, regeneration
+  // loses nothing — every control change updates the workspace immediately.
+  // A foreign edit (text ≠ our last write) drops sync.
+  useEffect(() => {
+    if (!ws || syncRef.current === null) return;
+    if (ws.text !== syncRef.current) {
+      syncRef.current = null;
+      return;
+    }
+    if (preview.text === ws.text) return;
+    setWorkspace({
+      domain: ws.domain,
+      originalText: ws.originalText,
+      text: preview.text,
+      appliedFixes: ws.appliedFixes,
+      source: "generator",
+    });
+    syncRef.current = preview.text;
+    setWs(getWorkspace());
+  }, [preview.text, ws]);
+
   /** Commit the generated file as the new working file (explicit, previewed). */
   const applyToWorkspace = () => {
     if (ws) {
@@ -108,14 +146,49 @@ export function GeneratorScreen() {
         source: "generator",
       });
     }
+    syncRef.current = preview.text;
     setWs(getWorkspace());
   };
 
   const discardWorkspace = () => {
     clearWorkspace();
+    syncRef.current = null;
     setWs(null);
     setConfig(applyPreset("blog"));
   };
+
+  const openMap = open ?? defaultOpenMap(config);
+  const toggleOpen = (category: CrawlerCategory) =>
+    setOpen({ ...openMap, [category]: !openMap[category] });
+  const setAllOpen = (value: boolean) =>
+    setOpen(
+      Object.fromEntries(CATEGORY_ORDER.map((c) => [c, value])) as Record<CrawlerCategory, boolean>,
+    );
+
+  /** Header bulk action: decide a whole group in ONE click (17E). */
+  const setCategory = (category: CrawlerCategory, allow: boolean) => {
+    setConfig((c) => ({
+      ...c,
+      crawlerPolicies: {
+        ...c.crawlerPolicies,
+        ...Object.fromEntries(
+          crawlersByCategory(category).map((cr) => [cr.id, allow ? "allow" : "block"]),
+        ),
+      },
+    }));
+    if (!openMap[category]) setOpen({ ...openMap, [category]: true });
+  };
+
+  /** Global bulk action across every category. */
+  const setAllCrawlers = (allow: boolean) =>
+    setConfig((c) => ({
+      ...c,
+      crawlerPolicies: Object.fromEntries(
+        CATEGORY_ORDER.flatMap((cat) =>
+          crawlersByCategory(cat).map((cr) => [cr.id, allow ? "allow" : "block"]),
+        ),
+      ),
+    }));
 
   const setCrawler = (id: string, allow: boolean) =>
     setConfig((c) => ({
@@ -198,77 +271,171 @@ export function GeneratorScreen() {
             </div>
           </Card>
 
-          {CATEGORY_ORDER.map((category) => (
-            <Card key={category} className="overflow-hidden">
-              <div className="border-b border-border bg-muted px-4 py-2">
-                <SectionHeader>{CATEGORY_LABELS[category]}</SectionHeader>
-              </div>
-              <ul className="divide-y divide-border">
-                {crawlersByCategory(category).map((crawler) => {
-                  const allow = config.crawlerPolicies[crawler.id] !== "block";
-                  return (
-                    <li
-                      key={crawler.id}
-                      className="flex items-center justify-between gap-3 px-4 py-2.5"
-                    >
-                      <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
-                      <Switch
-                        checked={allow}
-                        onCheckedChange={(c) => setCrawler(crawler.id, c)}
-                        aria-label={`Allow ${crawler.name}`}
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </Card>
-          ))}
+          {/* Global bulk + expand controls — decide everything without scrolling (17E). */}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setAllCrawlers(true)}
+                className="rounded px-2 py-1 font-medium text-status-allowed-fg hover:bg-status-allowed-bg"
+              >
+                Allow all crawlers
+              </button>
+              <button
+                type="button"
+                onClick={() => setAllCrawlers(false)}
+                className="rounded px-2 py-1 font-medium text-status-blocked-fg hover:bg-status-blocked-bg"
+              >
+                Block all crawlers
+              </button>
+            </span>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setAllOpen(true)}
+                className="rounded px-2 py-1 font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Expand all
+              </button>
+              <span className="text-border" aria-hidden>
+                ·
+              </span>
+              <button
+                type="button"
+                onClick={() => setAllOpen(false)}
+                className="rounded px-2 py-1 font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Collapse all
+              </button>
+            </span>
+          </div>
 
-          <Card className="space-y-4 p-4">
-            <SectionHeader>Advanced rules</SectionHeader>
-            <div>
-              <Label>Disallow paths</Label>
-              <div className="mt-1.5 flex gap-2">
-                <Input
-                  value={newPath}
-                  onChange={(e) => setNewPath(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPath())}
-                  placeholder="/admin/"
-                />
-                <Button variant="secondary" size="md" onClick={addPath}>
-                  <Plus /> Add
-                </Button>
-              </div>
-              {config.disallowPaths.length > 0 ? (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {config.disallowPaths.map((path) => (
-                    <Badge key={path} variant="neutral" className="font-mono">
-                      {path}
-                      <button
-                        onClick={() => removePath(path)}
-                        aria-label={`Remove ${path}`}
-                        className="ml-0.5 hover:text-foreground"
+          {CATEGORY_ORDER.map((category) => {
+            const crawlers = crawlersByCategory(category);
+            const allowed = crawlers.filter((c) => config.crawlerPolicies[c.id] !== "block").length;
+            return (
+              <details
+                key={category}
+                open={openMap[category]}
+                className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm"
+              >
+                <summary
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleOpen(category);
+                  }}
+                  className="flex cursor-pointer list-none flex-wrap items-center gap-x-3 gap-y-1 border-b border-border bg-muted px-4 py-2 [&::-webkit-details-marker]:hidden"
+                >
+                  <span className="flex items-center gap-2">
+                    <ChevronDown
+                      className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
+                      aria-hidden
+                    />
+                    <SectionHeader>{CATEGORY_LABELS[category]}</SectionHeader>
+                  </span>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {allowed}/{crawlers.length} allowed
+                  </span>
+                  <span
+                    className="ml-auto flex items-center gap-1 text-xs"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setCategory(category, true)}
+                      className="rounded px-1.5 py-0.5 font-medium text-status-allowed-fg hover:bg-status-allowed-bg"
+                      title={`Allow every ${CATEGORY_LABELS[category]} crawler`}
+                    >
+                      Allow all
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCategory(category, false)}
+                      className="rounded px-1.5 py-0.5 font-medium text-status-blocked-fg hover:bg-status-blocked-bg"
+                      title={`Block every ${CATEGORY_LABELS[category]} crawler`}
+                    >
+                      Block all
+                    </button>
+                  </span>
+                </summary>
+                <ul className="divide-y divide-border">
+                  {crawlers.map((crawler) => {
+                    const allow = config.crawlerPolicies[crawler.id] !== "block";
+                    return (
+                      <li
+                        key={crawler.id}
+                        className="flex items-center justify-between gap-3 px-4 py-2.5"
                       >
-                        <X className="size-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            <div>
-              <Label htmlFor="sitemap">Sitemap URL</Label>
-              <Input
-                id="sitemap"
-                value={config.sitemapUrl ?? ""}
-                onChange={(e) =>
-                  setConfig((c) => ({ ...c, sitemapUrl: e.target.value || undefined }))
-                }
-                placeholder="https://example.com/sitemap.xml"
-                className="mt-1.5"
+                        <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
+                        <Switch
+                          checked={allow}
+                          onCheckedChange={(c) => setCrawler(crawler.id, c)}
+                          aria-label={`Allow ${crawler.name}`}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </details>
+            );
+          })}
+
+          <details
+            open
+            className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm"
+          >
+            <summary className="flex cursor-pointer list-none items-center gap-2 border-b border-border bg-muted px-4 py-2 [&::-webkit-details-marker]:hidden">
+              <ChevronDown
+                className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
+                aria-hidden
               />
+              <SectionHeader>Advanced rules</SectionHeader>
+            </summary>
+            <div className="space-y-4 p-4">
+              <div>
+                <Label>Disallow paths</Label>
+                <div className="mt-1.5 flex gap-2">
+                  <Input
+                    value={newPath}
+                    onChange={(e) => setNewPath(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPath())}
+                    placeholder="/admin/"
+                  />
+                  <Button variant="secondary" size="md" onClick={addPath}>
+                    <Plus /> Add
+                  </Button>
+                </div>
+                {config.disallowPaths.length > 0 ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {config.disallowPaths.map((path) => (
+                      <Badge key={path} variant="neutral" className="font-mono">
+                        {path}
+                        <button
+                          onClick={() => removePath(path)}
+                          aria-label={`Remove ${path}`}
+                          className="ml-0.5 hover:text-foreground"
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              <div>
+                <Label htmlFor="sitemap">Sitemap URL</Label>
+                <Input
+                  id="sitemap"
+                  value={config.sitemapUrl ?? ""}
+                  onChange={(e) =>
+                    setConfig((c) => ({ ...c, sitemapUrl: e.target.value || undefined }))
+                  }
+                  placeholder="https://example.com/sitemap.xml"
+                  className="mt-1.5"
+                />
+              </div>
             </div>
-          </Card>
+          </details>
         </div>
 
         {/* Preview */}

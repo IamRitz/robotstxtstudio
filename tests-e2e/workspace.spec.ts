@@ -50,13 +50,20 @@ test("edits in Validate reach the Manager; Manager apply flows back to Validate"
   await page.getByText("Preview the change").click();
   await expect(page.getByText("Before / After")).toBeVisible();
   await page.getByRole("button", { name: "Apply to working file" }).click();
-  await expect(page.getByText("Working file is up to date with these choices.")).toBeVisible();
+  // After one explicit apply the manager live-syncs (17E).
+  await expect(
+    page.getByText("Live-syncing — every change here updates the working file."),
+  ).toBeVisible();
 
-  // Validator: shows the regenerated file with BOTH decisions.
+  // Live-sync: a further toggle updates the workspace WITHOUT a second apply.
+  await page.getByRole("switch", { name: "Allow CCBot" }).click();
+
+  // Validator: shows the regenerated file with ALL THREE decisions.
   await page.goto("/validate");
   const after = await page.getByRole("textbox", { name: "robots.txt" }).inputValue();
   expect(after).toContain("User-agent: ClaudeBot");
   expect(after).toContain("User-agent: GPTBot");
+  expect(after).toContain("User-agent: CCBot");
   expect(after).toContain("Disallow: /private/");
 });
 
@@ -70,8 +77,9 @@ test("discarding the working file returns tools to their defaults", async ({ pag
   // Back to the sample.
   await expect(page.getByRole("textbox", { name: "robots.txt" })).toHaveValue(/Crawl-delay: 0/);
 
-  // And the Manager starts clean again.
+  // And the Manager starts clean again (groups collapsed by default — 17E).
   await page.goto("/ai-crawlers");
   await expect(page.getByTestId("workspace-bar")).toBeHidden();
+  await page.getByRole("button", { name: "Expand all" }).click();
   await expect(page.getByRole("switch", { name: "Allow GPTBot" })).toBeChecked();
 });
