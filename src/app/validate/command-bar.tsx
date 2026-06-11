@@ -1,4 +1,4 @@
-import { Download, TrendingUp, Undo2, Wand2 } from "lucide-react";
+import { Download, MoveRight, TrendingUp, Undo2, Wand2 } from "lucide-react";
 import type { AuditReport } from "@/types";
 import { HEALTH_BAND_LABEL, type HealthBand } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,9 @@ const BAND_CHIP: Record<HealthBand, string> = {
 };
 
 /**
- * Sticky command bar — the workspace scoreboard. Always visible while fixing:
- * current score + band, the potential score with how many fixes reach it, and the
- * global actions (Fix All Safe / Undo / Download). Sits just below the site header.
+ * Sticky command bar — the workspace scoreboard, with recovery as the headline.
+ * The dominant reading is "57 → 86": where you are and where the fixes take you.
+ * The primary action carries its own payoff ("Fix 7 safe issues · +12 pts").
  */
 export function CommandBar({
   report,
@@ -40,16 +40,37 @@ export function CommandBar({
 }) {
   const { value, band, potential } = report.overall;
   const recoverable = potential - value;
+  const safeDelta = report.summary.estimatedAfterSafeFixes - value;
 
   return (
     <div className="sticky top-14 z-30 -mx-4 border-b border-border bg-background/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1" aria-live="polite">
-          <span className="flex items-baseline gap-1" data-testid="score-current">
-            <span className="text-2xl font-bold tabular-nums leading-none text-foreground">
-              {value}
+          {/* The headline: current → potential. Recovery is the dominant reading. */}
+          <span className="flex items-end gap-2" data-testid="score-current">
+            <span className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold tabular-nums leading-none text-foreground">
+                {value}
+              </span>
+              <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                now
+              </span>
             </span>
-            <span className="text-xs text-muted-foreground">/100</span>
+            {recoverable > 0 ? (
+              <>
+                <MoveRight className="mb-0.5 size-4 text-status-allowed-fg" aria-hidden />
+                <span className="flex items-baseline gap-1">
+                  <span className="text-2xl font-bold tabular-nums leading-none text-status-allowed-fg">
+                    {potential}
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-wide text-status-allowed-fg/80">
+                    potential
+                  </span>
+                </span>
+              </>
+            ) : (
+              <span className="mb-0.5 text-xs text-muted-foreground">/100</span>
+            )}
           </span>
           <span
             className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", BAND_CHIP[band])}
@@ -57,15 +78,11 @@ export function CommandBar({
             {HEALTH_BAND_LABEL[band]}
           </span>
           {recoverable > 0 ? (
-            <span className="text-xs text-muted-foreground">
-              Potential{" "}
-              <span className="font-semibold tabular-nums text-status-allowed-fg">{potential}</span>
-              <span className="hidden sm:inline">
-                {" "}
-                — fix {fixableCount} {fixableCount === 1 ? "issue" : "issues"} to recover{" "}
-                <span className="font-medium tabular-nums">+{recoverable}</span> pts
-              </span>
-              <span className="sm:hidden"> · +{recoverable} pts</span>
+            <span className="hidden text-xs text-muted-foreground sm:inline">
+              <span className="font-semibold tabular-nums text-status-allowed-fg">
+                +{recoverable} pts
+              </span>{" "}
+              recoverable · {fixableCount} {fixableCount === 1 ? "fix" : "fixes"}
             </span>
           ) : null}
           {trend.length > 1 ? (
@@ -79,6 +96,7 @@ export function CommandBar({
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={onFixAllSafe} disabled={safeCount === 0}>
             <Wand2 aria-hidden /> Fix {safeCount} safe {safeCount === 1 ? "issue" : "issues"}
+            {safeDelta > 0 ? <span className="font-semibold">+{safeDelta} pts</span> : null}
           </Button>
           {canUndo ? (
             <Button variant="secondary" size="sm" onClick={onUndo}>

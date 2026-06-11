@@ -21,6 +21,16 @@
 > whole-file overview); verified at 153 lines / 24 findings with pixel-exact
 > overlay alignment. Remaining Phase 2 items (keyboard nav, fix animations,
 > dismiss, batch preview) and Phase 3 are still proposals.
+>
+> **Post-2A hierarchy refinements SHIPPED:** the command bar leads with
+> `current → potential` as the dominant reading and the primary button carries
+> its payoff ("Fix N safe issues +Δ pts"); dimension chips show recoverable
+> points (`SEO 96 +4`) and open a per-dimension recovery panel (1-click vs
+> manual payoff rows); the AI chip opens a per-bot decision panel naming the
+> five major crawlers and which still need an allow/block decision, linking to
+> the AI Crawler Manager; Next Steps renders only once no in-app fixes remain,
+> and the More Tools / Related Guides rail is collapsed into a `<details>`
+> (still in the DOM for SEO).
 
 > Design proposal. Redesigns the Validator screen
 > (`src/app/validate/validator-screen.tsx`) from a stacked audit report into a
@@ -36,21 +46,21 @@
 
 ### The one-sentence diagnosis
 
-The engine computes a connected graph — *issue → line → fix → exact score
-recovery* — and the UI renders it as four disconnected islands stacked
+The engine computes a connected graph — _issue → line → fix → exact score
+recovery_ — and the UI renders it as four disconnected islands stacked
 vertically, so the user must do the joining in their head while scrolling.
 
 ### What already exists and is genuinely excellent (do not touch)
 
-| Asset | Why it matters |
-| --- | --- |
-| Deduction scoring (`audit.ts`) | Every lost point traceable to a rule. Most competitors show a number with no "why". |
-| `fixImpact()` | Exact per-dimension + overall recovery for a single fix. This is the currency of the whole redesign. |
-| `safe` vs `review` fix semantics | The trust model GitHub/Snyk use ("auto-mergeable" vs "needs review"). Already correct. |
-| Line-based `TextEdit`s + 1-based line numbers on issues | Everything needed for editor anchoring already exists in the data. |
-| Undo stack, session trend, before/after diff | The review-workflow primitives are built — they're just placed wrong. |
-| Live re-validation on every edit | The feedback loop is already real-time. |
-| Design system discipline (80/15/5) | The premium feel is achievable without new visual language. |
+| Asset                                                   | Why it matters                                                                                       |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Deduction scoring (`audit.ts`)                          | Every lost point traceable to a rule. Most competitors show a number with no "why".                  |
+| `fixImpact()`                                           | Exact per-dimension + overall recovery for a single fix. This is the currency of the whole redesign. |
+| `safe` vs `review` fix semantics                        | The trust model GitHub/Snyk use ("auto-mergeable" vs "needs review"). Already correct.               |
+| Line-based `TextEdit`s + 1-based line numbers on issues | Everything needed for editor anchoring already exists in the data.                                   |
+| Undo stack, session trend, before/after diff            | The review-workflow primitives are built — they're just placed wrong.                                |
+| Live re-validation on every edit                        | The feedback loop is already real-time.                                                              |
+| Design system discipline (80/15/5)                      | The premium feel is achievable without new visual language.                                          |
 
 ### What is broken (in priority order)
 
@@ -80,22 +90,22 @@ vertically, so the user must do the joining in their head while scrolling.
 
 ### Disposition of every current surface
 
-| Surface | Verdict | Rationale |
-| --- | --- | --- |
-| Domain engine (rules, audit, fixes, diff lib) | **Preserve** | World-class; the redesign is a presentation change. |
-| `RobotsSourceField` paste/fetch tabs | **Preserve** | Entry UX is fine; it feeds the new editor. |
-| Undo / Fix-all-safe / Download actions | **Preserve** | Relocate to a sticky command bar. |
-| Session trend (78 → 84 → 91) | **Improve** | Becomes the live score ticker + end-of-session recap. |
-| Overall score ring | **Improve** | Shrink to ~48px, move into the sticky bar; it must be visible *while fixing*. |
-| Issue cards | **Replace** | Become selectable rows in a Problems panel with line excerpt, expandable detail, fix preview. |
-| `DiffView` | **Improve** | Reused as *preview-before-apply* inside the selected issue, and as ghost lines in the editor — no longer a floating block. |
-| Plain `<textarea>` | **Replace** | Annotated editor: line numbers, gutter severity markers, issue-line highlight. |
-| Severity filter (Segmented) | **Replace** | Merged with dimension chips into one filter row (severity + dimension). |
-| Score breakdown (5 expandable cards) | **Replace** | Five compact chips (`SEO 88`, `AI 80 −20`) that act as filters on the issue list. Deduction detail moves into each issue row (it's per-issue data anyway). |
-| Strengths / Weaknesses | **Remove** | Fully redundant with banded dimension chips. |
-| Highest-priority fixes list | **Remove** | Becomes the default sort ("By impact") of the single issue list. |
-| Executive headline sentence | **Preserve** (condensed) | One line under the command bar; it's the only prose worth keeping above the workspace. |
-| Next Steps / More Tools / Related Guides | **Improve** | Collapse into one contextual "What's next" block that appears *on success* (0 issues or post-fix), not permanently. Guides move below a divider, visually demoted. |
+| Surface                                       | Verdict                  | Rationale                                                                                                                                                          |
+| --------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Domain engine (rules, audit, fixes, diff lib) | **Preserve**             | World-class; the redesign is a presentation change.                                                                                                                |
+| `RobotsSourceField` paste/fetch tabs          | **Preserve**             | Entry UX is fine; it feeds the new editor.                                                                                                                         |
+| Undo / Fix-all-safe / Download actions        | **Preserve**             | Relocate to a sticky command bar.                                                                                                                                  |
+| Session trend (78 → 84 → 91)                  | **Improve**              | Becomes the live score ticker + end-of-session recap.                                                                                                              |
+| Overall score ring                            | **Improve**              | Shrink to ~48px, move into the sticky bar; it must be visible _while fixing_.                                                                                      |
+| Issue cards                                   | **Replace**              | Become selectable rows in a Problems panel with line excerpt, expandable detail, fix preview.                                                                      |
+| `DiffView`                                    | **Improve**              | Reused as _preview-before-apply_ inside the selected issue, and as ghost lines in the editor — no longer a floating block.                                         |
+| Plain `<textarea>`                            | **Replace**              | Annotated editor: line numbers, gutter severity markers, issue-line highlight.                                                                                     |
+| Severity filter (Segmented)                   | **Replace**              | Merged with dimension chips into one filter row (severity + dimension).                                                                                            |
+| Score breakdown (5 expandable cards)          | **Replace**              | Five compact chips (`SEO 88`, `AI 80 −20`) that act as filters on the issue list. Deduction detail moves into each issue row (it's per-issue data anyway).         |
+| Strengths / Weaknesses                        | **Remove**               | Fully redundant with banded dimension chips.                                                                                                                       |
+| Highest-priority fixes list                   | **Remove**               | Becomes the default sort ("By impact") of the single issue list.                                                                                                   |
+| Executive headline sentence                   | **Preserve** (condensed) | One line under the command bar; it's the only prose worth keeping above the workspace.                                                                             |
+| Next Steps / More Tools / Related Guides      | **Improve**              | Collapse into one contextual "What's next" block that appears _on success_ (0 issues or post-fix), not permanently. Guides move below a divider, visually demoted. |
 
 ---
 
@@ -202,7 +212,7 @@ Interaction rules:
   with multiple issues cycle on repeated clicks.
 - **Ghost preview.** While an issue with a deterministic fix is selected, the
   editor shows the would-be change inline (struck-through old / tinted new), so
-  the diff lives *in the file*, not in a separate block. The right-panel mini
+  the diff lives _in the file_, not in a separate block. The right-panel mini
   diff remains for `review` fixes (explicit confirm).
 - **Sticky math.** The command bar score and "+N recoverable" update on every
   edit/fix — the user never loses sight of progress (problem #2 solved
@@ -276,7 +286,7 @@ re-paste. Post-fix, "Compare against your live file" hands both versions to
 
 **J3 — Clean file.** 0 issues → no hollow dashboard: a single success card
 ("100/100 — this file follows every best practice we check"), Download/Copy,
-plus the *only* persistent upsell that earns its place: "AI crawlers: 3 of 5
+plus the _only_ persistent upsell that earns its place: "AI crawlers: 3 of 5
 have explicit policies — review in AI Manager" when the AI dimension is the
 lowest non-perfect one.
 
@@ -288,14 +298,16 @@ Fix-all-safe from bottom bar → toast → Download. Two thumbs, under a minute.
 ## 6. Conversion, retention, differentiation
 
 **Wow moments (in priority order):**
+
 1. Score ticking up live in a sticky bar as fixes land (already half-built:
    `useCountUp`, trend state).
-2. The ghost diff inside the file — no other robots.txt tool shows a fix *in
-   situ* before applying it.
+2. The ghost diff inside the file — no other robots.txt tool shows a fix _in
+   situ_ before applying it.
 3. Session recap on success: "You fixed 6 issues and raised your score
    71 → 96" with the trend sparkline — screenshot-able by design.
 
 **Cross-tool funnels (contextual, not a permanent card wall):**
+
 - After any fix session → **Compare** seeded with session before/after (the
   before text is already in the undo stack — zero new state).
 - Issue selected on a `Disallow` line → inline "Test a URL against this rule"
@@ -311,7 +323,7 @@ Fix-all-safe from bottom bar → toast → Download. Two thumbs, under a minute.
 preview-before-apply increases apply rate, where the loop is abandoned.
 
 **Competitive position.** technicalseo.com and the generic validators are
-*read-only verdict tools* (paste → list of problems → goodbye); their
+_read-only verdict tools_ (paste → list of problems → goodbye); their
 credibility lever is parser fidelity, not workflow. Nobody on the market
 offers: line-anchored findings, one-click in-situ remediation, measurable
 score recovery per fix, or an AI-crawler policy dimension. The ownable
@@ -325,6 +337,7 @@ tool treats seriously. (Counter their credibility lever separately: a one-line
 ## 7. Prioritization
 
 **Must have (the redesign is meaningless without these):**
+
 - Split-pane workspace, sticky command bar with live score + actions
 - Annotated editor: line numbers, gutter markers, issue-line highlight
 - Bidirectional issue↔line linking
@@ -334,6 +347,7 @@ tool treats seriously. (Counter their credibility lever separately: a one-line
 - Mobile File/Issues tabs + score strip + bottom action bar + sheet
 
 **Should have:**
+
 - Ghost diff preview in the editor; preview-before-apply for `review` fixes
 - Animated fix transitions (line settle, row collapse, score tick)
 - Success state + session recap + contextual Compare/Tester/AI-Manager CTAs
@@ -341,6 +355,7 @@ tool treats seriously. (Counter their credibility lever separately: a one-line
 - Dismiss/ignore an issue for the session
 
 **Nice to have:**
+
 - Shareable score card image (OG-image pipeline already exists)
 - localStorage session persistence ("resume where you left off")
 - Multi-issue gutter cycling; minimap-style issue density strip
@@ -353,19 +368,19 @@ tool treats seriously. (Counter their credibility lever separately: a one-line
 **UX Phase 1 — The Workspace (structural, ~no new domain code).**
 Split layout, sticky command bar, annotated editor (overlay technique),
 issue↔line linking, merged filters/sort, the deletions, mobile tabs + bottom
-bar. *Exit criterion: a user fixes 3 issues without ever scrolling to find
-anything.*
+bar. _Exit criterion: a user fixes 3 issues without ever scrolling to find
+anything._
 
 **UX Phase 2 — The Review Loop.**
 Expanded issue detail with diff preview-before-apply, ghost preview in editor,
 fix/undo animations + score tick, keyboard nav, dismiss, batch-preview for
-Fix-all-safe, new analytics events. *Exit criterion: median time from issue
-selection to applied fix < 5s; `fix_applied` rate measurably above today's.*
+Fix-all-safe, new analytics events. _Exit criterion: median time from issue
+selection to applied fix < 5s; `fix_applied` rate measurably above today's._
 
 **UX Phase 3 — Delight & Growth.**
 Success/celebration state, session recap + Compare handoff (before/after),
-contextual tool CTAs, shareable score card, persistence. *Exit criterion:
-Validator→Compare and Validator→AI-Manager funnels visible in PostHog.*
+contextual tool CTAs, shareable score card, persistence. _Exit criterion:
+Validator→Compare and Validator→AI-Manager funnels visible in PostHog._
 
 Each phase ships independently; Phase 1 alone resolves critique items 1, 2, 3,
 4, 6, 7.
@@ -391,7 +406,7 @@ Each phase ships independently; Phase 1 alone resolves critique items 1, 2, 3,
   fallback; keep the textarea path one prop away.
 - **One thing competitors do better:** technicalseo.com borrows authority from
   Google's open-source parser lineage. We have a `/methodology` page —
-  surface that credibility *inside* the tool, not three clicks away.
+  surface that credibility _inside_ the tool, not three clicks away.
 - **One thing Robots.txt Studio can uniquely own:** measurable remediation.
   No one else can say "we found it, showed you the exact line, fixed it in one
   click, and proved the score recovery" — the full loop, with an AI-crawler
@@ -399,21 +414,21 @@ Each phase ships independently; Phase 1 alone resolves critique items 1, 2, 3,
 
 ## 10. All recommendations ranked by Impact × Effort
 
-| # | Recommendation | Impact | Effort | Order rationale |
-| --- | --- | --- | --- | --- |
-| 1 | Delete Strengths/Weaknesses + Priorities; sort issues by impact | High | Trivial | Pure deletion + reorder of existing data. Ship first. |
-| 2 | Sticky command bar with live score + Fix-all/Undo/Download | High | Low | Relocation of existing widgets; fixes "payoff off-screen". |
-| 3 | Dimension chips as filters (replace Score Breakdown) | High | Low | Makes the score actionable; data already in `AuditReport`. |
-| 4 | Split-pane desktop workspace | High | Medium | Layout restructure; prerequisite for 5. |
-| 5 | Annotated editor + issue↔line linking | **Highest** | Medium-High | The category-changing feature; the only real build risk (overlay editor). |
-| 6 | Issue rows with excerpt + expandable detail + apply | High | Medium | Replaces IssueCard; pairs with 5. |
-| 7 | Mobile tabs + score strip + bottom bar + issue sheet | High | Medium | 390px parity for the core loop. |
-| 8 | Preview-before-apply (panel diff + editor ghost) | Medium-High | Medium | Trust for `review` fixes; reuses `DiffView`. |
-| 9 | Fix animations + score tick + line glow | Medium | Low | Cheap delight on top of `useCountUp`. |
-| 10 | Success state + session recap + Compare handoff | Medium | Low | Retention + cross-tool funnel; before-text already in undo stack. |
-| 11 | Keyboard navigation | Medium | Low | Premium-tool signal; trivial after 6. |
-| 12 | New analytics events | Medium | Low | Required to prove the redesign worked. |
-| 13 | Contextual tool CTAs (replace Next Steps wall) | Medium | Low | Better conversion with less pixels. |
-| 14 | Shareable score card | Medium | Medium | Growth bet; OG pipeline exists. |
-| 15 | Session persistence | Low-Medium | Low | Quality-of-life. |
-| 16 | Command palette | Low | Medium | Cut unless everything above ships. |
+| #   | Recommendation                                                  | Impact      | Effort      | Order rationale                                                           |
+| --- | --------------------------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------------------- |
+| 1   | Delete Strengths/Weaknesses + Priorities; sort issues by impact | High        | Trivial     | Pure deletion + reorder of existing data. Ship first.                     |
+| 2   | Sticky command bar with live score + Fix-all/Undo/Download      | High        | Low         | Relocation of existing widgets; fixes "payoff off-screen".                |
+| 3   | Dimension chips as filters (replace Score Breakdown)            | High        | Low         | Makes the score actionable; data already in `AuditReport`.                |
+| 4   | Split-pane desktop workspace                                    | High        | Medium      | Layout restructure; prerequisite for 5.                                   |
+| 5   | Annotated editor + issue↔line linking                           | **Highest** | Medium-High | The category-changing feature; the only real build risk (overlay editor). |
+| 6   | Issue rows with excerpt + expandable detail + apply             | High        | Medium      | Replaces IssueCard; pairs with 5.                                         |
+| 7   | Mobile tabs + score strip + bottom bar + issue sheet            | High        | Medium      | 390px parity for the core loop.                                           |
+| 8   | Preview-before-apply (panel diff + editor ghost)                | Medium-High | Medium      | Trust for `review` fixes; reuses `DiffView`.                              |
+| 9   | Fix animations + score tick + line glow                         | Medium      | Low         | Cheap delight on top of `useCountUp`.                                     |
+| 10  | Success state + session recap + Compare handoff                 | Medium      | Low         | Retention + cross-tool funnel; before-text already in undo stack.         |
+| 11  | Keyboard navigation                                             | Medium      | Low         | Premium-tool signal; trivial after 6.                                     |
+| 12  | New analytics events                                            | Medium      | Low         | Required to prove the redesign worked.                                    |
+| 13  | Contextual tool CTAs (replace Next Steps wall)                  | Medium      | Low         | Better conversion with less pixels.                                       |
+| 14  | Shareable score card                                            | Medium      | Medium      | Growth bet; OG pipeline exists.                                           |
+| 15  | Session persistence                                             | Low-Medium  | Low         | Quality-of-life.                                                          |
+| 16  | Command palette                                                 | Low         | Medium      | Cut unless everything above ships.                                        |

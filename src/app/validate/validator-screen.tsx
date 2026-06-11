@@ -9,6 +9,7 @@ import {
   collectSafeEdits,
   DEDUCTIONS,
   fixableIssues,
+  getAiCrawlerStatuses,
   safelyFixableIssues,
   validateRobots,
 } from "@/features/validator";
@@ -82,8 +83,10 @@ export function ValidatorScreen() {
   /** Overall scores across this session's fixes (e.g. 78 → 84 → 91). */
   const [trend, setTrend] = useState<number[]>([]);
 
-  const result = useMemo(() => validateRobots(parseRobots(text)), [text]);
+  const file = useMemo(() => parseRobots(text), [text]);
+  const result = useMemo(() => validateRobots(file), [file]);
   const audit = useMemo(() => buildAudit(result.issues), [result]);
+  const aiStatuses = useMemo(() => getAiCrawlerStatuses(file), [file]);
 
   const visible = useMemo(() => {
     const filtered = result.issues.filter(
@@ -278,6 +281,7 @@ export function ValidatorScreen() {
         <DimensionChips
           report={audit}
           active={dimension}
+          aiStatuses={aiStatuses}
           onToggle={(d) => setDimension((cur) => (cur === d ? null : d))}
         />
       </div>
@@ -380,7 +384,9 @@ export function ValidatorScreen() {
         </section>
       </div>
 
-      <NextSteps steps={nextSteps} />
+      {/* Next steps only once remediation settles — while in-app fixes remain,
+          the workspace IS the next step. */}
+      {fixableCount === 0 ? <NextSteps steps={nextSteps} /> : null}
     </div>
   );
 }
