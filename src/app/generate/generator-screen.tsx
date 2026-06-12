@@ -276,7 +276,7 @@ export function GeneratorScreen({
 
       <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
         {/* Controls */}
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <Card className="p-4">
             <SectionHeader className="mb-3">Starter template</SectionHeader>
             <div className="flex flex-wrap gap-2">
@@ -461,7 +461,7 @@ export function GeneratorScreen({
         </div>
 
         {/* Preview */}
-        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+        <aside className="min-w-0 space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div>
             <div className="mb-2 flex items-center justify-between">
               <SectionHeader>Live preview</SectionHeader>

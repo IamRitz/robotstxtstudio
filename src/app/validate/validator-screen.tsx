@@ -403,7 +403,7 @@ export function ValidatorScreen() {
         <section
           aria-label="robots.txt file"
           className={cn(
-            "space-y-3 lg:sticky lg:top-[7.25rem]",
+            "min-w-0 space-y-3 lg:sticky lg:top-[7.25rem]",
             mobilePane === "file" ? "" : "hidden lg:block",
           )}
         >
@@ -424,7 +424,7 @@ export function ValidatorScreen() {
         {/* Issue panel — the remediation queue. */}
         <section
           aria-label="Issues"
-          className={cn("space-y-3", mobilePane === "issues" ? "" : "hidden lg:block")}
+          className={cn("min-w-0 space-y-3", mobilePane === "issues" ? "" : "hidden lg:block")}
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <SectionHeader>Issues</SectionHeader>

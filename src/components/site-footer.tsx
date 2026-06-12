@@ -40,10 +40,11 @@ const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-border">
+    // Bottom padding below lg clears the fixed tab bar; safe-area covers the iOS home indicator.
+    <footer className="border-t border-border pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.2fr_2fr]">
-          <div>
+        <div className="grid grid-cols-2 gap-8 lg:grid-cols-[1.3fr_1fr_1.2fr_2fr]">
+          <div className="col-span-2 lg:col-span-1">
             <Link
               href="/"
               aria-label={`${BRAND.name} — home`}
@@ -85,9 +86,9 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Guides">
+          <nav aria-label="Guides" className="col-span-2 lg:col-span-1">
             <h2 className="text-xs font-semibold text-foreground">Guides</h2>
-            <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 text-xs text-muted-foreground sm:grid-cols-2">
+            <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-xs text-muted-foreground">
               {EDU_PAGES.map((p) => (
                 <li key={p.slug}>
                   <Link href={eduPath(p.slug) as Route} className="hover:text-foreground">

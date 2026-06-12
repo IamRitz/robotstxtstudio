@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
 import { AnalyticsProvider } from "@/components/analytics-provider";
@@ -16,6 +16,14 @@ const geistMono = Geist_Mono({
 const SITE_URL = SITE.url;
 const TITLE = "Robots.txt Studio — Generate, Validate, Test & Explain robots.txt";
 const DESCRIPTION = SITE.description;
+
+// viewport-fit=cover lets env(safe-area-inset-bottom) resolve on notched iPhones,
+// so the fixed bottom tab bar and the footer clear the home indicator.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
