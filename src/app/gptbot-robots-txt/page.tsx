@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
@@ -47,6 +48,23 @@ const page: ContentPage = {
             ["Honors robots.txt", "Yes (per OpenAI docs)"],
             ["Affects Google ranking", "No"],
           ],
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              Source:{" "}
+              <a
+                href="https://platform.openai.com/docs/bots"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                OpenAI&apos;s crawler documentation
+              </a>
+              , which lists every OpenAI user-agent and its purpose.
+            </>
+          ),
         },
       ],
     },
@@ -103,14 +121,46 @@ const page: ContentPage = {
       blocks: [
         {
           kind: "p",
-          content:
-            "OpenAI runs two distinct crawlers. GPTBot is for training; OAI-SearchBot fetches pages to cite in ChatGPT Search and can send you referral traffic. Blocking one does not block the other, so decide them separately.",
+          content: (
+            <>
+              OpenAI runs two distinct crawlers. GPTBot is for training;{" "}
+              <Link href="/oai-searchbot-robots-txt" className="text-brand hover:underline">
+                OAI-SearchBot
+              </Link>{" "}
+              fetches pages to cite in ChatGPT Search and can send you referral traffic. Blocking
+              one does not block the other, so decide them separately.
+            </>
+          ),
         },
         {
           kind: "snippet",
           code: "# Opt out of training, stay eligible for ChatGPT Search\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: OAI-SearchBot\nDisallow:",
           caption: "Block training, allow AI search",
         },
+      ],
+    },
+    {
+      id: "verify",
+      heading: "Verify the block works",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              After uploading your robots.txt, run your domain through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              — its access matrix shows whether GPTBot resolves to Blocked while Googlebot stays
+              Allowed. To trace a single URL against the GPTBot user-agent, use the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "analyzer" },
       ],
     },
     {
@@ -165,14 +215,19 @@ const page: ContentPage = {
   ],
   related: [
     {
+      title: "OAI-SearchBot in robots.txt",
+      href: "/oai-searchbot-robots-txt",
+      description: "OpenAI's search crawler — decide it separately.",
+    },
+    {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "Block every AI crawler in one file.",
+    },
+    {
       title: "AI Crawler Directory",
       href: "/ai-crawlers-directory",
       description: "Every AI crawler compared.",
-    },
-    {
-      title: "Block ClaudeBot",
-      href: "/claudebot-robots-txt",
-      description: "Anthropic's training crawler.",
     },
     {
       title: "AI Crawler Manager",

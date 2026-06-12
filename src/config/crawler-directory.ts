@@ -48,7 +48,11 @@ export interface CrawlerProfile {
   /** Other catalog crawler ids worth comparing. */
   readonly relatedCrawlerIds: readonly string[];
   /** Hand-picked guide/tool links beyond the computed crawler links. */
-  readonly relatedLinks?: ReadonlyArray<{ readonly title: string; readonly href: Route; readonly description?: string }>;
+  readonly relatedLinks?: ReadonlyArray<{
+    readonly title: string;
+    readonly href: Route;
+    readonly description?: string;
+  }>;
   readonly faqs: readonly FaqItem[];
 }
 
@@ -74,7 +78,8 @@ const PROFILES: readonly CrawlerProfile[] = [
       "Blocking resource files (CSS/JS) can degrade rendering and rankings.",
     ],
     honors: "yes",
-    honorsNote: "Googlebot strictly follows the robots.txt standard (RFC 9309) that Google co-authored.",
+    honorsNote:
+      "Googlebot strictly follows the robots.txt standard (RFC 9309) that Google co-authored.",
     affectsRanking: true,
     affectsRankingNote:
       "This is the one crawler where a robots.txt block directly affects ranking — it controls your Google visibility.",
@@ -85,13 +90,33 @@ const PROFILES: readonly CrawlerProfile[] = [
     docsUrl: "https://developers.google.com/search/docs/crawling-indexing/googlebot",
     relatedCrawlerIds: ["bingbot", "slurp", "google-extended"],
     relatedLinks: [
-      { title: "robots.txt vs noindex", href: "/robots-txt-vs-noindex", description: "Why blocking ≠ deindexing." },
-      { title: "robots.txt for SEO", href: "/robots-txt-seo-guide", description: "Use robots.txt without hurting rankings." },
+      {
+        title: "robots.txt vs noindex",
+        href: "/robots-txt-vs-noindex",
+        description: "Why blocking ≠ deindexing.",
+      },
+      {
+        title: "robots.txt for SEO",
+        href: "/robots-txt-seo-guide",
+        description: "Use robots.txt without hurting rankings.",
+      },
     ],
     faqs: [
-      { question: "Will blocking Googlebot remove my site from Google?", answer: "Yes. Disallowing Googlebot in robots.txt stops Google from crawling your pages, which removes them from Search over time. Only block specific paths you genuinely don't want crawled, and never Disallow: / under User-agent: Googlebot or *." },
-      { question: "Does robots.txt stop Google from indexing a page?", answer: "No. robots.txt blocks crawling, not indexing. A blocked URL can still appear in Google (without a description) if other pages link to it. To keep a page out of the index, allow crawling and use a noindex meta tag or X-Robots-Tag header instead." },
-      { question: "How do I verify a request is really from Googlebot?", answer: "Run a reverse DNS lookup on the requesting IP; genuine Googlebot resolves to a googlebot.com or google.com host and forward-confirms. You can also match Google's published IP ranges. The user-agent string alone can be faked." },
+      {
+        question: "Will blocking Googlebot remove my site from Google?",
+        answer:
+          "Yes. Disallowing Googlebot in robots.txt stops Google from crawling your pages, which removes them from Search over time. Only block specific paths you genuinely don't want crawled, and never Disallow: / under User-agent: Googlebot or *.",
+      },
+      {
+        question: "Does robots.txt stop Google from indexing a page?",
+        answer:
+          "No. robots.txt blocks crawling, not indexing. A blocked URL can still appear in Google (without a description) if other pages link to it. To keep a page out of the index, allow crawling and use a noindex meta tag or X-Robots-Tag header instead.",
+      },
+      {
+        question: "How do I verify a request is really from Googlebot?",
+        answer:
+          "Run a reverse DNS lookup on the requesting IP; genuine Googlebot resolves to a googlebot.com or google.com host and forward-confirms. You can also match Google's published IP ranges. The user-agent string alone can be faked.",
+      },
     ],
   },
   {
@@ -109,7 +134,8 @@ const PROFILES: readonly CrawlerProfile[] = [
       "Blocking Bingbot removes you from Bing and every product that uses Bing's index.",
     ],
     honors: "yes",
-    honorsNote: "Bingbot follows robots.txt and also supports the crawl-delay directive, which Google ignores.",
+    honorsNote:
+      "Bingbot follows robots.txt and also supports the crawl-delay directive, which Google ignores.",
     affectsRanking: true,
     affectsRankingNote: "Blocking Bingbot affects Bing ranking but has no effect on Google.",
     verify:
@@ -119,11 +145,23 @@ const PROFILES: readonly CrawlerProfile[] = [
     docsUrl: "https://www.bing.com/webmasters/help/which-crawlers-does-bing-use-8c184ec0",
     relatedCrawlerIds: ["googlebot", "slurp"],
     relatedLinks: [
-      { title: "robots.txt Sitemap", href: "/robots-txt-sitemap", description: "Bing reads your sitemap line too." },
+      {
+        title: "robots.txt Sitemap",
+        href: "/robots-txt-sitemap",
+        description: "Bing reads your sitemap line too.",
+      },
     ],
     faqs: [
-      { question: "Does Bingbot support crawl-delay?", answer: "Yes. Unlike Googlebot, Bingbot honors the Crawl-delay directive in robots.txt, so you can throttle its request rate. You can also set the crawl rate in Bing Webmaster Tools." },
-      { question: "Does blocking Bingbot affect Google?", answer: "No. Bingbot and Googlebot are separate crawlers from different companies. Blocking one has no effect on the other." },
+      {
+        question: "Does Bingbot support crawl-delay?",
+        answer:
+          "Yes. Unlike Googlebot, Bingbot honors the Crawl-delay directive in robots.txt, so you can throttle its request rate. You can also set the crawl rate in Bing Webmaster Tools.",
+      },
+      {
+        question: "Does blocking Bingbot affect Google?",
+        answer:
+          "No. Bingbot and Googlebot are separate crawlers from different companies. Blocking one has no effect on the other.",
+      },
     ],
   },
   {
@@ -145,10 +183,15 @@ const PROFILES: readonly CrawlerProfile[] = [
       "Because Yahoo Search is Bing-powered, your Yahoo visibility tracks Bingbot far more than Slurp.",
     verify: "Verify via reverse DNS to a crawl.yahoo.net host with forward confirmation.",
     recommendation: "allow",
-    recommendationWhy: "Harmless to allow; only block if it crawls too aggressively for a small server.",
+    recommendationWhy:
+      "Harmless to allow; only block if it crawls too aggressively for a small server.",
     relatedCrawlerIds: ["bingbot", "googlebot"],
     faqs: [
-      { question: "Is Yahoo Slurp still used?", answer: "Yes, but minimally. Yahoo Search results are predominantly served from Bing's index, so Bingbot matters far more than Slurp for Yahoo visibility. Slurp still shows up in some logs." },
+      {
+        question: "Is Yahoo Slurp still used?",
+        answer:
+          "Yes, but minimally. Yahoo Search results are predominantly served from Bing's index, so Bingbot matters far more than Slurp for Yahoo visibility. Slurp still shows up in some logs.",
+      },
     ],
   },
   {
@@ -167,19 +210,33 @@ const PROFILES: readonly CrawlerProfile[] = [
     honors: "yes",
     honorsNote: "AhrefsBot honors robots.txt and supports Crawl-delay to throttle its rate.",
     affectsRanking: false,
-    affectsRankingNote: "AhrefsBot feeds the Ahrefs tool only; blocking it does not change your search rankings.",
-    verify: "Verify via reverse DNS to an ahrefs.com / ahrefs.net host, or match Ahrefs' published IP ranges.",
+    affectsRankingNote:
+      "AhrefsBot feeds the Ahrefs tool only; blocking it does not change your search rankings.",
+    verify:
+      "Verify via reverse DNS to an ahrefs.com / ahrefs.net host, or match Ahrefs' published IP ranges.",
     recommendation: "allow",
     recommendationWhy:
       "Allow it if you use Ahrefs or want full backlink visibility; block it to cut crawl load or deny competitor research.",
     docsUrl: "https://ahrefs.com/robot",
     relatedCrawlerIds: ["semrushbot", "mj12bot"],
     relatedLinks: [
-      { title: "Why robots.txt is important", href: "/why-robots-txt-is-important", description: "Crawl budget and bot load." },
+      {
+        title: "Why robots.txt is important",
+        href: "/why-robots-txt-is-important",
+        description: "Crawl budget and bot load.",
+      },
     ],
     faqs: [
-      { question: "Does blocking AhrefsBot hurt my SEO?", answer: "No. AhrefsBot only feeds the Ahrefs SEO tool. It is unrelated to Googlebot or Bingbot, so blocking it has zero effect on your search rankings — it only limits what Ahrefs (and its users) can see about your backlinks." },
-      { question: "How do I block AhrefsBot?", answer: "Add a group: User-agent: AhrefsBot followed by Disallow: /. You can also slow it down with Crawl-delay instead of blocking it outright." },
+      {
+        question: "Does blocking AhrefsBot hurt my SEO?",
+        answer:
+          "No. AhrefsBot only feeds the Ahrefs SEO tool. It is unrelated to Googlebot or Bingbot, so blocking it has zero effect on your search rankings — it only limits what Ahrefs (and its users) can see about your backlinks.",
+      },
+      {
+        question: "How do I block AhrefsBot?",
+        answer:
+          "Add a group: User-agent: AhrefsBot followed by Disallow: /. You can also slow it down with Crawl-delay instead of blocking it outright.",
+      },
     ],
   },
   {
@@ -198,15 +255,28 @@ const PROFILES: readonly CrawlerProfile[] = [
     honors: "yes",
     honorsNote: "SemrushBot follows robots.txt and supports Crawl-delay.",
     affectsRanking: false,
-    affectsRankingNote: "SemrushBot feeds the Semrush tool only; it does not affect search rankings.",
-    verify: "Verify via reverse DNS to a semrush.com / semrush.net host, or Semrush's published IP ranges.",
+    affectsRankingNote:
+      "SemrushBot feeds the Semrush tool only; it does not affect search rankings.",
+    verify:
+      "Verify via reverse DNS to a semrush.com / semrush.net host, or Semrush's published IP ranges.",
     recommendation: "allow",
     recommendationWhy:
       "Allow it if you use Semrush or want full visibility; block it to reduce crawl load or limit competitor research.",
     docsUrl: "https://www.semrush.com/bot/",
     relatedCrawlerIds: ["ahrefsbot", "mj12bot"],
+    relatedLinks: [
+      {
+        title: "Why robots.txt Is Important",
+        href: "/why-robots-txt-is-important",
+        description: "Crawl budget and the case for controlling SEO bots.",
+      },
+    ],
     faqs: [
-      { question: "Does SemrushBot affect my Google ranking?", answer: "No. SemrushBot only collects data for the Semrush platform. It is separate from search-engine crawlers, so blocking it has no effect on how you rank in Google or Bing." },
+      {
+        question: "Does SemrushBot affect my Google ranking?",
+        answer:
+          "No. SemrushBot only collects data for the Semrush platform. It is separate from search-engine crawlers, so blocking it has no effect on how you rank in Google or Bing.",
+      },
     ],
   },
   {
@@ -226,7 +296,8 @@ const PROFILES: readonly CrawlerProfile[] = [
     honorsNote:
       "ByteDance states Bytespider honors robots.txt, but third-party reports describe cases where it crawled despite disallow rules. Verify behavior on your own logs.",
     affectsRanking: false,
-    affectsRankingNote: "Bytespider is an AI training crawler, not a search engine — blocking it does not affect rankings.",
+    affectsRankingNote:
+      "Bytespider is an AI training crawler, not a search engine — blocking it does not affect rankings.",
     verify:
       "There is no widely published reverse-DNS verification method; match the Bytespider user-agent and watch request IPs and volume in your logs. Because compliance is imperfect, server-level blocking (firewall / WAF) may be needed in addition to robots.txt.",
     recommendation: "block",
@@ -234,12 +305,28 @@ const PROFILES: readonly CrawlerProfile[] = [
       "High-volume training crawler with imperfect compliance — most sites block it to protect bandwidth and opt out of training.",
     relatedCrawlerIds: ["gptbot", "ccbot", "amazonbot"],
     relatedLinks: [
-      { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Every AI crawler compared." },
-      { title: "Block GPTBot", href: "/gptbot-robots-txt", description: "OpenAI's training crawler." },
+      {
+        title: "AI Crawler Directory",
+        href: "/ai-crawlers-directory",
+        description: "Every AI crawler compared.",
+      },
+      {
+        title: "Block GPTBot",
+        href: "/gptbot-robots-txt",
+        description: "OpenAI's training crawler.",
+      },
     ],
     faqs: [
-      { question: "Does Bytespider respect robots.txt?", answer: "Officially yes, but multiple site operators have reported Bytespider crawling pages that robots.txt disallowed. If a robots.txt rule doesn't stop it on your logs, block it at the server or WAF level as well." },
-      { question: "Why is Bytespider crawling my site so much?", answer: "Bytespider is one of the highest-volume AI training crawlers. On larger sites it can generate substantial request traffic, which is why many operators block it to control bandwidth." },
+      {
+        question: "Does Bytespider respect robots.txt?",
+        answer:
+          "Officially yes, but multiple site operators have reported Bytespider crawling pages that robots.txt disallowed. If a robots.txt rule doesn't stop it on your logs, block it at the server or WAF level as well.",
+      },
+      {
+        question: "Why is Bytespider crawling my site so much?",
+        answer:
+          "Bytespider is one of the highest-volume AI training crawlers. On larger sites it can generate substantial request traffic, which is why many operators block it to control bandwidth.",
+      },
     ],
   },
   {
@@ -257,19 +344,33 @@ const PROFILES: readonly CrawlerProfile[] = [
     honors: "yes",
     honorsNote: "Amazon documents that Amazonbot respects robots.txt.",
     affectsRanking: false,
-    affectsRankingNote: "Amazonbot does not power a web search engine, so blocking it has no ranking impact.",
-    verify: "Verify via reverse DNS to a crawl.amazonbot.amazon host with forward confirmation, per Amazon's docs.",
+    affectsRankingNote:
+      "Amazonbot does not power a web search engine, so blocking it has no ranking impact.",
+    verify:
+      "Verify via reverse DNS to a crawl.amazonbot.amazon host with forward confirmation, per Amazon's docs.",
     recommendation: "depends",
     recommendationWhy:
       "Allow it if you want Alexa/Amazon to use your content; block it to opt out of Amazon AI and data collection.",
     docsUrl: "https://developer.amazon.com/amazonbot",
     relatedCrawlerIds: ["bytespider", "gptbot", "applebot-extended"],
     relatedLinks: [
-      { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Compare every AI crawler." },
+      {
+        title: "AI Crawler Directory",
+        href: "/ai-crawlers-directory",
+        description: "Compare every AI crawler.",
+      },
     ],
     faqs: [
-      { question: "What is Amazonbot used for?", answer: "Amazonbot crawls the web to support Amazon products and services, including Alexa answering user questions and Amazon's AI features. It is not a search-engine crawler." },
-      { question: "Should I block Amazonbot?", answer: "It depends. Allow it if you want Alexa and Amazon services to use your content; block it if you'd rather opt out of Amazon's data collection and AI use. Either way, your Google and Bing rankings are unaffected." },
+      {
+        question: "What is Amazonbot used for?",
+        answer:
+          "Amazonbot crawls the web to support Amazon products and services, including Alexa answering user questions and Amazon's AI features. It is not a search-engine crawler.",
+      },
+      {
+        question: "Should I block Amazonbot?",
+        answer:
+          "It depends. Allow it if you want Alexa and Amazon services to use your content; block it if you'd rather opt out of Amazon's data collection and AI use. Either way, your Google and Bing rankings are unaffected.",
+      },
     ],
   },
   {
@@ -297,11 +398,23 @@ const PROFILES: readonly CrawlerProfile[] = [
     docsUrl: "https://support.apple.com/en-us/119829",
     relatedCrawlerIds: ["google-extended", "gptbot", "claudebot"],
     relatedLinks: [
-      { title: "Google-Extended in robots.txt", href: "/google-extended-robots-txt", description: "Google's equivalent AI opt-out." },
+      {
+        title: "Google-Extended in robots.txt",
+        href: "/google-extended-robots-txt",
+        description: "Google's equivalent AI opt-out.",
+      },
     ],
     faqs: [
-      { question: "What is the difference between Applebot and Applebot-Extended?", answer: "Applebot is the crawler that fetches pages for Siri and Spotlight. Applebot-Extended is a separate robots.txt token that controls whether Apple may use that already-crawled content for AI model training. Blocking Applebot-Extended opts you out of training without affecting Siri or Spotlight." },
-      { question: "Does blocking Applebot-Extended hurt Siri or Spotlight?", answer: "No. Applebot-Extended only governs AI training use. Siri Suggestions, Spotlight, and Safari results rely on the standard Applebot, which is unaffected." },
+      {
+        question: "What is the difference between Applebot and Applebot-Extended?",
+        answer:
+          "Applebot is the crawler that fetches pages for Siri and Spotlight. Applebot-Extended is a separate robots.txt token that controls whether Apple may use that already-crawled content for AI model training. Blocking Applebot-Extended opts you out of training without affecting Siri or Spotlight.",
+      },
+      {
+        question: "Does blocking Applebot-Extended hurt Siri or Spotlight?",
+        answer:
+          "No. Applebot-Extended only governs AI training use. Siri Suggestions, Spotlight, and Safari results rely on the standard Applebot, which is unaffected.",
+      },
     ],
   },
   {
@@ -319,19 +432,33 @@ const PROFILES: readonly CrawlerProfile[] = [
     honors: "yes",
     honorsNote: "Meta documents that Meta-ExternalAgent honors robots.txt.",
     affectsRanking: false,
-    affectsRankingNote: "It is an AI training crawler, not a search engine — blocking it has no ranking impact.",
-    verify: "Match the Meta-ExternalAgent user-agent token and Meta's published crawler IP ranges in your logs.",
+    affectsRankingNote:
+      "It is an AI training crawler, not a search engine — blocking it has no ranking impact.",
+    verify:
+      "Match the Meta-ExternalAgent user-agent token and Meta's published crawler IP ranges in your logs.",
     recommendation: "block",
     recommendationWhy:
       "Block it to opt out of Meta AI training; your social link previews keep working because they use a different agent.",
     docsUrl: "https://developers.facebook.com/docs/sharing/bot/",
     relatedCrawlerIds: ["facebookexternalhit", "gptbot", "claudebot"],
     relatedLinks: [
-      { title: "AI Crawler Directory", href: "/ai-crawlers-directory", description: "Compare every AI crawler." },
+      {
+        title: "AI Crawler Directory",
+        href: "/ai-crawlers-directory",
+        description: "Compare every AI crawler.",
+      },
     ],
     faqs: [
-      { question: "Will blocking Meta-ExternalAgent break Facebook link previews?", answer: "No. Link previews on Facebook and Instagram are generated by facebookexternalhit, a separate agent. Blocking Meta-ExternalAgent only opts you out of Meta's AI training and leaves sharing previews intact." },
-      { question: "What does Meta-ExternalAgent do?", answer: "It crawls public web pages to collect training data for Meta's AI models, such as Llama and Meta AI. It is not a search crawler and does not affect your visibility on Facebook or in search engines." },
+      {
+        question: "Will blocking Meta-ExternalAgent break Facebook link previews?",
+        answer:
+          "No. Link previews on Facebook and Instagram are generated by facebookexternalhit, a separate agent. Blocking Meta-ExternalAgent only opts you out of Meta's AI training and leaves sharing previews intact.",
+      },
+      {
+        question: "What does Meta-ExternalAgent do?",
+        answer:
+          "It crawls public web pages to collect training data for Meta's AI models, such as Llama and Meta AI. It is not a search crawler and does not affect your visibility on Facebook or in search engines.",
+      },
     ],
   },
   {
@@ -357,9 +484,24 @@ const PROFILES: readonly CrawlerProfile[] = [
       "Allow it so your links render rich previews when shared on Facebook, Instagram, and WhatsApp.",
     docsUrl: "https://developers.facebook.com/docs/sharing/webmasters/web-crawlers/",
     relatedCrawlerIds: ["meta-externalagent", "twitterbot"],
+    relatedLinks: [
+      {
+        title: "robots.txt Syntax",
+        href: "/robots-txt-syntax",
+        description: "Target one user-agent without touching the rest.",
+      },
+    ],
     faqs: [
-      { question: "Why are my Facebook share previews blank?", answer: "Often because facebookexternalhit is blocked in robots.txt (or your Open Graph tags are missing). Allow the facebookexternalhit user-agent and make sure your pages expose og:title, og:description, and og:image." },
-      { question: "Is facebookexternalhit the same as Meta's AI crawler?", answer: "No. facebookexternalhit builds link previews; Meta-ExternalAgent collects AI training data. They are separate agents, so you can allow previews while blocking AI training." },
+      {
+        question: "Why are my Facebook share previews blank?",
+        answer:
+          "Often because facebookexternalhit is blocked in robots.txt (or your Open Graph tags are missing). Allow the facebookexternalhit user-agent and make sure your pages expose og:title, og:description, and og:image.",
+      },
+      {
+        question: "Is facebookexternalhit the same as Meta's AI crawler?",
+        answer:
+          "No. facebookexternalhit builds link previews; Meta-ExternalAgent collects AI training data. They are separate agents, so you can allow previews while blocking AI training.",
+      },
     ],
   },
 ];
@@ -384,6 +526,8 @@ export const EXISTING_CRAWLER_PAGES: Readonly<Record<string, Route>> = {
   ccbot: "/ccbot-robots-txt",
   perplexitybot: "/perplexitybot-robots-txt",
   "google-extended": "/google-extended-robots-txt",
+  "oai-searchbot": "/oai-searchbot-robots-txt",
+  "claude-searchbot": "/claude-searchbot-robots-txt",
 };
 
 /**

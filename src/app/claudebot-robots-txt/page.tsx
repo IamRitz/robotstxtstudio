@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
@@ -29,8 +30,17 @@ const page: ContentPage = {
       blocks: [
         {
           kind: "p",
-          content:
-            "ClaudeBot crawls public web pages to build training data for Anthropic's Claude models. Like other reputable AI crawlers, it identifies itself with a stable user-agent and follows robots.txt. It is distinct from Claude-SearchBot, which fetches pages so Claude can cite current results when answering.",
+          content: (
+            <>
+              ClaudeBot crawls public web pages to build training data for Anthropic&apos;s Claude
+              models. Like other reputable AI crawlers, it identifies itself with a stable
+              user-agent and follows robots.txt. It is distinct from{" "}
+              <Link href="/claude-searchbot-robots-txt" className="text-brand hover:underline">
+                Claude-SearchBot
+              </Link>
+              , which fetches pages so Claude can cite current results when answering.
+            </>
+          ),
         },
         {
           kind: "table",
@@ -47,6 +57,23 @@ const page: ContentPage = {
             ["Honors robots.txt", "Yes (per Anthropic docs)"],
             ["Affects Google ranking", "No"],
           ],
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              Source:{" "}
+              <a
+                href="https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                Anthropic&apos;s crawler documentation
+              </a>
+              , which lists each Anthropic user-agent and how to control it.
+            </>
+          ),
         },
       ],
     },
@@ -100,6 +127,30 @@ const page: ContentPage = {
           code: "User-agent: ClaudeBot\nUser-agent: anthropic-ai\nUser-agent: Claude-Web\nDisallow: /",
           caption: "ClaudeBot plus legacy tokens",
         },
+      ],
+    },
+    {
+      id: "verify",
+      heading: "Verify the block works",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              After uploading your robots.txt, run your domain through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              to confirm ClaudeBot resolves to Blocked while Googlebot stays Allowed, or trace a
+              single URL against the ClaudeBot user-agent in the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "analyzer" },
       ],
     },
     {
@@ -169,9 +220,14 @@ const page: ContentPage = {
       description: "Block ClaudeBot with one click.",
     },
     {
-      title: "Robots.txt Generator",
-      href: "/generate",
-      description: "Build a file with AI rules.",
+      title: "Claude-SearchBot in robots.txt",
+      href: "/claude-searchbot-robots-txt",
+      description: "Anthropic's search crawler — decide it separately.",
+    },
+    {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "Block every AI crawler in one file.",
     },
   ],
   nextReading: { title: "PerplexityBot in robots.txt", href: "/perplexitybot-robots-txt" },

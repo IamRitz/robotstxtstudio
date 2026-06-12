@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
@@ -48,6 +49,23 @@ const page: ContentPage = {
             ["Honors robots.txt", "Yes"],
           ],
         },
+        {
+          kind: "p",
+          content: (
+            <>
+              Source:{" "}
+              <a
+                href="https://commoncrawl.org/ccbot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                Common Crawl&apos;s CCBot documentation
+              </a>
+              , which covers CCBot&apos;s behavior and robots.txt support.
+            </>
+          ),
+        },
       ],
     },
     {
@@ -86,6 +104,30 @@ const page: ContentPage = {
         },
         { kind: "p", content: "Allow CCBot explicitly with an empty Disallow:" },
         { kind: "snippet", code: "User-agent: CCBot\nDisallow:", caption: "Allow CCBot" },
+      ],
+    },
+    {
+      id: "verify",
+      heading: "Verify the rule works",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              After uploading your robots.txt, run your domain through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              to confirm CCBot resolves to Blocked while Googlebot stays Allowed, or trace a single
+              URL against the CCBot user-agent in the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "analyzer" },
       ],
     },
     {
@@ -135,6 +177,11 @@ const page: ContentPage = {
     },
   ],
   related: [
+    {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "Block every AI crawler in one file.",
+    },
     {
       title: "AI Crawler Directory",
       href: "/ai-crawlers-directory",

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 import type { ContentSection } from "@/components/content";
 import { AI_CRAWLERS, triLabel, type AiCrawlerEntry } from "@/config/ai-crawler-directory";
+import { crawlerHref } from "@/config/crawler-directory";
+import { itemListSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "AI Crawler Directory: GPTBot, ClaudeBot, PerplexityBot & More",
@@ -16,6 +18,7 @@ const REC_LABEL = { block: "Block", allow: "Allow", depends: "Depends" } as cons
 
 /** Build one detail section per crawler from the directory data. */
 function crawlerSection(c: AiCrawlerEntry): ContentSection {
+  const guide = crawlerHref(c.id);
   return {
     id: c.id,
     heading: `${c.name} — ${c.company}`,
@@ -36,6 +39,29 @@ function crawlerSection(c: AiCrawlerEntry): ContentSection {
         status: REC_STATUS[c.recommendation],
         title: `Recommended: ${REC_LABEL[c.recommendation]}`,
         body: c.recommendationWhy,
+      },
+      // Hub job: route to the deep dive and the operator's own documentation.
+      {
+        kind: "p",
+        content: (
+          <span className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            {guide ? (
+              <Link href={guide} className="font-medium text-brand hover:underline">
+                Full {c.name} guide →
+              </Link>
+            ) : null}
+            {c.docsUrl ? (
+              <a
+                href={c.docsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground hover:underline"
+              >
+                Official {c.company} docs ↗
+              </a>
+            ) : null}
+          </span>
+        ),
       },
     ],
   };
@@ -59,6 +85,18 @@ const page: ContentPage = {
     </>
   ),
   cta: "validator",
+  // ItemList: tells search engines this page is the canonical list of AI crawlers,
+  // with each entry resolving to its dedicated guide (18I).
+  extraSchema: [
+    itemListSchema(
+      "AI Crawler Directory",
+      AI_CRAWLERS.map((c) => ({
+        name: c.name,
+        path: crawlerHref(c.id) ?? `/ai-crawlers-directory#${c.id}`,
+        description: c.purpose,
+      })),
+    ),
+  ],
   sections: [
     {
       id: "overview",
@@ -122,6 +160,40 @@ const page: ContentPage = {
       ],
     },
     ...AI_CRAWLERS.map(crawlerSection),
+    {
+      id: "test",
+      heading: "How to test your AI crawler policy",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              A rule you haven&apos;t tested is a rule you&apos;re hoping works. Run your domain
+              through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              to see every crawler&apos;s resolved access in one matrix, or check one URL against
+              one user-agent with the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              , which traces the exact rule that matched. Before shipping any edit, the{" "}
+              <Link href="/validate" className="text-brand hover:underline">
+                Validator
+              </Link>{" "}
+              catches syntax errors that would silently change who gets in. For the complete
+              blocking playbook, read{" "}
+              <Link href="/block-ai-crawlers" className="text-brand hover:underline">
+                How to Block AI Crawlers
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "tester" },
+      ],
+    },
   ],
   faqs: [
     {
@@ -147,19 +219,19 @@ const page: ContentPage = {
   ],
   related: [
     {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "The complete blocking playbook.",
+    },
+    {
       title: "AI Crawler Manager",
       href: "/ai-crawlers",
       description: "Allow or block every crawler with one click.",
     },
     {
-      title: "Block GPTBot",
-      href: "/gptbot-robots-txt",
-      description: "OpenAI's training crawler, in depth.",
-    },
-    {
-      title: "Why robots.txt is important",
-      href: "/why-robots-txt-is-important",
-      description: "The strategic case for crawler control.",
+      title: "Crawler Directory",
+      href: "/crawlers",
+      description: "All crawlers — search, SEO, social, AI.",
     },
     {
       title: "Robots.txt Analyzer",
@@ -167,7 +239,7 @@ const page: ContentPage = {
       description: "Confirm a crawler is really blocked.",
     },
   ],
-  nextReading: { title: "Block GPTBot in robots.txt", href: "/gptbot-robots-txt" },
+  nextReading: { title: "How to Block AI Crawlers", href: "/block-ai-crawlers" },
 };
 
 export default function Page() {

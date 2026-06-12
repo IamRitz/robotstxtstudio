@@ -29,6 +29,7 @@ const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/ai-crawlers-directory", label: "AI Crawler Directory" },
   { href: "/robots-txt-templates", label: "robots.txt Templates" },
   { href: "/robots-txt-glossary", label: "robots.txt Glossary" },
+  { href: "/block-ai-crawlers", label: "Block AI Crawlers" },
   { href: "/gptbot-robots-txt", label: "Block GPTBot" },
   { href: "/wordpress-robots-txt", label: "WordPress robots.txt" },
   { href: "/robots-txt-vs-noindex", label: "robots.txt vs noindex" },

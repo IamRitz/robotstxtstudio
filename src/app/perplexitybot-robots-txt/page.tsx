@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
@@ -48,6 +49,23 @@ const page: ContentPage = {
             ["Sends referral traffic", "Yes, via citations"],
             ["Honors robots.txt", "Partial — see caveat below"],
           ],
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              Source:{" "}
+              <a
+                href="https://docs.perplexity.ai/guides/bots"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                Perplexity&apos;s crawler documentation
+              </a>
+              , which describes PerplexityBot and Perplexity-User.
+            </>
+          ),
         },
       ],
     },
@@ -102,6 +120,30 @@ const page: ContentPage = {
       ],
     },
     {
+      id: "verify",
+      heading: "Verify the rule works",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              After uploading your robots.txt, run your domain through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              to confirm PerplexityBot resolves to the policy you intended while Googlebot stays
+              Allowed, or trace a single URL against the PerplexityBot user-agent in the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "analyzer" },
+      ],
+    },
+    {
       id: "mistakes",
       heading: "Common mistakes",
       blocks: [
@@ -148,6 +190,11 @@ const page: ContentPage = {
     },
   ],
   related: [
+    {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "Block every AI crawler in one file.",
+    },
     {
       title: "AI Crawler Directory",
       href: "/ai-crawlers-directory",

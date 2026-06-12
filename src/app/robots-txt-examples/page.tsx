@@ -124,6 +124,10 @@ const page: ContentPage = {
               <Link href="/ai-crawlers" className="text-brand hover:underline">
                 AI Crawler Manager
               </Link>
+              , or read the full guide:{" "}
+              <Link href="/block-ai-crawlers" className="text-brand hover:underline">
+                How to Block AI Crawlers
+              </Link>
               .
             </>
           ),

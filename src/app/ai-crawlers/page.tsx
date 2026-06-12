@@ -6,9 +6,9 @@ import { ToolRelatedRail, toolAppSchema } from "@/components/tool-related-rail";
 import { AiManagerScreen } from "./ai-manager-screen";
 
 export const metadata: Metadata = {
-  title: "AI Crawler Manager",
+  title: "AI Crawler Manager — Block GPTBot, ClaudeBot & PerplexityBot",
   description:
-    "Control which AI crawlers can access your site — block GPTBot, ClaudeBot, PerplexityBot and more.",
+    "Allow or block every AI crawler — GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot — in one click and download the robots.txt. Free, no signup.",
   alternates: { canonical: "/ai-crawlers" },
 };
 

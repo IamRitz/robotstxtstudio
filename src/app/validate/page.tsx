@@ -6,8 +6,9 @@ import { ToolRelatedRail, toolAppSchema } from "@/components/tool-related-rail";
 import { ValidatorScreen } from "./validator-screen";
 
 export const metadata: Metadata = {
-  title: "Robots.txt Validator",
-  description: "Validate robots.txt syntax, catch errors and warnings, and get a health score.",
+  title: "Robots.txt Validator — Find SEO & AI Crawler Issues",
+  description:
+    "Validate robots.txt syntax, catch SEO and AI crawler issues with one-click fixes, and get a health score. Free, runs in your browser.",
   alternates: { canonical: "/validate" },
 };
 

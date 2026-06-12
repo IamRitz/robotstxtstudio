@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
@@ -38,6 +39,23 @@ const page: ContentPage = {
           status: "info",
           title: "This is the safest AI opt-out",
           body: "Because Googlebot and Google-Extended are decoupled, you can block Google-Extended with complete confidence that your search rankings are unaffected.",
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              Source:{" "}
+              <a
+                href="https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                Google&apos;s crawler documentation
+              </a>
+              , which lists Google-Extended among Google&apos;s user-agent tokens.
+            </>
+          ),
         },
       ],
     },
@@ -93,6 +111,30 @@ const page: ContentPage = {
       ],
     },
     {
+      id: "verify",
+      heading: "Verify the rule works",
+      blocks: [
+        {
+          kind: "p",
+          content: (
+            <>
+              After uploading your robots.txt, run your domain through the{" "}
+              <Link href="/analyze" className="text-brand hover:underline">
+                Analyzer
+              </Link>{" "}
+              to confirm Google-Extended resolves to Blocked while Googlebot stays Allowed, or trace
+              a single URL against the Google-Extended token in the{" "}
+              <Link href="/url-tester" className="text-brand hover:underline">
+                URL Tester
+              </Link>
+              .
+            </>
+          ),
+        },
+        { kind: "cta", tool: "analyzer" },
+      ],
+    },
+    {
       id: "mistakes",
       heading: "Common mistakes",
       blocks: [
@@ -139,6 +181,11 @@ const page: ContentPage = {
     },
   ],
   related: [
+    {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "Block every AI crawler in one file.",
+    },
     {
       title: "AI Crawler Directory",
       href: "/ai-crawlers-directory",

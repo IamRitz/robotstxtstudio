@@ -27,6 +27,8 @@ export interface AiCrawlerEntry {
   /** Recommended default policy and the one-line reasoning. */
   readonly recommendation: "allow" | "block" | "depends";
   readonly recommendationWhy: string;
+  /** Operator's official crawler documentation (E-E-A-T citation), if published. */
+  readonly docsUrl?: string;
 }
 
 /**
@@ -43,7 +45,9 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "no",
     honors: "yes",
     recommendation: "block",
-    recommendationWhy: "Pure training crawler — block it if you don't want your content training ChatGPT.",
+    recommendationWhy:
+      "Pure training crawler — block it if you don't want your content training ChatGPT.",
+    docsUrl: "https://platform.openai.com/docs/bots",
   },
   {
     id: "oai-searchbot",
@@ -54,7 +58,9 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "yes",
     honors: "yes",
     recommendation: "depends",
-    recommendationWhy: "Allow it for referral traffic from ChatGPT Search; block it to stay out of AI answers.",
+    recommendationWhy:
+      "Allow it for referral traffic from ChatGPT Search; block it to stay out of AI answers.",
+    docsUrl: "https://platform.openai.com/docs/bots",
   },
   {
     id: "claudebot",
@@ -65,7 +71,10 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "no",
     honors: "yes",
     recommendation: "block",
-    recommendationWhy: "Training crawler — block it to keep your content out of Claude's training set.",
+    recommendationWhy:
+      "Training crawler — block it to keep your content out of Claude's training set.",
+    docsUrl:
+      "https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
   },
   {
     id: "claude-searchbot",
@@ -76,7 +85,10 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "yes",
     honors: "yes",
     recommendation: "depends",
-    recommendationWhy: "Allow it to be cited in Claude's web answers; block it to opt out of AI search.",
+    recommendationWhy:
+      "Allow it to be cited in Claude's web answers; block it to opt out of AI search.",
+    docsUrl:
+      "https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
   },
   {
     id: "perplexitybot",
@@ -87,7 +99,9 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "yes",
     honors: "partial",
     recommendation: "depends",
-    recommendationWhy: "Drives referral traffic, but has been reported to fetch some pages without a declared agent — verify with the Analyzer.",
+    recommendationWhy:
+      "Drives referral traffic, but has been reported to fetch some pages without a declared agent — verify with the Analyzer.",
+    docsUrl: "https://docs.perplexity.ai/guides/bots",
   },
   {
     id: "ccbot",
@@ -98,18 +112,23 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "no",
     honors: "yes",
     recommendation: "block",
-    recommendationWhy: "One block stops your content reaching dozens of downstream model trainers that use Common Crawl.",
+    recommendationWhy:
+      "One block stops your content reaching dozens of downstream model trainers that use Common Crawl.",
+    docsUrl: "https://commoncrawl.org/ccbot",
   },
   {
     id: "google-extended",
     name: "Google-Extended",
     company: "Google",
-    purpose: "Opt-out token controlling whether Google uses your content for Gemini training and grounding.",
+    purpose:
+      "Opt-out token controlling whether Google uses your content for Gemini training and grounding.",
     training: "yes",
     search: "no",
     honors: "yes",
     recommendation: "block",
-    recommendationWhy: "Blocking it has zero effect on Google Search ranking — Googlebot is separate — so you can opt out of AI training safely.",
+    recommendationWhy:
+      "Blocking it has zero effect on Google Search ranking — Googlebot is separate — so you can opt out of AI training safely.",
+    docsUrl: "https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers",
   },
   {
     id: "bytespider",
@@ -120,7 +139,8 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "no",
     honors: "partial",
     recommendation: "block",
-    recommendationWhy: "High-volume training crawler with a patchy compliance record — most sites block it to save bandwidth.",
+    recommendationWhy:
+      "High-volume training crawler with a patchy compliance record — most sites block it to save bandwidth.",
   },
   {
     id: "amazonbot",
@@ -131,7 +151,9 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     search: "partial",
     honors: "yes",
     recommendation: "depends",
-    recommendationWhy: "Block to opt out of Amazon AI; allow if you want Alexa to answer from your content.",
+    recommendationWhy:
+      "Block to opt out of Amazon AI; allow if you want Alexa to answer from your content.",
+    docsUrl: "https://developer.amazon.com/amazonbot",
   },
 ];
 

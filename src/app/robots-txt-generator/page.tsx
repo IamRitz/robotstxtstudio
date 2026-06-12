@@ -128,6 +128,11 @@ const page: ContentPage = {
     },
   ],
   related: [
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Decide every AI crawler's access.",
+    },
     { title: "Robots.txt Validator", href: "/validate", description: "Check an existing file." },
     {
       title: "robots.txt examples",

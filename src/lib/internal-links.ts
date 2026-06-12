@@ -93,11 +93,15 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       description: "Every AI crawler compared.",
     },
     {
+      title: "How to Block AI Crawlers",
+      href: "/block-ai-crawlers",
+      description: "The complete blocking playbook.",
+    },
+    {
       title: "Block GPTBot",
       href: "/gptbot-robots-txt",
       description: "OpenAI's training crawler.",
     },
-    { title: "Crawler Directory", href: "/crawlers", description: "All crawlers, search to AI." },
   ],
   explainer: [
     {

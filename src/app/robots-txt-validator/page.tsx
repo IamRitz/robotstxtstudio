@@ -105,6 +105,11 @@ const page: ContentPage = {
     },
   ],
   related: [
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Decide every AI crawler's access.",
+    },
     { title: "URL Tester", href: "/url-tester", description: "Test if a specific URL is blocked." },
     { title: "Robots.txt Generator", href: "/generate", description: "Rebuild a clean file." },
     {
