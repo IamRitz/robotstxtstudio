@@ -192,6 +192,11 @@ const page: ContentPage = {
       href: "/robots-txt-checker",
       description: "Validate before you ship.",
     },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Blocking AI crawlers won't hurt your ranking.",
+    },
   ],
 };
 

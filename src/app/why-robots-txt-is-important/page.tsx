@@ -174,6 +174,11 @@ const page: ContentPage = {
     },
     { title: "AI Crawler Manager", href: "/ai-crawlers", description: "Control AI access." },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Audit a live site." },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Who's crawling your site, and why it matters.",
+    },
   ],
 };
 

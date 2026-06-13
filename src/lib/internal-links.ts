@@ -34,6 +34,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       href: "/robots-txt-syntax",
       description: "Every directive explained.",
     },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Decide which AI bots to include.",
+    },
   ],
   validator: [
     {
@@ -50,6 +55,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       title: "robots.txt Glossary",
       href: "/robots-txt-glossary",
       description: "Look up any term.",
+    },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Check your AI crawler rules.",
     },
   ],
   analyzer: [
@@ -85,6 +95,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       href: "/robots-txt-syntax",
       description: "Wildcards and anchors.",
     },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Test access for any AI crawler.",
+    },
   ],
   "ai-manager": [
     {
@@ -118,6 +133,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       title: "robots.txt Glossary",
       href: "/robots-txt-glossary",
       description: "Definitions for every term.",
+    },
+    {
+      title: "AI Crawler Directory",
+      href: "/ai-crawlers-directory",
+      description: "Understand each AI crawler's impact.",
     },
   ],
 };

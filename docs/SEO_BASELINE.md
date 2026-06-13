@@ -77,6 +77,8 @@ Plus: `/crawlers/semrushbot` and `/crawlers/facebookexternalhit` (weakest profil
 
 Comparable 44-route set: 286 → 363 contextual links (**+27%**); 411 total across all 57 routes. The AI topic cluster now forms a complete loop: directory hub ⇄ 7 per-crawler pages ⇄ head guide ⇄ Manager/Validator/Analyzer/Tester tools, with zero orphans and zero dead-ends (verified by crawling: every indexable page is reachable from in-content links and links onward contextually).
 
+**Full directory-hub coverage (18B follow-up).** Every tool page now links the AI Crawler Directory: the `/analyze` and `/ai-crawlers` rails already did; `/generate`, `/validate`, `/url-tester`, and `/explain` gained the link via `src/lib/internal-links.ts` (it sits inside the collapsed "More tools & related guides" `<details>` on the app screens — present in the DOM for crawlers without cluttering the tool UI). Among the educational guides, the two where AI-crawler control is topically relevant — `/robots-txt-seo-guide` and `/why-robots-txt-is-important` — now link the hub as well. Pure-syntax/format guides intentionally do **not** (the link would be off-topic for those queries). Verified by crawling: all 6 tool surfaces + both target guides return the hub link.
+
 ## Internal linking map (AI cluster core)
 
 ```
