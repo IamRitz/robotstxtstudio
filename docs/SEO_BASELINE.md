@@ -95,6 +95,25 @@ Comparable 44-route set: 286 → 363 contextual links (**+27%**); 411 total acro
           every crawler page's related rail, directory hub
 ```
 
+## Phase 19 — Crawlability & internal linking (2026-06-18)
+
+Phase 19 added no new content pages. It redistributed internal authority so high-intent pages are reachable in ≤2 clicks and Google has a reason to crawl the "Discovered – not indexed" set. Full evidence: `docs/CRAWL_DEPTH_AUDIT.md` (19A), `docs/INDEXATION_AUDIT.md` (19E), `docs/INTERNAL_LINKING_REPORT.md` (19C + 19G).
+
+**Crawl-depth delta** (contextual, in-content only): pages reachable in ≤2 clicks 33 → **38 / 57**; deepest page 8 → **3**; contextual orphans 1 → **0**; in-content links 432 → **446**. The four head-term tool landings (`/robots-txt-validator`, `/robots-txt-analyzer`, `/robots-txt-generator`, `/robots-txt-tester`) moved from depth 5–8 to **depth 1**.
+
+**19B — homepage authority.** New "Popular robots.txt resources" section, two groups ("Control AI crawlers" / "Check & build your file"), 10 contextual links pointing directly at the AI hub, block guide, GPTBot/ClaudeBot/Google-Extended/CCBot guides, and the four tool landings. Positioned after the AI-visibility card (so the tools come first on mobile); on mobile the links render 2-up as compact title chips, expanding to two columns with descriptions on desktop.
+
+**19F — CTR title/description review.** Reviewed the six surfaces named in the brief; rewrote only where materially better:
+
+| Page                     | Before                                                              | After                                                                      | Changed?                                            |
+| ------------------------ | ------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| Homepage                 | `Robots.txt Studio — Generate, Validate, Test & Explain robots.txt` | `Robots.txt Generator, Validator & AI Crawler Control — Robots.txt Studio` | ✅ leads with head keywords + the AI differentiator |
+| `/analyze`               | `Crawler Visibility Audit`                                          | `Robots.txt Analyzer — Audit Crawler Access & AI Visibility`               | ✅ adds the "robots.txt analyzer" head term         |
+| `/validate`              | `Robots.txt Validator — Find SEO & AI Crawler Issues`               | _(unchanged)_                                                              | already optimised in Phase 18                       |
+| `/ai-crawlers`           | `AI Crawler Manager — Block GPTBot, ClaudeBot & PerplexityBot`      | _(unchanged)_                                                              | already optimised in Phase 18                       |
+| `/ai-crawlers-directory` | `AI Crawler Directory: GPTBot, ClaudeBot, PerplexityBot & More`     | _(unchanged)_                                                              | already optimised in Phase 18                       |
+| `/block-ai-crawlers`     | `How to Block AI Crawlers in robots.txt (GPTBot, ClaudeBot & More)` | _(unchanged)_                                                              | already optimised in Phase 18                       |
+
 ## Re-measurement instructions
 
 1. Re-run the crawl (the method is documented in `docs/SEO_CONTENT_AUDIT.md`) after content changes; compare link totals and schema coverage to this file.

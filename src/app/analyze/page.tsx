@@ -6,7 +6,7 @@ import { ToolRelatedRail, toolAppSchema } from "@/components/tool-related-rail";
 import { AnalyzerScreen } from "./analyzer-screen";
 
 export const metadata: Metadata = {
-  title: "Crawler Visibility Audit",
+  title: "Robots.txt Analyzer — Audit Crawler Access & AI Visibility",
   description:
     "Analyze crawler access, AI visibility, and robots.txt issues for any site in one audit.",
   alternates: { canonical: "/analyze" },

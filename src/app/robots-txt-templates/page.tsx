@@ -111,7 +111,21 @@ const page: ContentPage = {
       href: "/wordpress-robots-txt",
       description: "The WordPress deep-dive.",
     },
-    { title: "Robots.txt Validator", href: "/validate", description: "Check any file's health." },
+    {
+      title: "Shopify robots.txt",
+      href: "/shopify-robots-txt",
+      description: "Edit it on Shopify's locked file.",
+    },
+    {
+      title: "Magento robots.txt",
+      href: "/magento-robots-txt",
+      description: "Tame faceted-URL crawling.",
+    },
+    {
+      title: "Next.js robots.txt",
+      href: "/nextjs-robots-txt",
+      description: "Static vs generated approaches.",
+    },
   ],
   nextReading: { title: "Robots.txt Generator", href: "/generate" },
   extraSchema: [

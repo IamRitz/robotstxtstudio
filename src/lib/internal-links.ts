@@ -78,6 +78,11 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       href: "/ai-crawlers-directory",
       description: "Who's crawling your site.",
     },
+    {
+      title: "Compare robots.txt",
+      href: "/compare",
+      description: "Diff two files or domains.",
+    },
   ],
   tester: [
     {

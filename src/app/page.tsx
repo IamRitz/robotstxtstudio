@@ -106,6 +106,74 @@ const LEARN_LINKS: ReadonlyArray<{ href: Route; title: string; desc: string }> =
   },
 ];
 
+// Phase 19B — direct homepage authority to the highest-intent pages (AI control +
+// the head-term tool landings) so each is one click from home, not buried 5–8 deep.
+const RESOURCE_GROUPS: ReadonlyArray<{
+  title: string;
+  links: ReadonlyArray<{ href: Route; title: string; desc: string }>;
+}> = [
+  {
+    title: "Control AI crawlers",
+    links: [
+      {
+        href: "/ai-crawlers-directory",
+        title: "AI Crawler Directory",
+        desc: "Every AI bot, what it does, and how to block it.",
+      },
+      {
+        href: "/block-ai-crawlers",
+        title: "How to Block AI Crawlers",
+        desc: "The complete robots.txt blocking playbook.",
+      },
+      {
+        href: "/gptbot-robots-txt",
+        title: "Block GPTBot",
+        desc: "Opt out of OpenAI's training crawler.",
+      },
+      {
+        href: "/claudebot-robots-txt",
+        title: "Block ClaudeBot",
+        desc: "Control Anthropic's crawler.",
+      },
+      {
+        href: "/google-extended-robots-txt",
+        title: "Google-Extended",
+        desc: "Keep content out of Gemini training.",
+      },
+      {
+        href: "/ccbot-robots-txt",
+        title: "Block CCBot",
+        desc: "Stop Common Crawl's open dataset.",
+      },
+    ],
+  },
+  {
+    title: "Check & build your file",
+    links: [
+      {
+        href: "/robots-txt-validator",
+        title: "Robots.txt Validator",
+        desc: "Catch syntax errors before they bite.",
+      },
+      {
+        href: "/robots-txt-analyzer",
+        title: "Robots.txt Analyzer",
+        desc: "Score a live file and surface issues.",
+      },
+      {
+        href: "/robots-txt-generator",
+        title: "Robots.txt Generator",
+        desc: "Build a clean file step by step.",
+      },
+      {
+        href: "/robots-txt-tester",
+        title: "Robots.txt Tester",
+        desc: "Check if a URL is blocked or allowed.",
+      },
+    ],
+  },
+];
+
 export default function HomePage() {
   return (
     <AppShell>
@@ -246,6 +314,46 @@ export default function HomePage() {
             Manage AI access <ArrowRight className="size-3" />
           </Link>
         </Card>
+      </section>
+
+      {/* Popular resources — direct authority to the highest-intent pages (Phase 19B).
+          Mobile: 2-up, title-only chips so it stays compact below the tools.
+          Desktop: two columns with descriptions. */}
+      <section className="mt-16">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            Popular robots.txt resources
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The pages people reach for most — controlling AI crawlers, and checking or building a
+            file.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          {RESOURCE_GROUPS.map((group) => (
+            <div key={group.title}>
+              <SectionHeader className="mb-2 sm:mb-3">{group.title}</SectionHeader>
+              <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5 sm:grid-cols-1">
+                {group.links.map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className="group block rounded-lg px-2 py-1.5 transition-colors hover:bg-muted sm:px-3 sm:py-2"
+                    >
+                      <span className="flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-brand">
+                        {l.title}
+                        <ArrowRight className="hidden size-3 shrink-0 transition-transform group-hover:translate-x-0.5 sm:inline-block" />
+                      </span>
+                      <span className="mt-0.5 hidden text-xs text-muted-foreground sm:block">
+                        {l.desc}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Learn / educational cluster */}

@@ -165,6 +165,11 @@ const page: ContentPage = {
       href: "/robots-txt-seo-guide",
       description: "Sitemaps in your SEO workflow.",
     },
+    {
+      title: "robots.txt vs sitemap",
+      href: "/robots-txt-vs-sitemap",
+      description: "How the two files differ.",
+    },
   ],
 };
 

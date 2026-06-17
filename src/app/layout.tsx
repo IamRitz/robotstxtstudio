@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = SITE.url;
-const TITLE = "Robots.txt Studio — Generate, Validate, Test & Explain robots.txt";
+const TITLE = "Robots.txt Generator, Validator & AI Crawler Control — Robots.txt Studio";
 const DESCRIPTION = SITE.description;
 
 // viewport-fit=cover lets env(safe-area-inset-bottom) resolve on notched iPhones,
