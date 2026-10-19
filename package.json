@@ -17,7 +17,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "seo:audit": "node scripts/seo-smoke-audit.mjs",
+    "seo:dates": "node scripts/check-page-dates.mjs",
+    "gsc:compare": "node scripts/gsc-compare.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

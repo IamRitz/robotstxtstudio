@@ -1,5 +1,7 @@
 # Indexation Signal Audit — Phase 19E
 
+> **Superseded (2026-10-19)** by [`SEO_RECOVERY_2026-10.md`](./SEO_RECOVERY_2026-10.md). The "discovered" backlog stayed flat after the Phase 19 linking work, and several URLs below were consolidated with 308 redirects.
+
 **Date:** 2026-06-18 · **Build:** post-Phase-19 production build. Signals read from the rendered HTML of every sitemap URL. Evidence only — no invented issues.
 
 ## Context
