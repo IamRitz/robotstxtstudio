@@ -342,8 +342,27 @@ Source: the 2026-10-18 Performance export (last 3 months, web) and the 2026-06-1
 | Aug 22 – Sep 18 | 0 | 5,842 | 0.00% | 79.5 |
 | **Sep 19 – Oct 16 (pre-deploy baseline)** | **5** | **1,384** | **0.36%** | **73.0** |
 
-Still to collect: the 1 crawled-not-indexed URL and the 3 page-with-redirect URLs. Also
-refresh the 28-day page and query export on deploy day if more than a week passes.
+**Remaining indexing exports** (drilldowns exported 2026-10-19):
+
+- **Page with redirect (3):** `http://www.robotstxtstudio.com/`,
+  `https://www.robotstxtstudio.com/`, `http://robotstxtstudio.com/`. These are host and
+  protocol variants of the homepage, redirecting to the canonical
+  `https://robotstxtstudio.com/` as intended. No action. Making the `www` hop a 308 (§8
+  step 4) is a tidy-up, not a fix.
+- **Crawled – currently not indexed (1):** `/claude-searchbot-robots-txt`, last crawled
+  2026-06-18 (5 days after it was published) and not since. Google fetched it and chose
+  not to index it.
+  - In production it gets links only from deep AI pages. `/crawlers` doesn't link it,
+    because Claude-SearchBot wasn't in the catalog.
+  - This release adds Claude-SearchBot to the catalog, so `/crawlers` (indexed, 991
+    impressions) now links it (verified in the build).
+  - No content change during the freeze. After deploy it's a reasonable candidate for a
+    single "Request indexing" (§8 step 10).
+- From 2026-09-19 to 10-09 the crawled-not-indexed count was 2 while indexed fell from 19
+  to 18, then both recovered. Some indexed page was briefly dropped and re-indexed; the
+  export doesn't say which. Informational.
+
+**Decision impact: none. Deployment can proceed.**
 
 ---
 
@@ -352,8 +371,8 @@ refresh the 28-day page and query export on deploy day if more than a week passe
 **D-1 (before deploy)**
 1. ~~GSC → Performance → Pages: record `/robots-txt-validator` and `/robots-txt-analyzer`~~
    — done 2026-10-19 (§7a); no impact on the decision.
-2. GSC → Indexing → Pages → open **Crawled – currently not indexed** and **Page with
-   redirect** → export both lists (the 1 + 3 URLs). Save them next to the 37-URL file.
+2. ~~Export the 1 + 3 URLs~~ — done 2026-10-19 (§7a): homepage host/protocol variants, and
+   `/claude-searchbot-robots-txt`.
 3. Export Performance (Pages + Queries) for the 28 days before deploy (the pre-window).
 4. *(Vercel dashboard, your call)* Domains → `www.robotstxtstudio.com` → redirect to
    `robotstxtstudio.com` with **308 Permanent** instead of 307.
