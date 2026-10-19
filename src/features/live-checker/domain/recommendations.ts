@@ -23,21 +23,29 @@ const ACTION_BY_CODE: Partial<Record<ValidationCode, RecommendedAction>> = {
 /** A recommendation describing a non-`ok` fetch outcome. */
 function fetchRecommendation(fetch: FetchResult): Recommendation | null {
   switch (fetch.status) {
-    case "not-found":
+    case "not-found": {
+      // Any 4xx except 429 lands here (RFC 9309 / Google: treated as no robots.txt).
+      const code = fetch.httpStatus;
+      const missing = code === undefined || code === 404 || code === 410;
       return {
         id: "fetch-not-found",
         severity: "warning",
-        title: "No robots.txt found",
-        description:
-          "This site has no robots.txt, so every crawler is allowed everywhere. Create one to take control.",
+        title: missing ? "No robots.txt found" : `robots.txt returns HTTP ${code}`,
+        description: missing
+          ? "This site has no robots.txt, so compliant crawlers may crawl everything. Create one to take control."
+          : `The server answers /robots.txt with HTTP ${code}. Google and RFC 9309 treat a 4xx as "no robots.txt", so compliant crawlers may crawl everything — and Google advises against using 401/403 here. Serve the file with a 200.`,
         action: { kind: "open-generator" },
       };
+    }
     case "invalid-content-type":
       return {
         id: "fetch-invalid-content-type",
         severity: "warning",
         title: "robots.txt is not plain text",
-        description: `The server returned ${fetch.contentType ?? "an unexpected type"}; crawlers may ignore it. Serve robots.txt as text/plain.`,
+        description:
+          fetch.body !== undefined
+            ? `The server returned ${fetch.contentType ?? "an unexpected type"}. Crawlers generally still read the rules, but serve robots.txt as text/plain to be safe.`
+            : "/robots.txt returns an HTML page, which contains no valid rules — compliant crawlers treat the site as unrestricted. Serve a plain-text robots.txt.",
         action: { kind: "edit-rules" },
       };
     case "too-large":

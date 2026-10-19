@@ -1,7 +1,15 @@
+# Install-script policy.
+# `allowBuilds` is read by pnpm 11+ (local dev). It previously held pnpm's
+# "set this to true or false" placeholders, which made every `pnpm <script>` abort.
+#   esbuild, unrs-resolver: verify/link their native binaries (needed by Vitest, ESLint).
+#   sharp: false — the prebuilt @img/sharp-* package is used; its install script only
+#   attempts a from-source build, which fails without node-gyp and isn't needed.
+# `onlyBuiltDependencies` is read by pnpm 9/10 (what Vercel uses for lockfile v9) and is
+# left exactly as before so production installs don't change.
 allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+  esbuild: true
+  sharp: false
+  unrs-resolver: true
 onlyBuiltDependencies:
   - esbuild
   - sharp

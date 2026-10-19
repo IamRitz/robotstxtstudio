@@ -155,3 +155,29 @@ describe("buildAnalysisReport — failed fetch", () => {
     expect(report.visibility.searchEngineAccess).toBe(0);
   });
 });
+
+describe("buildAnalysisReport — fetch recommendations stay truthful", () => {
+  const base = { requestedUrl: "https://example.com/robots.txt", redirected: false } as const;
+
+  it("names a 403 instead of claiming the file is missing", () => {
+    const fetch: FetchResult = { ...base, status: "not-found", httpStatus: 403, robotsExists: false };
+    const rec = buildAnalysisReport(fetch, "example.com", AT).recommendations[0]!;
+    expect(rec.title).toBe("robots.txt returns HTTP 403");
+    expect(rec.description).toMatch(/treat a 4xx as "no robots.txt"/);
+  });
+
+  it("says parsed wrong-type rules are still read, and an HTML page has no rules", () => {
+    const parsed: FetchResult = {
+      ...base,
+      status: "invalid-content-type",
+      contentType: "text/html",
+      body: "User-agent: *\nDisallow: /",
+      robotsExists: true,
+    };
+    const html: FetchResult = { ...base, status: "invalid-content-type", contentType: "text/html", robotsExists: false };
+    const recOf = (f: FetchResult) =>
+      buildAnalysisReport(f, "example.com", AT).recommendations.find((r) => r.id === "fetch-invalid-content-type")!;
+    expect(recOf(parsed).description).toMatch(/still read the rules/);
+    expect(recOf(html).description).toMatch(/no valid rules/);
+  });
+});

@@ -166,20 +166,20 @@ the hub would lose that detail. Only `/crawlers/slurp` is weak (see #13).
 
 ## 5. Validation
 
-Environment: Node 22.16.0, pnpm 11.5.2. `pnpm <script>` fails before running here, because
-pnpm 11's dependency check stops on the `allowBuilds` placeholders in
-`pnpm-workspace.yaml` (an environment issue I left untouched). So I ran each script's
-command directly via `node_modules/.bin` (installed from the lockfile).
+Final run on 2026-10-19, after the release-readiness review (§5a). Node 22.16.0, pnpm
+11.5.2, starting from a clean `rm -rf node_modules .next && pnpm install --frozen-lockfile`
+(the lockfile was unchanged).
 
-| Check | Command | Before (HEAD `3c24407`) | After (this branch) |
+| Check | Command | Before (HEAD `3c24407`) | Final (this branch) |
 | --- | --- | --- | --- |
-| Typecheck | `tsc --noEmit` | pass | pass |
-| Lint | `eslint .` | pass | pass |
-| Unit tests | `vitest run` | 300/300 (38 files) | 352/352 (40 files) |
-| Coverage | `vitest run --coverage` | — | pass the gate (98.0% lines, 91.4% branches) |
-| Build | `next build` | — | pass (71 static pages, 48 sitemap URLs) |
-| E2E | `playwright test` (system Chrome) | — | 42/42; `--repeat-each=5`: 210/210 |
-| SEO smoke audit | `node scripts/seo-smoke-audit.mjs` | production: 36 errors, 2 warnings | local production build: 0 errors, 0 warnings |
+| Install | `pnpm install --frozen-lockfile` | `pnpm <script>` aborted (workspace placeholders) | pass, lockfile unchanged |
+| Lint | `pnpm lint` | pass | pass |
+| Typecheck | `pnpm typecheck` | pass | pass |
+| Unit tests | `pnpm test` | 300/300 (38 files) | 354/354 (40 files) |
+| Coverage | `pnpm test:coverage` | — | gate passes (98.1% lines, 91.7% branches) |
+| Build | `pnpm build` | — | pass (71 static pages, 48 sitemap URLs) |
+| E2E | `pnpm test:e2e --repeat-each=3` (system Chrome) | — | 126/126 (42 tests x 3) |
+| SEO smoke audit | `pnpm seo:audit` against `pnpm start` | production today: 36 errors, 2 warnings | 0 errors, 0 warnings (48 URLs, 48 link targets, 9 redirects) |
 | Prettier | `prettier --check` | 7 touched files were already unformatted at HEAD | new and previously clean files are formatted; those 7 were left as they were |
 
 The production "before" errors include the expected structural ones (the 9 URLs that will
@@ -188,11 +188,62 @@ dynamic pages and identical lastmod on every URL.
 
 One e2e test (`workspace.spec.ts`, "edits in Validate reach the Manager") was racy: it
 read the editor with a one-shot `inputValue()` before the client restored the working
-file. It failed 3 times in 4 repeats after `/validate` grew its server-rendered guide.
+file, and failed 3 times in 4 repeats once `/validate` grew its server-rendered guide.
 It now uses auto-waiting `toHaveValue`.
 
-Not run: Lighthouse/CrUX (no field data here), Google Rich Results Test (external; run
-it on `/validate` after deploy), a live-production audit after deploy (checklist step 6).
+Not run: Lighthouse/CrUX (no field data here), Google Rich Results Test (external; run it
+on `/validate` after deploy), and a live-production audit (deployment step 7).
+
+### 5a. Release-readiness review (2026-10-19)
+
+**Redirects:** all 9 verified on a production build.
+- Each is a single-hop 308 to a sitemap page with a self-canonical. Matching is
+  case-insensitive (`/ROBOTS-TXT-VALIDATOR` → `/validate`). Query strings are kept.
+- A trailing slash takes two hops (`/robots-txt-validator/` → `/robots-txt-validator` →
+  `/validate`); that's Next's standard slash normalisation and is acceptable.
+- No internal link or sitemap entry points at a source (inventory test + smoke audit).
+- `/robots-txt-validator` content is kept on `/validate` (what it checks, severity table,
+  checker-vs-validator, FAQs), now as test-verified examples.
+- `/robots-txt-analyzer` content is kept on `/analyze` (what it reports, how fetch results
+  are handled, competitor FAQ).
+- A legacy link like `/robots-txt-analyzer?domain=x` lands on `/analyze?domain=x`, which
+  starts an analysis of `x`. That's the analyzer's normal deep-link behaviour, and no
+  internal links use it.
+
+**`htmlLimitedBots: /.*/` — kept.**
+- In Next 15.5.19 the option only controls `serveStreamingMetadata`
+  (`next/dist/server/lib/streaming-metadata.js`). Bot detection (`getBotType`) and
+  streaming of page content (the `/analyze` loading state) are unaffected.
+- All three dynamic routes (`/analyze`, `/generate`, `/ai-crawlers`, plus
+  `/analyze?domain=…`) now carry title and canonical in `<head>` for Googlebot desktop,
+  Googlebot smartphone, Chrome, and Bingbot.
+- Their metadata is a static object, so blocking costs nothing: local TTFB is 8–11 ms.
+- Static pages are prerendered and unaffected.
+- The alternative (making those routes static by reading `searchParams` on the client)
+  would mean restructuring three tools. A Googlebot-only regex would leave Google's other
+  user-agents (e.g. Google-InspectionTool) and other engines on streamed metadata.
+
+**`pnpm-workspace.yaml` — fixed.**
+- It had held pnpm's literal `set this to true or false` placeholders since the first
+  commit, so every `pnpm <script>` aborted under pnpm 11.
+- `allowBuilds` is now `esbuild: true`, `unrs-resolver: true`, and `sharp: false`. The
+  prebuilt `@img/sharp-*` binary loads fine; sharp's install script only attempts a
+  from-source build that fails without node-gyp.
+- `onlyBuiltDependencies`, which pnpm 9/10 read and Vercel uses for lockfile v9, is
+  unchanged, so production installs behave as before.
+- No dependency versions changed.
+
+**Corrected during review:**
+- The access matrix showed Google-Extended / Applebot-Extended as red "blocked" crawlers
+  and counted them in "N of M known crawlers get in". That row now reads "opted out" /
+  "not opted out", and the crawler total excludes the control tokens.
+- The `/api/analyze` recommendation for 401/403 said "This site has no robots.txt". It now
+  names the status code and notes Google's advice against 401/403.
+- The wrong-content-type text said crawlers "may ignore it". It now distinguishes rules
+  that are still parsed from an HTML page that contains none. Both are covered by tests.
+
+**Accepted, documented:** over 5 redirect hops is reported as "policy unknown", while
+Google treats it as a 404 (allow-all). That's conservative rather than misleading.
 
 ---
 
@@ -262,23 +313,38 @@ add up to the totals.
    `robotstxtstudio.com` with **308 Permanent** instead of 307.
 
 **D0 (deploy day) — record the date here: ________**
-5. Merge `seo-recovery-2026-10` and deploy.
-6. `node scripts/seo-smoke-audit.mjs https://robotstxtstudio.com` → expect `0 error(s)`.
-7. Spot check: `curl -sI https://robotstxtstudio.com/robots-txt-checker` → `308`,
+5. Review the branch: `git log --oneline main..seo-recovery-2026-10` (4 commits). Re-run
+   `pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && pnpm build`.
+6. Merge and deploy the way you normally do, e.g. `git checkout main && git merge --no-ff
+   seo-recovery-2026-10 && git push origin main`. Vercel builds main. Wait for the
+   deployment to show Ready.
+7. `pnpm seo:audit https://robotstxtstudio.com` → expect `0 error(s)` (read-only, fewer than 100
+   GET requests; it also confirms title and canonical sit in `<head>`).
+8. Spot check: `curl -sI https://robotstxtstudio.com/robots-txt-checker` → `308`,
    `location: /validate`; `curl -s https://robotstxtstudio.com/sitemap.xml | grep -c '<loc>'` → `48`.
-8. GSC → Sitemaps → resubmit `https://robotstxtstudio.com/sitemap.xml`. Confirm "Success"
+9. GSC → Sitemaps → resubmit `https://robotstxtstudio.com/sitemap.xml`. Confirm "Success"
    and 48 discovered URLs (the count may take a day).
-9. GSC → URL Inspection → **Test live URL** for: `/validate`, `/url-tester`,
-   `/what-is-robots-txt`, `/robots-txt-syntax`, `/block-ai-crawlers`. Confirm the fetch
-   succeeds, the user-declared canonical equals the URL, and indexing is allowed.
-   Optionally use **Request indexing** for those 5 only (don't bulk-request).
-10. Inspect one redirect (e.g. `/robots-txt-format`) and confirm it reports the redirect
+10. GSC → URL Inspection → **Test live URL** for `/validate`, `/url-tester`,
+    `/what-is-robots-txt`, `/robots-txt-syntax`, `/block-ai-crawlers`. Confirm the fetch
+    succeeds, the user-declared canonical equals the URL, and indexing is allowed.
+    Optionally use **Request indexing** for those 5 only (don't bulk-request).
+11. Inspect one redirect (e.g. `/robots-txt-format`) and confirm it reports the redirect
     to `/robots-txt-syntax`.
 
-**Rollback:** each redirect is one entry in `src/config/redirects.ts`. To roll one back,
-delete the entry and restore the page with `git checkout 3c24407 -- src/app/<slug>`. Re-add
-its registry entry in `src/config/content.ts` (and a date in `page-dates.ts`; the
-inventory test will remind you). For a full rollback, revert the merge commit.
+**Rollback**
+- **Whole release, fastest:** Vercel → Deployments → previous production deployment →
+  **Instant Rollback**. Then `git revert -m 1 <merge-commit>` on main so the next deploy
+  doesn't reintroduce the release.
+- **One redirect:**
+  1. Delete its entry in `src/config/redirects.ts`.
+  2. Restore the page with `git checkout 3c24407 -- src/app/<slug>`.
+  3. Re-add its registry entry in `src/config/content.ts` and a date in `page-dates.ts`
+     (`pnpm test` fails until both agree).
+  4. Deploy.
+- **Caveats:** browsers cache 308s, so returning visitors may still be redirected until
+  their cache clears. Google re-crawls and picks up the restored 200 on its own schedule.
+  The analyzer score and catalog changes have no data to migrate; reverting the code
+  restores the old behaviour.
 
 ---
 

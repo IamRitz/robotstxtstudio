@@ -28,6 +28,8 @@ export function AccessMatrix({ file, domain }: { file: RobotsFile; domain: strin
         const blocked = crawlers.filter((c) => !c.allowed).map((c) => c.crawler);
         return {
           category,
+          // Control tokens (Google-Extended…) never fetch pages: "blocked" = opted out.
+          isControl: category === "ai-control",
           crawlers,
           blocked,
           allowed: crawlers.length - blocked.length,
@@ -37,10 +39,13 @@ export function AccessMatrix({ file, domain }: { file: RobotsFile; domain: strin
     [file],
   );
 
-  const totals = categories.reduce(
-    (acc, c) => ({ allowed: acc.allowed + c.allowed, total: acc.total + c.total }),
-    { allowed: 0, total: 0 },
-  );
+  // Only real crawlers count toward "get in"; control tokens aren't crawlers.
+  const totals = categories
+    .filter((c) => !c.isControl)
+    .reduce((acc, c) => ({ allowed: acc.allowed + c.allowed, total: acc.total + c.total }), {
+      allowed: 0,
+      total: 0,
+    });
 
   return (
     <Card className="p-6" data-testid="access-matrix">
@@ -51,7 +56,7 @@ export function AccessMatrix({ file, domain }: { file: RobotsFile; domain: strin
         </p>
       </div>
       <div className="space-y-2">
-        {categories.map(({ category, crawlers, blocked, allowed, total }) => (
+        {categories.map(({ category, isControl, crawlers, blocked, allowed, total }) => (
           <details key={category} className="group rounded-lg border border-border">
             <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2.5 [&::-webkit-details-marker]:hidden">
               <ChevronDown
@@ -84,7 +89,9 @@ export function AccessMatrix({ file, domain }: { file: RobotsFile; domain: strin
                     : "text-muted-foreground",
                 )}
               >
-                {blocked.length > 0 ? `${blocked.length} blocked` : `${allowed}/${total} allowed`}
+                {blocked.length > 0
+                  ? `${blocked.length} ${isControl ? "opted out" : "blocked"}`
+                  : `${allowed}/${total} ${isControl ? "not opted out" : "allowed"}`}
               </span>
               {blocked.length > 0 ? (
                 <span className="flex min-w-0 flex-wrap items-center gap-1.5">
@@ -110,7 +117,10 @@ export function AccessMatrix({ file, domain }: { file: RobotsFile; domain: strin
                   <div className="min-w-0 flex-1">
                     <CrawlerBadge name={crawler.name} userAgent={crawler.userAgent} />
                   </div>
-                  <StatusBadge status={isOk ? "allowed" : "blocked"} />
+                  <StatusBadge
+                    status={isOk ? "allowed" : "blocked"}
+                    {...(isControl ? { label: isOk ? "Not opted out" : "Opted out" } : {})}
+                  />
                 </li>
               ))}
             </ul>
