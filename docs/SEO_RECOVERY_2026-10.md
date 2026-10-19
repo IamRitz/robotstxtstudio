@@ -32,12 +32,23 @@ guarantees that any URL will be indexed or will rank.
   found no evidence of external links. "Discovered – currently not indexed" with no crawl
   date means Google found the URLs and chose not to fetch them yet. That pattern is
   common for new sites whose page count runs ahead of their perceived value.
-- **The Phase 19 linking work (June 18) didn't move the backlog.** It stayed at 37 from
-  about Aug 22 to Oct 12. More internal links alone were probably not the constraint, so
-  this sprint changes page *quality and uniqueness* (fewer, stronger URLs) rather than
-  adding more links.
-- **The impressions fall** (3,024 → 1,384 per 28 days) could be ranking drift, demand,
-  query mix, or reprocessing. The exports can't separate these causes.
+- **The Phase 19 linking work (June 18) helped some pages, then stalled.** *(Corrected
+  2026-10-19 using the June 17 drilldown export.)* The backlog fell from 46 (June 17) to
+  37. The 9 URLs that left were `/ai-crawlers-directory`, `/gptbot-robots-txt`,
+  `/claudebot-robots-txt`, `/google-extended-robots-txt`, `/perplexitybot-robots-txt`,
+  `/robots-txt-examples`, `/compare`, `/robots-txt-validator`, and
+  `/robots-txt-analyzer`. All 9 now show impressions, so they were indexed. Six of
+  them had just received homepage links. The backlog has been flat at 37 since Aug 22. So
+  homepage links helped the pages they pointed to, but don't scale to every URL. This
+  sprint therefore reduces the URL count and strengthens pages, and gives the
+  platform guides homepage links.
+- **The impressions fall** (3,024 → 1,384 per 28 days) is concentrated at deep positions
+  (~75–80, i.e. result page 8). Clicks went the other way: 1 click in Jul 17–Aug 13, 0 in
+  Aug 22–Sep 18, and 5 of the 6 total in Sep 19–Oct 16. Daily impressions halved around
+  Sep 1 and again around Sep 17, while clicks didn't fall. That fits fewer counted
+  deep-page impressions (e.g. changes in automated SERP fetching) better than fewer real
+  searchers — but it's a hypothesis the exports can't prove. **So judge this release on
+  clicks, indexing, and top-20 impressions, not raw impressions.**
 
 **Unknown / needs external evidence:** server logs (did Googlebot ever request these
 URLs?), backlinks, the identities of the 1 crawled-not-indexed URL and the 3
@@ -298,14 +309,49 @@ robots txt · block ai bots robots txt · gptbot robots.txt. The Performance pag
 the indexed count are separate reports. Rare queries are anonymized, so query rows don't
 add up to the totals.
 
+### 7a. Pre-deploy evidence (collected 2026-10-19)
+
+Source: the 2026-10-18 Performance export (last 3 months, web) and the 2026-06-17 and
+2026-10-18 indexing drilldowns.
+
+| URL (redirected by this release) | Clicks | Impressions | Avg position | Index status |
+| --- | --- | --- | --- | --- |
+| `/robots-txt-validator` → `/validate` | 0 | 637 | 77.9 | indexed (left "Discovered" after June 17; has impressions) |
+| `/robots-txt-analyzer` → `/analyze` | 1 | 92 | 67.6 | indexed (same) |
+| `/validate` (destination) | 0 | 3,830 | 79.8 | indexed |
+| `/analyze` (destination) | 0 | 75 | 57.7 | indexed |
+
+- The validator query family ("robots.txt validator", "robot.txt validator", "validate
+  robots txt", …) has 2,879 impressions. That's the largest cohort, and it was split
+  across two URLs from this site.
+- "check for robots.txt"-type queries have 548 impressions; `/validate`'s new title
+  includes "Checker".
+- All 6 clicks in the period came from anonymized queries; no named query has a click.
+- **Decision impact: none.** Both pages are indexed, but their traffic is negligible: 1
+  click combined, page-8 rankings. Consolidating the split validator cohort onto one URL
+  is the intended fix.
+- **Measurement:** compare `/validate` + `/robots-txt-validator` combined (4,467
+  impressions) before vs after, not `/validate` alone. Same for `/analyze` +
+  `/robots-txt-analyzer` (167 impressions, 1 click).
+
+**Site-wide 28-day windows** (from the daily chart):
+
+| Window | Clicks | Impressions | CTR | Avg position |
+| --- | --- | --- | --- | --- |
+| Jul 17 – Aug 13 | 1 | 3,024 | 0.03% | 75.0 |
+| Aug 22 – Sep 18 | 0 | 5,842 | 0.00% | 79.5 |
+| **Sep 19 – Oct 16 (pre-deploy baseline)** | **5** | **1,384** | **0.36%** | **73.0** |
+
+Still to collect: the 1 crawled-not-indexed URL and the 3 page-with-redirect URLs. Also
+refresh the 28-day page and query export on deploy day if more than a week passes.
+
 ---
 
 ## 8. Deployment checklist (for your approval — nothing here has been run)
 
 **D-1 (before deploy)**
-1. GSC → Performance → Pages, last 3 months: record clicks and impressions for
-   `/robots-txt-validator` and `/robots-txt-analyzer`. A 308 passes signals either way. If
-   either has meaningful clicks, note it so a week-4 dip isn't misread.
+1. ~~GSC → Performance → Pages: record `/robots-txt-validator` and `/robots-txt-analyzer`~~
+   — done 2026-10-19 (§7a); no impact on the decision.
 2. GSC → Indexing → Pages → open **Crawled – currently not indexed** and **Page with
    redirect** → export both lists (the 1 + 3 URLs). Save them next to the 37-URL file.
 3. Export Performance (Pages + Queries) for the 28 days before deploy (the pre-window).
