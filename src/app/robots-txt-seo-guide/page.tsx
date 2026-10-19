@@ -3,21 +3,22 @@ import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
-  title: "robots.txt for SEO: Best Practices",
+  title: "robots.txt for SEO: Why It Matters and Best Practices",
   description:
-    "How to use robots.txt in technical SEO without hurting indexing: robots.txt vs noindex, crawl budget, assets, and a pre-deploy checklist.",
+    "Why robots.txt matters for SEO and how to use it without hurting indexing: crawling vs indexing, crawl budget, when you need one, AI crawlers, and a pre-deploy checklist.",
   alternates: { canonical: "/robots-txt-seo-guide" },
 };
 
 const page: ContentPage = {
   slug: "robots-txt-seo-guide",
   h1: "robots.txt for SEO: Best Practices",
-  description: "Best practices for using robots.txt in technical SEO without hurting indexing.",
+  description:
+    "Why robots.txt matters and best practices for using it in technical SEO without hurting indexing.",
   lead: (
     <>
       robots.txt is a precision instrument in technical SEO — powerful for crawl control, dangerous
-      when misused for indexing. This guide covers the practices that help, the traps that hurt, and
-      a checklist to run before every deploy.
+      when misused for indexing. This guide covers why it matters, when you need one, the practices
+      that help, the traps that hurt, and a checklist to run before every deploy.
     </>
   ),
   cta: "analyzer",
@@ -51,6 +52,32 @@ const page: ContentPage = {
               <span key="c">robots.txt Disallow for AI user-agents</span>,
             ],
           ],
+        },
+      ],
+    },
+    {
+      id: "why-it-matters",
+      heading: "Why robots.txt matters (and when you need one)",
+      blocks: [
+        {
+          kind: "p",
+          content:
+            "Search engines spend a limited amount of crawling on each site. On large sites, letting crawlers wander through internal search results, faceted filters, and endless calendars means important pages are revisited less often. Small sites rarely hit that limit.",
+        },
+        {
+          kind: "list",
+          items: [
+            "You need one if you want to keep crawlers out of near-infinite URL spaces (e.g. /search, /*?sort=).",
+            "You need one if you want to set a policy for AI training or AI search crawlers.",
+            "It's the standard place to advertise your sitemap.",
+            "A small site that wants everything crawled can skip it — a missing file means allow-all — though a file with just a Sitemap line is good practice.",
+          ],
+        },
+        {
+          kind: "callout",
+          status: "blocked",
+          title: "Failures are silent",
+          body: "A stray Disallow: / left over from staging tells every compliant crawler to skip the whole site. Nothing errors — traffic just declines over the following weeks. Re-check robots.txt after every migration, replatform, or CMS update.",
         },
       ],
     },
@@ -104,17 +131,17 @@ const page: ContentPage = {
         {
           kind: "p",
           content:
-            "Blocking GPTBot or Google-Extended has no effect on your Google Search ranking — those are distinct from Googlebot. You can fully opt out of AI training while remaining 100% visible in search.",
+            "Blocking GPTBot or opting out via Google-Extended has no effect on Google Search — Google documents that Google-Extended is not a ranking signal, and GPTBot is OpenAI's crawler, not Google's. AI search crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot) are a separate choice: blocking them keeps you out of those assistants' cited answers.",
         },
         {
           kind: "p",
           content: (
             <>
               See{" "}
-              <Link href="/why-robots-txt-is-important" className="text-brand hover:underline">
-                why robots.txt is important
+              <Link href="/block-ai-crawlers" className="text-brand hover:underline">
+                how to block AI crawlers
               </Link>{" "}
-              for the strategic view, and manage it in the{" "}
+              for training-vs-search rules you can copy, and manage it in the{" "}
               <Link href="/ai-crawlers" className="text-brand hover:underline">
                 AI Crawler Manager
               </Link>
@@ -170,6 +197,11 @@ const page: ContentPage = {
         "No. It stops crawling, but the URL can still be indexed without content if it's linked elsewhere. To remove it, allow crawling and add noindex, or use a removal request.",
     },
     {
+      question: "Does robots.txt affect crawl budget?",
+      answer:
+        "Yes, on large sites. Disallowing low-value URL spaces leaves more crawling for important pages. Most small sites never hit a crawl-budget limit.",
+    },
+    {
       question: "Should I disallow CSS and JavaScript?",
       answer:
         "No. Google needs to render pages with their CSS and JS. Blocking assets leads to incomplete rendering and can harm rankings.",
@@ -182,14 +214,14 @@ const page: ContentPage = {
   ],
   related: [
     {
-      title: "Why robots.txt is important",
-      href: "/why-robots-txt-is-important",
-      description: "The strategic case.",
+      title: "robots.txt vs noindex",
+      href: "/robots-txt-vs-noindex",
+      description: "Crawling vs indexing, with a decision table.",
     },
     { title: "Robots.txt Analyzer", href: "/analyze", description: "Score and audit a live file." },
     {
-      title: "robots.txt checker",
-      href: "/robots-txt-checker",
+      title: "Robots.txt Validator",
+      href: "/validate",
       description: "Validate before you ship.",
     },
     {

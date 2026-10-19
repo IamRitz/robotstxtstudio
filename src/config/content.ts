@@ -18,13 +18,11 @@ import {
 export const AUTHOR = {
   name: "Robots.txt Studio Editorial",
   role: "Technical SEO & crawling",
-  bio: "We build robots.txt tooling and parse thousands of real-world files. Guides are written by practitioners and reviewed against the Google and RFC 9309 specifications.",
+  bio: "We build and maintain the robots.txt parser, validator, and tester behind these tools. Guides are checked against Google Search Central documentation and RFC 9309, and their worked examples are verified by the same engine.",
   reviewedBy: "Reviewed against Google Search Central and RFC 9309",
 } as const;
 
-/** Content last-reviewed date (single source so updates are consistent). */
-export const CONTENT_UPDATED = "2026-06-08";
-export const CONTENT_PUBLISHED = "2026-06-08";
+// Per-page dates live in src/config/page-dates.ts (one site-wide date was inaccurate).
 
 export type ToolId = "generator" | "validator" | "analyzer" | "tester" | "ai-manager" | "explainer";
 
@@ -107,11 +105,6 @@ export const EDU_PAGES: readonly EduPageMeta[] = [
       "A plain-English guide to what a robots.txt file is, what it does, and what it doesn't.",
   },
   {
-    slug: "robots-txt-file",
-    title: "The robots.txt File",
-    description: "Where the robots.txt file lives, what goes in it, and how to create one.",
-  },
-  {
     slug: "how-does-robots-txt-work",
     title: "How Does robots.txt Work?",
     description:
@@ -122,12 +115,6 @@ export const EDU_PAGES: readonly EduPageMeta[] = [
     title: "robots.txt Syntax",
     description:
       "Every directive explained: User-agent, Allow, Disallow, Sitemap, Crawl-delay, wildcards.",
-  },
-  {
-    slug: "robots-txt-format",
-    title: "robots.txt Format",
-    description:
-      "What a correct robots.txt file looks like: structure, encoding, and formatting rules.",
   },
   {
     slug: "how-to-find-robots-txt",
@@ -151,20 +138,9 @@ export const EDU_PAGES: readonly EduPageMeta[] = [
     description: "How to reference your XML sitemap from robots.txt the right way.",
   },
   {
-    slug: "why-robots-txt-is-important",
-    title: "Why robots.txt Is Important",
-    description:
-      "What robots.txt does for crawl budget, SEO, and AI access — and the risks of getting it wrong.",
-  },
-  {
     slug: "robots-txt-seo-guide",
     title: "robots.txt for SEO",
     description: "Best practices for using robots.txt in technical SEO without hurting indexing.",
-  },
-  {
-    slug: "robots-txt-checker",
-    title: "robots.txt Checker",
-    description: "How to check, validate, and audit a robots.txt file — and the tools to do it.",
   },
 ];
 
@@ -179,7 +155,9 @@ export function eduPath(slug: string): string {
 }
 
 /** Transactional / programmatic SEO pages (Phase 12C), grouped for the footer + sitemap. */
-export type SeoPageGroup = "crawler" | "cms" | "comparison" | "landing" | "hub";
+// The former "landing" group (/robots-txt-generator etc.) was consolidated into the
+// tool pages in the 2026-10 SEO recovery — see src/config/redirects.ts.
+export type SeoPageGroup = "crawler" | "cms" | "comparison" | "hub";
 
 export interface SeoPageMeta {
   readonly slug: string;
@@ -214,12 +192,6 @@ export const SEO_PAGES: readonly SeoPageMeta[] = [
   { slug: "nextjs-robots-txt", title: "Next.js robots.txt", group: "cms" },
   // Comparisons
   { slug: "robots-txt-vs-noindex", title: "robots.txt vs noindex", group: "comparison" },
-  { slug: "robots-txt-vs-sitemap", title: "robots.txt vs sitemap", group: "comparison" },
-  // Tool landing pages
-  { slug: "robots-txt-generator", title: "Robots.txt Generator", group: "landing" },
-  { slug: "robots-txt-validator", title: "Robots.txt Validator", group: "landing" },
-  { slug: "robots-txt-analyzer", title: "Robots.txt Analyzer", group: "landing" },
-  { slug: "robots-txt-tester", title: "Robots.txt Tester", group: "landing" },
 ];
 
 export function seoPath(slug: string): string {

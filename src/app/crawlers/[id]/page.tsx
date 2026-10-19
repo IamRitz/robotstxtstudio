@@ -13,7 +13,6 @@ import {
   type CrawlerProfile,
 } from "@/config/crawler-directory";
 import type { Crawler } from "@/types";
-import { howToSchema } from "@/lib/seo";
 
 export function generateStaticParams() {
   return PROFILE_IDS.map((id) => ({ id }));
@@ -204,30 +203,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     faqs: profile.faqs,
     related: relatedLinks(profile),
     nextReading: { title: "Crawler Directory", href: "/crawlers" },
-    extraSchema: [
-      howToSchema(
-        `How to block ${crawler.name} in robots.txt`,
-        `Stop ${crawler.name} (${crawler.owner}) from crawling your site by adding a rule to your robots.txt file.`,
-        [
-          {
-            name: "Open robots.txt",
-            text: "Open (or create) the robots.txt file at the root of your domain, e.g. https://example.com/robots.txt.",
-          },
-          {
-            name: "Add the crawler group",
-            text: `Add a new line: User-agent: ${crawler.userAgent}`,
-          },
-          {
-            name: "Disallow the crawler",
-            text: "On the next line add Disallow: / to block your entire site, or list specific paths to block only those.",
-          },
-          {
-            name: "Verify the rule",
-            text: "Save the file and confirm the crawler is blocked using the Robots.txt Analyzer or URL Tester.",
-          },
-        ],
-      ),
-    ],
   };
 
   return <SeoContentLayout page={page} />;

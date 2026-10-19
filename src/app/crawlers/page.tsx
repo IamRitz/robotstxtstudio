@@ -159,9 +159,9 @@ const page: ContentPage = {
       description: "See who can crawl any live site.",
     },
     {
-      title: "Why robots.txt Is Important",
-      href: "/why-robots-txt-is-important",
-      description: "The case for crawler control.",
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
+      description: "Why crawler control matters, and when you need it.",
     },
   ],
   nextReading: { title: "AI Crawler Directory", href: "/ai-crawlers-directory" },

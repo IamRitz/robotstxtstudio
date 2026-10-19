@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { EDU_PAGES, eduPath } from "@/config/content";
+import { pageDates } from "@/config/page-dates";
 import { AppShell } from "@/components/app-shell";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { AuthorBox, AuthorByline } from "./author-box";
@@ -31,7 +32,7 @@ export function SeoContentLayout({ page }: { page: ContentPage }) {
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.h1}</h1>
         <p className="mt-3 max-w-2xl text-base text-muted-foreground">{page.lead}</p>
         <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <AuthorByline />
+          <AuthorByline updated={pageDates(`/${page.slug}`)?.modified} />
           {page.heroCta ? (
             <div className="w-full sm:max-w-xs">
               <ToolCTA tool={page.heroCta} variant="compact" />

@@ -165,8 +165,8 @@ const page: ContentPage = {
       description: "Validate your generated output.",
     },
     {
-      title: "robots.txt format",
-      href: "/robots-txt-format",
+      title: "robots.txt syntax and format",
+      href: "/robots-txt-syntax",
       description: "What correct output looks like.",
     },
     {

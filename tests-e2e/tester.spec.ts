@@ -7,7 +7,7 @@ test("test a URL and view the verdict, matched rule, and trace", async ({ page }
   // Default: GPTBot vs /admin/login against a file that blocks GPTBot → BLOCKED.
   await expect(page.getByText(/is blocked from \/admin\/login/)).toBeVisible();
   await expect(page.getByText("Matched rule")).toBeVisible();
-  await expect(page.getByText("Rule trace")).toBeVisible();
+  await expect(page.getByText("Rule trace", { exact: true })).toBeVisible();
   await expect(page.getByText("1. Match user-agent")).toBeVisible();
   await expect(page.getByText("4. Decision")).toBeVisible();
 });

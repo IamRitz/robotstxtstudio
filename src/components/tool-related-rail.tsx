@@ -6,7 +6,7 @@ import { TOOLS, type ToolId } from "@/config/content";
 import { siblingTools, toolGuides, type LinkItem } from "@/lib/internal-links";
 import { softwareAppSchema } from "@/lib/seo";
 
-/** Feature bullets per tool, for the SoftwareApplication rich result. */
+/** Feature bullets per tool, for SoftwareApplication JSON-LD (describe visible features only). */
 const TOOL_FEATURES: Record<ToolId, readonly string[]> = {
   generator: [
     "Starter presets for blogs, SaaS, and e-commerce",
@@ -22,7 +22,7 @@ const TOOL_FEATURES: Record<ToolId, readonly string[]> = {
   ],
   analyzer: [
     "Fetch and audit any live robots.txt",
-    "Crawler visibility score",
+    "Search visibility score (AI policy shown separately)",
     "Search vs AI crawler breakdown",
     "Exportable audit report",
   ],
@@ -46,7 +46,7 @@ const TOOL_FEATURES: Record<ToolId, readonly string[]> = {
   ],
 };
 
-/** SoftwareApplication JSON-LD for a tool page (rich-result eligible). */
+/** SoftwareApplication JSON-LD for a tool page (describes the visible tool; no ratings are claimed). */
 export function toolAppSchema(tool: ToolId): Record<string, unknown> {
   const t = TOOLS[tool];
   return softwareAppSchema({

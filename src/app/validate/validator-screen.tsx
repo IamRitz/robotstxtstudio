@@ -353,7 +353,7 @@ export function ValidatorScreen() {
     <div>
       <PageHeader
         breadcrumb={["Robots.txt Studio", "Validate"]}
-        title="Validate robots.txt"
+        title="Robots.txt Validator"
         subtitle="Audit, jump to the exact line, fix in one click, and watch the score recover."
       />
 

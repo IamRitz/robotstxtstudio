@@ -3,9 +3,9 @@ import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
-  title: "What Is robots.txt? A Plain-English Guide",
+  title: "What Is robots.txt? What It Does and How to Create One",
   description:
-    "What a robots.txt file is, what it does (and doesn't do), and how it controls which crawlers can access your website — with examples.",
+    "What a robots.txt file is, what it does and doesn't do, where it must live, and how to create one on any platform — with a working example file.",
   alternates: { canonical: "/what-is-robots-txt" },
 };
 
@@ -132,6 +132,94 @@ const page: ContentPage = {
       ],
     },
     {
+      id: "location",
+      heading: "Where the robots.txt file lives",
+      blocks: [
+        {
+          kind: "p",
+          content:
+            "Crawlers check exactly one location per host: the root. The file must answer at /robots.txt with a 200 status. Each protocol, host, and subdomain is separate.",
+        },
+        {
+          kind: "list",
+          items: [
+            "https://example.com/robots.txt — read by crawlers.",
+            "https://example.com/blog/robots.txt — ignored; files in subdirectories don't count.",
+            "https://shop.example.com/robots.txt — needed separately; each subdomain has its own.",
+            "http:// and www. variants are different hosts — usually they redirect to your canonical host, and crawlers follow the redirect.",
+          ],
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              To look up any site&apos;s file (yours or a competitor&apos;s), see{" "}
+              <Link href="/how-to-find-robots-txt" className="text-brand hover:underline">
+                how to find robots.txt
+              </Link>
+              .
+            </>
+          ),
+        },
+      ],
+    },
+    {
+      id: "create",
+      heading: "How to create a robots.txt file",
+      blocks: [
+        {
+          kind: "list",
+          ordered: true,
+          items: [
+            "Start with a default group: User-agent: * plus any paths you don't want crawled (cart, internal search, admin).",
+            "Add groups for crawlers you want to treat differently — for example AI training crawlers.",
+            "Add a Sitemap line with the absolute URL of your XML sitemap.",
+            "Save it as plain UTF-8 text named exactly robots.txt and serve it from your web root.",
+            "Validate it, test a few important URLs, and re-check the live URL after deploying.",
+          ],
+        },
+        {
+          kind: "snippet",
+          code: "# Default policy\nUser-agent: *\nDisallow: /cart/\nDisallow: /checkout/\n\n# Keep AI training crawlers out\nUser-agent: GPTBot\nUser-agent: ClaudeBot\nDisallow: /\n\nSitemap: https://example.com/sitemap.xml",
+          caption: "A practical starting file",
+        },
+        {
+          kind: "p",
+          content: (
+            <>
+              How you publish it depends on the platform:{" "}
+              <Link href="/wordpress-robots-txt" className="text-brand hover:underline">
+                WordPress
+              </Link>{" "}
+              serves a virtual file you edit through an SEO plugin,{" "}
+              <Link href="/shopify-robots-txt" className="text-brand hover:underline">
+                Shopify
+              </Link>{" "}
+              uses a robots.txt.liquid template, and{" "}
+              <Link href="/nextjs-robots-txt" className="text-brand hover:underline">
+                Next.js
+              </Link>{" "}
+              can generate it from app/robots.ts. To skip hand-writing, build it in the{" "}
+              <Link href="/generate" className="text-brand hover:underline">
+                Generator
+              </Link>{" "}
+              and check it in the{" "}
+              <Link href="/validate" className="text-brand hover:underline">
+                Validator
+              </Link>
+              .
+            </>
+          ),
+        },
+        {
+          kind: "callout",
+          status: "warning",
+          title: "Watch for an HTML page at /robots.txt",
+          body: "If /robots.txt returns your site's HTML (a soft 404 or app shell) with status 200, crawlers find no valid rules in it — so none of your intended rules exist. Check the live URL serves plain text.",
+        },
+      ],
+    },
+    {
       id: "mistakes",
       heading: "Common misconceptions",
       blocks: [
@@ -172,6 +260,11 @@ const page: ContentPage = {
         "No. robots.txt controls crawling at the site level (in a file). The robots meta tag (and X-Robots-Tag header) controls indexing at the page level. To keep a page out of Google, use the meta tag, not robots.txt.",
     },
     {
+      question: "How do I create a robots.txt file?",
+      answer:
+        "Write the rules in a plain-text file named robots.txt and serve it from the root of your host so it loads at /robots.txt. Platforms like WordPress and Shopify generate one you can customize; the Generator can produce a valid file to download.",
+    },
+    {
       question: "Where is the robots.txt file located?",
       answer:
         "Always at the root of the host: https://example.com/robots.txt. A robots.txt in a subdirectory is ignored. Each subdomain needs its own.",
@@ -179,9 +272,9 @@ const page: ContentPage = {
   ],
   related: [
     {
-      title: "The robots.txt file",
-      href: "/robots-txt-file",
-      description: "Where it lives and what goes in it.",
+      title: "robots.txt examples",
+      href: "/robots-txt-examples",
+      description: "Complete files to copy for common sites.",
     },
     {
       title: "How robots.txt works",

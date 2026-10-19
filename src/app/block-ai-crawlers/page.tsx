@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
-import { howToSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "How to Block AI Crawlers in robots.txt (GPTBot, ClaudeBot & More)",
@@ -58,26 +57,6 @@ const page: ContentPage = {
     </>
   ),
   cta: "validator",
-  extraSchema: [
-    howToSchema(
-      "How to block AI crawlers in robots.txt",
-      "Add a robots.txt group listing the AI crawler user-agents with Disallow: /, then verify the rules with a robots.txt analyzer.",
-      [
-        {
-          name: "Decide training vs. search",
-          text: "Choose whether to block only AI training crawlers (GPTBot, ClaudeBot, CCBot, Google-Extended) or also AI search crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot), which can send referral traffic.",
-        },
-        {
-          name: "Add the blocking group to robots.txt",
-          text: "List each AI user-agent on its own User-agent line, followed by a single Disallow: / line. Keep your User-agent: * group separate so search engines remain allowed.",
-        },
-        {
-          name: "Upload and verify",
-          text: "Place the file at https://yourdomain.com/robots.txt, then run the domain through a robots.txt analyzer to confirm each AI crawler resolves to Blocked while Googlebot stays Allowed.",
-        },
-      ],
-    ),
-  ],
   sections: [
     {
       id: "quick-answer",
@@ -295,7 +274,7 @@ const page: ContentPage = {
     {
       question: "Does blocking AI crawlers hurt my Google ranking?",
       answer:
-        "No. AI crawlers (GPTBot, ClaudeBot, CCBot, Google-Extended) use separate user-agents from Googlebot and Bingbot. You can block all of them and remain fully indexed and ranked in search. Google explicitly documents that Google-Extended has no effect on Search.",
+        "No. AI training crawlers (GPTBot, ClaudeBot, CCBot) use separate user-agents from Googlebot and Bingbot, and Google-Extended is a separate robots.txt token rather than a crawler. You can block all of them and remain eligible for search indexing. Google explicitly documents that Google-Extended has no effect on Search inclusion or ranking.",
     },
     {
       question: "How do I block all AI bots at once?",

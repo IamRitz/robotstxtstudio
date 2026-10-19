@@ -4,7 +4,10 @@ test("home renders the hero and tool grid", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "Who Can See Your Website?" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Check your robots.txt: who can crawl your site?",
+    }),
   ).toBeVisible();
   await expect(page.getByRole("button", { name: "Analyze My Site" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "AI Crawler Manager" })).toBeVisible();

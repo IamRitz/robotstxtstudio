@@ -33,7 +33,7 @@ const SOLUTION_LINKS: ReadonlyArray<{ href: Route; label: string }> = [
   { href: "/gptbot-robots-txt", label: "Block GPTBot" },
   { href: "/wordpress-robots-txt", label: "WordPress robots.txt" },
   { href: "/robots-txt-vs-noindex", label: "robots.txt vs noindex" },
-  { href: "/robots-txt-generator", label: "Generator (guide)" },
+  { href: "/robots-txt-sitemap", label: "robots.txt & sitemaps" },
 ];
 
 /** Site footer: brand mark, tool + guide links, copyright. Surfaces the educational

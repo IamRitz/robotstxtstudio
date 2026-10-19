@@ -162,9 +162,9 @@ const page: ContentPage = {
     },
     { title: "URL Tester", href: "/url-tester", description: "Check if a page is crawlable." },
     {
-      title: "robots.txt vs sitemap",
-      href: "/robots-txt-vs-sitemap",
-      description: "Another key distinction.",
+      title: "robots.txt and sitemaps",
+      href: "/robots-txt-sitemap",
+      description: "Restricting vs advertising URLs.",
     },
     {
       title: "Robots.txt Analyzer",
@@ -172,7 +172,7 @@ const page: ContentPage = {
       description: "Audit crawl rules on a live site.",
     },
   ],
-  nextReading: { title: "robots.txt vs sitemap", href: "/robots-txt-vs-sitemap" },
+  nextReading: { title: "robots.txt and sitemaps", href: "/robots-txt-sitemap" },
 };
 
 export default function Page() {

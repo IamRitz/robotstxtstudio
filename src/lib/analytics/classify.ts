@@ -15,6 +15,8 @@ export type PageType =
   | "ai-hub"
   | "glossary"
   | "template"
+  /** Retired 2026-10: the /robots-txt-* tool landings now redirect to the tools. Kept
+   *  so historical events still type-check in dashboards/exports. */
   | "tool-landing"
   | "comparison"
   | "cms"
@@ -30,9 +32,6 @@ const TOOL_PATHS = new Set([
   "/explain",
 ]);
 const TRUST_PATHS = new Set(["/about", "/contact", "/privacy", "/terms", "/methodology"]);
-const LANDING_PATHS = new Set(
-  SEO_PAGES.filter((p) => p.group === "landing").map((p) => `/${p.slug}`),
-);
 const CMS_PATHS = new Set(SEO_PAGES.filter((p) => p.group === "cms").map((p) => `/${p.slug}`));
 const COMPARISON_PATHS = new Set(
   SEO_PAGES.filter((p) => p.group === "comparison").map((p) => `/${p.slug}`),
@@ -47,7 +46,6 @@ export function classifyPath(path: string): PageType {
   if (path === "/ai-crawlers-directory") return "ai-hub";
   if (path === "/robots-txt-glossary") return "glossary";
   if (path === "/robots-txt-templates") return "template";
-  if (LANDING_PATHS.has(path)) return "tool-landing";
   if (COMPARISON_PATHS.has(path)) return "comparison";
   if (CMS_PATHS.has(path)) return "cms";
   // Remaining SEO_PAGES (crawler-specific transactional pages) + everything else → guide-ish.

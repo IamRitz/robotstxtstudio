@@ -39,7 +39,8 @@ export const metadata: Metadata = {
     "claudebot robots.txt",
     "perplexitybot robots.txt",
   ],
-  alternates: { canonical: "/" },
+  // No site-wide canonical: a default here would make every page that forgets its
+  // own `alternates` canonicalize to the homepage. Each route declares its own.
   openGraph: {
     type: "website",
     siteName: "Robots.txt Studio",
