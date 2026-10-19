@@ -78,8 +78,8 @@ export function TesterScreen() {
     <div>
       <PageHeader
         breadcrumb={["Robots.txt Studio", "URL Tester"]}
-        title="Test a URL"
-        subtitle="Simulate how any crawler reads your robots.txt and understand exactly why a URL is blocked or allowed."
+        title="Robots.txt Tester"
+        subtitle="Check whether a URL is blocked or allowed for any crawler, and see exactly which rule decided it."
       />
 
       <Card className="mb-6 grid gap-4 p-4 sm:grid-cols-2">

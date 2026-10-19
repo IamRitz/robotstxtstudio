@@ -30,10 +30,15 @@ function fakeResponse(init: FakeInit = {}): Response {
   } as unknown as Response;
 }
 
-const returning = (resp: Response): FetchLike => async () => resp;
-const throwing = (error: Error): FetchLike => async () => {
-  throw error;
-};
+const returning =
+  (resp: Response): FetchLike =>
+  async () =>
+    resp;
+const throwing =
+  (error: Error): FetchLike =>
+  async () => {
+    throw error;
+  };
 
 /** Permissive DNS so the SSRF guard treats every test host as a public address. */
 const publicLookup: LookupFn = async () => [{ address: "93.184.216.34", family: 4 }];
@@ -51,8 +56,15 @@ const opts = (fetchFn: FetchLike, extra: Record<string, unknown> = {}) => ({
 
 describe("fetchRobots", () => {
   it("returns ok with the body for a text/plain 200", async () => {
-    const result = await fetchRobots(URL_, opts(returning(fakeResponse({ body: "User-agent: *\nDisallow:" }))));
-    expect(result).toMatchObject({ status: "ok", robotsExists: true, body: "User-agent: *\nDisallow:" });
+    const result = await fetchRobots(
+      URL_,
+      opts(returning(fakeResponse({ body: "User-agent: *\nDisallow:" }))),
+    );
+    expect(result).toMatchObject({
+      status: "ok",
+      robotsExists: true,
+      body: "User-agent: *\nDisallow:",
+    });
   });
 
   it("handles an empty file (200, no body)", async () => {
@@ -65,13 +77,70 @@ describe("fetchRobots", () => {
     expect(result).toMatchObject({ status: "not-found", robotsExists: false, httpStatus: 404 });
   });
 
-  it("flags HTML responses as invalid content-type", async () => {
-    const result = await fetchRobots(URL_, opts(returning(fakeResponse({ contentType: "text/html" }))));
+  it("flags an HTML page as invalid content-type with no usable body", async () => {
+    const html = "<!DOCTYPE html><html><body>Not found</body></html>";
+    const result = await fetchRobots(
+      URL_,
+      opts(returning(fakeResponse({ contentType: "text/html", body: html }))),
+    );
     expect(result).toMatchObject({ status: "invalid-content-type", robotsExists: false });
+    expect(result.body).toBeUndefined();
+  });
+
+  it.each([
+    "<!-- served by edge -->\n<!DOCTYPE html><html><body>404</body></html>",
+    '\uFEFF<html lang="en"><head></head><body></body></html>',
+    '<?xml version="1.0"?>\n<html xmlns="http://www.w3.org/1999/xhtml"></html>',
+  ])("recognizes HTML even when it doesn't start with the doctype (%#)", async (html) => {
+    const result = await fetchRobots(
+      URL_,
+      opts(returning(fakeResponse({ contentType: "text/html", body: html }))),
+    );
+    expect(result).toMatchObject({ status: "invalid-content-type", robotsExists: false });
+    expect(result.body).toBeUndefined();
+  });
+
+  it("doesn't mistake a commented mention of <html> in real rules for an HTML page", async () => {
+    const body = "# see <html> docs\nUser-agent: *\nDisallow: /tmp/";
+    const result = await fetchRobots(
+      URL_,
+      opts(returning(fakeResponse({ contentType: "application/octet-stream", body }))),
+    );
+    expect(result).toMatchObject({ status: "invalid-content-type", robotsExists: true, body });
+  });
+
+  it("keeps real rules served with the wrong content-type (crawlers ignore the header)", async () => {
+    const result = await fetchRobots(
+      URL_,
+      opts(
+        returning(fakeResponse({ contentType: "text/html", body: "User-agent: *\nDisallow: /" })),
+      ),
+    );
+    expect(result).toMatchObject({
+      status: "invalid-content-type",
+      robotsExists: true,
+      body: "User-agent: *\nDisallow: /",
+    });
+  });
+
+  it.each([401, 403, 410])(
+    "maps %i to not-found (RFC 9309: 4xx means no robots.txt)",
+    async (code) => {
+      const result = await fetchRobots(URL_, opts(returning(fakeResponse({ status: code }))));
+      expect(result).toMatchObject({ status: "not-found", robotsExists: false, httpStatus: code });
+    },
+  );
+
+  it("maps 429 to network-error, never to an implicit allow-all", async () => {
+    const result = await fetchRobots(URL_, opts(returning(fakeResponse({ status: 429 }))));
+    expect(result).toMatchObject({ status: "network-error", httpStatus: 429 });
   });
 
   it("flags responses over the byte cap as too-large and truncates", async () => {
-    const result = await fetchRobots(URL_, opts(returning(fakeResponse({ body: "x".repeat(100) })), { maxBytes: 10 }));
+    const result = await fetchRobots(
+      URL_,
+      opts(returning(fakeResponse({ body: "x".repeat(100) })), { maxBytes: 10 }),
+    );
     expect(result.status).toBe("too-large");
     expect(result.body).toHaveLength(10);
   });
@@ -82,10 +151,17 @@ describe("fetchRobots", () => {
       call += 1;
       return call === 1
         ? fakeResponse({ status: 301, location: "https://www.example.com/robots.txt" })
-        : fakeResponse({ url: "https://www.example.com/robots.txt", body: "User-agent: *\nDisallow:" });
+        : fakeResponse({
+            url: "https://www.example.com/robots.txt",
+            body: "User-agent: *\nDisallow:",
+          });
     };
     const result = await fetchRobots(URL_, opts(fetchFn));
-    expect(result).toMatchObject({ status: "ok", redirected: true, finalUrl: "https://www.example.com/robots.txt" });
+    expect(result).toMatchObject({
+      status: "ok",
+      redirected: true,
+      finalUrl: "https://www.example.com/robots.txt",
+    });
   });
 
   it("maps a 5xx to network-error", async () => {
@@ -125,7 +201,10 @@ describe("fetchRobots", () => {
       called = true;
       return fakeResponse();
     };
-    const result = await fetchRobots("http://127.0.0.1/robots.txt", { fetchFn, lookupFn: publicLookup });
+    const result = await fetchRobots("http://127.0.0.1/robots.txt", {
+      fetchFn,
+      lookupFn: publicLookup,
+    });
     expect(result.status).toBe("network-error");
     expect(called).toBe(false);
   });
@@ -138,7 +217,8 @@ describe("fetchRobots", () => {
         : [{ address: "93.184.216.34", family: 4 }];
     let secondFetched = false;
     const fetchFn: FetchLike = async (url) => {
-      if (url === URL_) return fakeResponse({ status: 302, location: "http://internal.evil.test/robots.txt" });
+      if (url === URL_)
+        return fakeResponse({ status: 302, location: "http://internal.evil.test/robots.txt" });
       secondFetched = true;
       return fakeResponse({ body: "secret" });
     };
@@ -162,8 +242,7 @@ describe("fetchRobots", () => {
   });
 
   it("stops after too many redirects", async () => {
-    const fetchFn: FetchLike = async (url) =>
-      fakeResponse({ status: 302, location: `${url}x` });
+    const fetchFn: FetchLike = async (url) => fakeResponse({ status: 302, location: `${url}x` });
     const result = await fetchRobots(URL_, { fetchFn, lookupFn: publicLookup, maxRedirects: 2 });
     expect(result.status).toBe("network-error");
     expect(result.error).toMatch(/too many redirects/i);

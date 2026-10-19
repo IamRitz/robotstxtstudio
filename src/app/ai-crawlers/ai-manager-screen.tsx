@@ -2,7 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, FileText, Megaphone, Search, ShieldCheck } from "lucide-react";
-import { CATEGORY_LABELS, CATEGORY_ORDER, crawlersByCategory, getCrawler } from "@/config/crawlers";
+import {
+  AI_CATEGORIES,
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  crawlersByCategory,
+  getCrawler,
+} from "@/config/crawlers";
 import { TEMPLATE_LABELS } from "@/features/generator";
 import {
   analyzePolicySet,
@@ -278,8 +284,8 @@ export function AiManagerScreen({
   };
 
   // Do the bulk buttons reflect reality? (Every AI crawler explicitly decided.)
-  const aiStates = [...crawlersByCategory("ai-training"), ...crawlersByCategory("ai-search")].map(
-    (c) => getPermission(policySet, c.id),
+  const aiStates = AI_CATEGORIES.flatMap((cat) => crawlersByCategory(cat)).map((c) =>
+    getPermission(policySet, c.id),
   );
   const allAiBlocked = aiStates.every((st) => st === "block");
   const allAiAllowed = aiStates.every((st) => st === "allow");

@@ -82,12 +82,17 @@ export interface HealthScore extends Score {
   };
 }
 
-/** The Analyzer's visibility score with access breakdown (Screen 2). */
+/**
+ * The Analyzer's search visibility score (Screen 2). `value` covers search-engine
+ * access + file health only; the AI percentages are policy readouts, not inputs.
+ */
 export interface VisibilityScore extends Score {
   /** % of search-engine crawlers allowed. */
   readonly searchEngineAccess: number;
-  /** % of AI crawlers allowed. */
-  readonly aiCrawlerAccess: number;
+  /** % of AI search crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot) allowed. */
+  readonly aiSearchAccess: number;
+  /** % of AI training crawlers + AI control tokens allowed (not opted out). */
+  readonly aiTrainingAccess: number;
   /** % of rules/lines with detected problems. */
   readonly errorRate: number;
 }

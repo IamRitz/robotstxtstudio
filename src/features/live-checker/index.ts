@@ -18,4 +18,5 @@ export { isPrivateIp, checkHostAllowed, type LookupFn, type HostCheck } from "./
 export { buildAnalysisReport } from "./domain/report";
 export { computeBreakdown } from "./domain/breakdown";
 export { computeVisibility } from "./domain/visibility";
+export { policyStatusOf } from "./domain/policy-status";
 export { buildRecommendations, recommendedActionFor } from "./domain/recommendations";

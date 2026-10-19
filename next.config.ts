@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
+import { CONSOLIDATED_REDIRECTS } from "./src/config/redirects";
 
 /**
  * Content-Security-Policy.
@@ -88,8 +89,21 @@ const nextConfig = (phase: string): NextConfig => {
     typedRoutes: true,
     // Don't leak the framework version in the response headers.
     poweredByHeader: false,
+    // Next 15.2+ streams metadata into <body> for clients it doesn't consider
+    // "HTML-limited" — including Googlebot — on dynamic routes (/analyze, /generate,
+    // /ai-crawlers read searchParams). Google only honors rel=canonical in <head>, so
+    // block on metadata for every user-agent. Metadata here is static: no real cost.
+    htmlLimitedBots: /.*/,
     async headers() {
       return [{ source: "/:path*", headers: securityHeaders(isDev) }];
+    },
+    // Consolidated duplicate-intent pages (docs/SEO_RECOVERY_2026-10.md).
+    async redirects() {
+      return CONSOLIDATED_REDIRECTS.map(({ source, destination }) => ({
+        source,
+        destination,
+        permanent: true,
+      }));
     },
   };
 };

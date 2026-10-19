@@ -3,9 +3,9 @@ import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
-  title: "How to Add a Sitemap to robots.txt",
+  title: "robots.txt and Sitemaps: How to Add One, and How They Differ",
   description:
-    "How to reference your XML sitemap from robots.txt correctly — absolute URLs, multiple sitemaps, sitemap index files, and common mistakes.",
+    "How to reference your XML sitemap from robots.txt correctly — absolute URLs, multiple sitemaps, index files — and how robots.txt and a sitemap differ and work together.",
   alternates: { canonical: "/robots-txt-sitemap" },
 };
 
@@ -22,6 +22,33 @@ const page: ContentPage = {
   ),
   cta: "generator",
   sections: [
+    {
+      id: "vs",
+      heading: "robots.txt vs sitemap: restriction vs suggestion",
+      blocks: [
+        {
+          kind: "p",
+          content:
+            "robots.txt tells crawlers which paths they may not request. An XML sitemap lists the URLs you want crawled. One subtracts, the other adds — most sites benefit from both, and the Sitemap line in robots.txt is where they connect.",
+        },
+        {
+          kind: "table",
+          head: ["", "robots.txt", "XML sitemap"],
+          rows: [
+            ["Purpose", "Restrict crawling", "Advertise URLs to crawl"],
+            ["Format", "Plain-text directives", "XML list of URLs"],
+            ["Location", "/robots.txt (fixed)", "Any URL, e.g. /sitemap.xml"],
+            ["Guarantees indexing?", "No", "No — it's a hint"],
+          ],
+        },
+        {
+          kind: "callout",
+          status: "warning",
+          title: "Don't contradict yourself",
+          body: "Don't list URLs in the sitemap that robots.txt blocks, or redirecting and noindexed URLs. A sitemap should contain only canonical pages that return 200.",
+        },
+      ],
+    },
     {
       id: "basics",
       heading: "The Sitemap directive",
@@ -156,8 +183,8 @@ const page: ContentPage = {
       description: "Add a sitemap automatically.",
     },
     {
-      title: "robots.txt format",
-      href: "/robots-txt-format",
+      title: "robots.txt syntax",
+      href: "/robots-txt-syntax",
       description: "Where file-level directives go.",
     },
     {
@@ -166,9 +193,9 @@ const page: ContentPage = {
       description: "Sitemaps in your SEO workflow.",
     },
     {
-      title: "robots.txt vs sitemap",
-      href: "/robots-txt-vs-sitemap",
-      description: "How the two files differ.",
+      title: "robots.txt vs noindex",
+      href: "/robots-txt-vs-noindex",
+      description: "Crawling vs indexing controls.",
     },
   ],
 };

@@ -42,9 +42,9 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
   ],
   validator: [
     {
-      title: "robots.txt Checker",
-      href: "/robots-txt-checker",
-      description: "How to audit a robots.txt file.",
+      title: "robots.txt vs noindex",
+      href: "/robots-txt-vs-noindex",
+      description: "Blocking isn't de-indexing.",
     },
     {
       title: "robots.txt Syntax",
@@ -69,8 +69,8 @@ const TOOL_GUIDE_LINKS: Record<ToolId, readonly LinkItem[]> = {
       description: "Locate any site's file.",
     },
     {
-      title: "Why robots.txt Is Important",
-      href: "/why-robots-txt-is-important",
+      title: "robots.txt for SEO",
+      href: "/robots-txt-seo-guide",
       description: "What an audit protects.",
     },
     {

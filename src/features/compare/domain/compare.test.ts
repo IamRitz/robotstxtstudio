@@ -64,4 +64,24 @@ describe("buildComparison", () => {
     expect(gpt.before).toBe("blocked");
     expect(gpt.after).toBe("allowed");
   });
+
+  // The README's "policy regression" example: a training block edited to also list an
+  // AI search crawler must surface as an access change, and a search-engine block
+  // must show up in the overall visibility delta.
+  it("surfaces an AI search crawler newly caught by a training block", () => {
+    const before = "User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /";
+    const after = "User-agent: GPTBot\nUser-agent: OAI-SearchBot\nDisallow: /\n\nUser-agent: *\nAllow: /";
+    const c = buildComparison(before, after);
+    const change = c.crawlerChanges.find((r) => r.id === "oai-searchbot");
+    expect(change).toMatchObject({ category: "ai-search", before: "allowed", after: "blocked" });
+    expect(c.aiCrawlers.find((r) => r.id === "oai-searchbot")?.changed).toBe(true);
+    // A deliberate AI-search choice is not a search-visibility loss.
+    expect(c.visibility.after).toBe(c.visibility.before);
+  });
+
+  it("drops search visibility when a staging Disallow: / ships", () => {
+    const c = buildComparison("User-agent: *\nAllow: /", "User-agent: *\nDisallow: /");
+    expect(c.crawlerChanges.some((r) => r.id === "googlebot" && r.after === "blocked")).toBe(true);
+    expect(c.visibility.after).toBeLessThan(c.visibility.before);
+  });
 });

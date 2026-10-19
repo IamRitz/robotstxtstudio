@@ -75,8 +75,9 @@ export interface ArticleSchemaInput {
   readonly title: string;
   readonly description: string;
   readonly path: string;
-  readonly datePublished: string;
-  readonly dateModified: string;
+  /** Omitted from the schema when unknown — never invented. */
+  readonly datePublished?: string;
+  readonly dateModified?: string;
   readonly authorName: string;
 }
 
@@ -89,8 +90,8 @@ export function articleSchema(input: ArticleSchemaInput): Record<string, unknown
     description: input.description,
     url: absoluteUrl(input.path),
     mainEntityOfPage: absoluteUrl(input.path),
-    datePublished: input.datePublished,
-    dateModified: input.dateModified,
+    ...(input.datePublished ? { datePublished: input.datePublished } : {}),
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
     author: { "@type": "Organization", name: input.authorName, url: SITE.url },
     publisher: {
       "@type": "Organization",
@@ -150,13 +151,14 @@ export interface SoftwareAppSchemaInput {
   readonly name: string;
   readonly description: string;
   readonly path: string;
-  /** Feature bullet list for the rich result. */
+  /** Feature bullet list (mirrors what the tool page shows). */
   readonly features?: readonly string[];
 }
 
 /**
  * SoftwareApplication schema for the interactive tools. Marks each tool page as a
- * free web app (rich-result eligible) rather than a plain article.
+ * free web app rather than a plain article. No ratings/reviews are claimed (we have none),
+ * so Google won't show a software rich result for it — that's intended.
  */
 export function softwareAppSchema(input: SoftwareAppSchemaInput): Record<string, unknown> {
   return {
@@ -170,31 +172,6 @@ export function softwareAppSchema(input: SoftwareAppSchemaInput): Record<string,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     ...(input.features && input.features.length > 0 ? { featureList: input.features } : {}),
     publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
-  };
-}
-
-export interface HowToStep {
-  readonly name: string;
-  readonly text: string;
-}
-
-/** HowTo schema for step-by-step guides (rich-result eligible). */
-export function howToSchema(
-  name: string,
-  description: string,
-  steps: readonly HowToStep[],
-): Record<string, unknown> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name,
-    description,
-    step: steps.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s.name,
-      text: s.text,
-    })),
   };
 }
 

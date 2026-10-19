@@ -221,8 +221,8 @@ const PROFILES: readonly CrawlerProfile[] = [
     relatedCrawlerIds: ["semrushbot", "mj12bot"],
     relatedLinks: [
       {
-        title: "Why robots.txt is important",
-        href: "/why-robots-txt-is-important",
+        title: "robots.txt for SEO",
+        href: "/robots-txt-seo-guide",
         description: "Crawl budget and bot load.",
       },
     ],
@@ -266,8 +266,8 @@ const PROFILES: readonly CrawlerProfile[] = [
     relatedCrawlerIds: ["ahrefsbot", "mj12bot"],
     relatedLinks: [
       {
-        title: "Why robots.txt Is Important",
-        href: "/why-robots-txt-is-important",
+        title: "robots.txt for SEO",
+        href: "/robots-txt-seo-guide",
         description: "Crawl budget and the case for controlling SEO bots.",
       },
     ],

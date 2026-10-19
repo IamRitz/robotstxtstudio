@@ -58,7 +58,7 @@ function ReportPreview() {
   return (
     <div className="space-y-4 p-5">
       <div className="grid gap-4 sm:grid-cols-2">
-        <FauxScoreCard eyebrow="Crawler Visibility" value={86} tone="bg-status-allowed-dot" />
+        <FauxScoreCard eyebrow="Search visibility" value={86} tone="bg-status-allowed-dot" />
         <FauxScoreCard eyebrow="Robots.txt Health" value={72} tone="bg-status-warning-dot" />
       </div>
       <div className="rounded-xl border border-border bg-card p-5">

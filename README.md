@@ -33,6 +33,9 @@ pnpm dev          # http://localhost:3000
 | `pnpm test:coverage` | Unit tests with 80% coverage gate on core logic |
 | `pnpm test:e2e` | Playwright end-to-end tests |
 | `pnpm format` | Prettier write |
+| `pnpm seo:audit [base]` | Post-build SEO smoke audit of every sitemap URL (default `http://localhost:3000`; read-only against production) |
+| `pnpm seo:dates` | List pages whose source changed after their recorded lastmod (`src/config/page-dates.ts`) |
+| `pnpm gsc:compare a.csv b.csv` | Compare two manual Search Console CSV exports (pages/queries, or `--urls` for indexing lists) |
 
 ## Environment
 
@@ -86,11 +89,38 @@ tests-e2e/             # Playwright specs
 - **Reference & growth:** `/crawlers` (+ `/crawlers/[id]`) · `/ai-crawlers-directory` · `/robots-txt-templates` · `/robots-txt-glossary`
 - **SEO clusters:** educational + transactional/programmatic keyword pages
 - **Trust/EEAT:** `/about` · `/methodology` · `/contact` · `/privacy` · `/terms`
-- 76 prerendered routes; `/analyze` + `/api/*` are dynamic (server fetch).
+- 48 canonical URLs in the sitemap. Nine duplicate-intent URLs (e.g. `/robots-txt-validator`,
+  `/robots-txt-format`) 308 to their canonical page — see `src/config/redirects.ts` and
+  [`docs/SEO_RECOVERY_2026-10.md`](./docs/SEO_RECOVERY_2026-10.md).
+
+## How the tools read AI crawler policy
+
+robots.txt is an instruction to compliant crawlers — not access control, and not evidence
+that a crawler visited, indexed, cited, or ranked anything. Within that limit, the tools
+separate three kinds of AI agent, following each operator's documentation:
+
+| Kind | Examples | Blocking it means |
+| --- | --- | --- |
+| AI search | OAI-SearchBot, Claude-SearchBot, PerplexityBot | Those assistants stop surfacing and linking your pages |
+| AI training | GPTBot, ClaudeBot, CCBot | You ask those operators not to collect content for training |
+| AI usage control | Google-Extended, Applebot-Extended | No crawler is blocked; you opt out of AI use of already-crawled content. Search is unaffected |
+
+The Analyzer's **search visibility** score is 70% search-engine access + 30% file health.
+AI access is shown beside it as policy, never scored, so a deliberate training opt-out
+doesn't lower the number. A fetch that times out or returns 429/5xx is reported as
+**policy unknown** (no score) rather than as allow-all; a 4xx means "no robots.txt", which
+RFC 9309 and Google treat as allow-all.
+
+**Catching a policy regression:** paste the old and new files into `/compare`. A staging
+`Disallow: /` shipped under `User-agent: *` shows up as Googlebot/Bingbot newly blocked and a
+search-visibility drop; a training block edited to also list `OAI-SearchBot` shows up as an
+AI search crawler newly blocked (both cases are covered by `compare.test.ts`). Then confirm
+specific URLs in `/url-tester` before deploying.
 
 ## Documentation
 
-Product & engineering detail lives in [`docs/`](./docs): `PRD.md`, `SPRINTS.md`,
+Product & engineering detail lives in [`docs/`](./docs): `SEO_RECOVERY_2026-10.md` (current
+SEO state, URL decisions, and the GSC observation plan), `PRD.md`, `SPRINTS.md`,
 `SEO_AUDIT.md`, `LAUNCH_CHECKLIST.md`, `PRODUCTION_READINESS.md`, `ANALYTICS.md`,
 `METRICS.md`, `DESIGN_SYSTEM.md`, plus per-module specs (`PARSER.md`, `VALIDATOR.md`, …).
 

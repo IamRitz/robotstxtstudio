@@ -3,12 +3,14 @@ import { AppShell } from "@/components/app-shell";
 import { JsonLd } from "@/components/json-ld";
 import { breadcrumbSchema } from "@/lib/seo";
 import { ToolRelatedRail, toolAppSchema } from "@/components/tool-related-rail";
+import { ToolGuideSection } from "@/components/tool-guide";
+import { ANALYZER_GUIDE } from "@/config/tool-guides";
 import { AnalyzerScreen } from "./analyzer-screen";
 
 export const metadata: Metadata = {
-  title: "Robots.txt Analyzer — Audit Crawler Access & AI Visibility",
+  title: "Robots.txt Analyzer — Check Search & AI Crawler Access for Any Site",
   description:
-    "Analyze crawler access, AI visibility, and robots.txt issues for any site in one audit.",
+    "Fetch any site's live robots.txt and see which search engines, AI search crawlers, and AI training crawlers it allows, plus every issue and a fix. Failed fetches are reported as unknown, never as allow-all.",
   alternates: { canonical: "/analyze" },
 };
 
@@ -28,6 +30,7 @@ export default async function AnalyzePage({
       />
       <JsonLd data={toolAppSchema("analyzer")} />
       <AnalyzerScreen initialDomain={domain ?? ""} forceFresh={fresh === "1"} />
+      <ToolGuideSection guide={ANALYZER_GUIDE} />
       {/* Collapsed during remediation — the report is the page's job. The rail
           stays in the DOM (SEO/internal links) but costs one line. */}
       <details className="mt-12">

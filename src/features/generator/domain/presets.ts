@@ -21,6 +21,8 @@ interface PresetDefinition {
   readonly disallowPaths: readonly string[];
 }
 
+// Control tokens (Google-Extended, Applebot-Extended) follow the training decision:
+// they govern AI training/grounding use, never search inclusion.
 const allowSearchSeoSocial = {
   "search-engine": "allow",
   seo: "allow",
@@ -29,23 +31,23 @@ const allowSearchSeoSocial = {
 
 export const PRESETS: Record<WebsiteType, PresetDefinition> = {
   blog: {
-    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "block", data: "block" },
+    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "block", "ai-control": "block", data: "block" },
     disallowPaths: ["/wp-admin/"],
   },
   saas: {
-    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "block", data: "block" },
+    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "block", "ai-control": "block", data: "block" },
     disallowPaths: ["/app/", "/dashboard/", "/api/", "/admin/"],
   },
   ecommerce: {
-    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", data: "block" },
+    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", "ai-control": "block", data: "block" },
     disallowPaths: ["/cart/", "/checkout/", "/account/", "/admin/"],
   },
   publisher: {
-    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", data: "block" },
+    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", "ai-control": "block", data: "block" },
     disallowPaths: ["/wp-admin/", "/drafts/"],
   },
   documentation: {
-    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", data: "block" },
+    policyByCategory: { ...allowSearchSeoSocial, "ai-training": "block", "ai-search": "allow", "ai-control": "block", data: "block" },
     disallowPaths: [],
   },
 };

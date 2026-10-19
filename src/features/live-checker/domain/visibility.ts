@@ -1,32 +1,46 @@
 /**
- * Visibility score — how accessible the site is to crawlers. Composes the category
- * breakdown (access %) with the Validator's health score. Pure.
+ * Search visibility score + AI policy readouts. Pure.
  *
- * value = 0.5·searchEngineAccess + 0.2·aiCrawlerAccess + 0.3·health
+ * value = 0.7·searchEngineAccess + 0.3·health
+ *
+ * AI access is deliberately NOT part of the score: blocking GPTBot or opting out
+ * via Google-Extended is a policy choice, not a defect, and must not lower a
+ * site's number. AI search and AI training/control access are reported as separate
+ * percentages so the UI can state them as facts.
+ *
  * errorRate = 100 − health   (reuses health; no new judgement)
  */
 import { scoreBand } from "@/types";
-import type { CategoryBreakdown, HealthScore, VisibilityScore } from "@/types";
+import type { CategoryBreakdown, CrawlerCategory, HealthScore, VisibilityScore } from "@/types";
 
 const clamp = (n: number): number => Math.max(0, Math.min(100, Math.round(n)));
-const pct = (part: number, total: number): number => (total === 0 ? 0 : clamp((part / total) * 100));
+const pct = (part: number, total: number): number =>
+  total === 0 ? 0 : clamp((part / total) * 100);
+
+function access(breakdown: readonly CategoryBreakdown[], categories: readonly CrawlerCategory[]) {
+  const rows = breakdown.filter((b) => categories.includes(b.category));
+  const allowed = rows.reduce((sum, b) => sum + b.allowed, 0);
+  const total = rows.reduce((sum, b) => sum + b.total, 0);
+  return pct(allowed, total);
+}
 
 export function computeVisibility(
   breakdown: readonly CategoryBreakdown[],
   health: HealthScore,
 ): VisibilityScore {
-  const search = breakdown.find((b) => b.category === "search-engine");
-  const searchEngineAccess = pct(search?.allowed ?? 0, search?.total ?? 0);
-
-  const aiCategories = breakdown.filter(
-    (b) => b.category === "ai-training" || b.category === "ai-search",
-  );
-  const aiAllowed = aiCategories.reduce((sum, b) => sum + b.allowed, 0);
-  const aiTotal = aiCategories.reduce((sum, b) => sum + b.total, 0);
-  const aiCrawlerAccess = pct(aiAllowed, aiTotal);
+  const searchEngineAccess = access(breakdown, ["search-engine"]);
+  const aiSearchAccess = access(breakdown, ["ai-search"]);
+  const aiTrainingAccess = access(breakdown, ["ai-training", "ai-control"]);
 
   const errorRate = clamp(100 - health.value);
-  const value = clamp(0.5 * searchEngineAccess + 0.2 * aiCrawlerAccess + 0.3 * health.value);
+  const value = clamp(0.7 * searchEngineAccess + 0.3 * health.value);
 
-  return { value, band: scoreBand(value), searchEngineAccess, aiCrawlerAccess, errorRate };
+  return {
+    value,
+    band: scoreBand(value),
+    searchEngineAccess,
+    aiSearchAccess,
+    aiTrainingAccess,
+    errorRate,
+  };
 }

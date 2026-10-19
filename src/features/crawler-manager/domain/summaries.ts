@@ -13,6 +13,14 @@ export function summarizeCrawler(
   access: CrawlDecision,
 ): string {
   const name = crawler.name;
+  // Control tokens never fetch pages, so "blocked from accessing" would be false.
+  if (crawler.category === "ai-control") {
+    const optedOut = state === "block" || (state === "inherit" && access === "blocked");
+    const how = state === "inherit" ? " (via the default policy)" : "";
+    return optedOut
+      ? `${crawler.owner} is told not to use your content for this AI purpose${how}. No crawler is blocked and search is unaffected.`
+      : `${crawler.owner} may use content its regular crawler fetched for this AI purpose${how}. Search is unaffected.`;
+  }
   if (state === "block") {
     return `${name} will be blocked from accessing your entire site.`;
   }

@@ -128,7 +128,11 @@ export const blocksRenderingAssets: Rule = ({ file }) => {
       if (rule.type !== "disallow") continue;
       const p = rule.path.toLowerCase();
       const isAsset =
-        /\.(css|js)$/.test(p) || p.includes("/wp-includes") || p === "/assets/" || p === "/static/";
+        // Allow an end anchor: `/*.css$` is the most common way assets get blocked.
+        /\.(css|js)\$?$/.test(p) ||
+        p.includes("/wp-includes") ||
+        p === "/assets/" ||
+        p === "/static/";
       if (!isAsset) continue;
       issues.push(
         makeIssue({

@@ -3,9 +3,9 @@ import Link from "next/link";
 import { SeoContentLayout, type ContentPage } from "@/components/content";
 
 export const metadata: Metadata = {
-  title: "robots.txt Syntax: Every Directive Explained",
+  title: "robots.txt Syntax and Format: Every Directive Explained",
   description:
-    "A complete robots.txt syntax reference: User-agent, Allow, Disallow, Sitemap, Crawl-delay, wildcards (*), and the $ anchor — with examples.",
+    "A complete robots.txt syntax and format reference: User-agent, Allow, Disallow, Sitemap, Crawl-delay, wildcards (*), the $ anchor, file structure, encoding, and size limits — with examples.",
   alternates: { canonical: "/robots-txt-syntax" },
 };
 
@@ -13,12 +13,12 @@ const page: ContentPage = {
   slug: "robots-txt-syntax",
   h1: "robots.txt Syntax",
   description:
-    "A complete reference for robots.txt directives: User-agent, Allow, Disallow, Sitemap, Crawl-delay, and pattern matching.",
+    "A complete reference for robots.txt directives, pattern matching, and file format: structure, encoding, and delivery.",
   lead: (
     <>
       robots.txt has a small vocabulary: a handful of directives, two wildcard characters, and a
-      grouping rule. This page is a precise reference for each one, with the gotchas that cause real
-      outages.
+      grouping rule. This page is a precise reference for each one, plus the file-format rules
+      (encoding, size, content type) and the gotchas that cause real outages.
     </>
   ),
   cta: "validator",
@@ -145,6 +145,46 @@ const page: ContentPage = {
       ],
     },
     {
+      id: "format",
+      heading: "File format, encoding, and delivery",
+      blocks: [
+        {
+          kind: "list",
+          items: [
+            "One directive per line, written Field: value. Field names are case-insensitive.",
+            "Group order doesn't change behavior — each crawler uses the one group that best matches it, wherever it appears.",
+            "Rule order inside a group doesn't matter either: the longest matching path wins.",
+            "Sitemap lines and # comments can go anywhere; Sitemap is not part of any group.",
+            "Save as UTF-8 plain text. LF or CRLF line endings both work.",
+            "Serve it at /robots.txt with status 200 and Content-Type: text/plain.",
+            "Google reads the first 500 KiB and ignores the rest.",
+          ],
+        },
+        {
+          kind: "snippet",
+          code: "# file-level comment\nUser-agent: *          # default group\nDisallow: /admin/\n\nUser-agent: GPTBot     # crawler-specific group\nDisallow: /\n\nSitemap: https://example.com/sitemap.xml",
+          caption: "A well-formatted file",
+        },
+        {
+          kind: "mistakes",
+          items: [
+            {
+              title: "Two directives on one line",
+              body: "User-agent: * Disallow: / is one malformed line, not two rules. Give each directive its own line.",
+            },
+            {
+              title: "Copying from a word processor",
+              body: "Curly quotes and rich-text characters break directives. Edit robots.txt as plain text.",
+            },
+            {
+              title: "An HTML page at /robots.txt",
+              body: "A 200 HTML page (soft 404 or app shell) contains no valid rules, so crawlers treat the site as unrestricted.",
+            },
+          ],
+        },
+      ],
+    },
+    {
       id: "mistakes",
       heading: "Syntax mistakes that break files",
       blocks: [
@@ -194,19 +234,24 @@ const page: ContentPage = {
     {
       question: "What does the * wildcard do in robots.txt?",
       answer:
-        "It matches any run of characters within a path, so /*.pdf matches any URL containing a .pdf segment. It's supported by major crawlers but is technically an extension to the original standard.",
+        "It matches any run of characters within a path, so /*.pdf matches any URL containing .pdf. It was an informal extension for years and is now part of the standard (RFC 9309); Google and Bing support it.",
+    },
+    {
+      question: "Does the order of rules matter in robots.txt?",
+      answer:
+        "No. A crawler picks the most specific user-agent group, then applies the longest matching path rule. Neither depends on line order.",
     },
     {
       question: "What is the $ symbol in robots.txt?",
       answer:
-        "It anchors a pattern to the end of the URL. /page$ matches /page exactly but not /page/sub or /page2.",
+        "It anchors a pattern to the end of the URL. /page$ matches /page but not /page/sub, /page2, or /page?ref=1 — the query string counts as part of the URL.",
     },
   ],
   related: [
     {
-      title: "robots.txt format",
-      href: "/robots-txt-format",
-      description: "Structure and encoding.",
+      title: "Robots.txt Validator",
+      href: "/validate",
+      description: "Check a file against these rules.",
     },
     {
       title: "How robots.txt works",

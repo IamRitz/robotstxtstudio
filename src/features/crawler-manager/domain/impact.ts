@@ -5,7 +5,7 @@
  * Tester → per-crawler effective access. Produces a {@link PolicyImpact}. Introduces
  * NO new robots.txt logic.
  */
-import { ALL_CRAWLERS } from "@/config/crawlers";
+import { ALL_CRAWLERS, isAiCategory } from "@/config/crawlers";
 import { generatePreview } from "@/features/generator";
 import { testUrl } from "@/features/tester";
 import type { ValidationCode, ValidationResult } from "@/types";
@@ -28,7 +28,7 @@ function buildRecommendations(
 
   // Intent-driven: undecided AI crawlers should get an explicit policy.
   for (const { crawler, state } of impacts) {
-    const isAi = crawler.category === "ai-training" || crawler.category === "ai-search";
+    const isAi = isAiCategory(crawler.category);
     if (isAi && state === "inherit") {
       recommendations.push({
         severity: "info",

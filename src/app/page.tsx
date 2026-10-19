@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { Route } from "next";
 import {
@@ -18,13 +19,17 @@ import { ContinueWorking } from "@/components/continue-working";
 import { LockedReport } from "@/components/locked-report";
 import { buttonVariants } from "@/components/ui/button";
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 const TOOL_GROUPS = [
   {
     group: "Analyze",
     tools: [
       {
-        title: "Crawler Visibility Audit",
-        desc: "See who can access your site and where your visibility gaps are.",
+        title: "Robots.txt Analyzer",
+        desc: "Fetch any site's robots.txt and see which search engines and AI crawlers it lets in.",
         href: "/analyze",
         icon: ScanSearch,
       },
@@ -41,7 +46,7 @@ const TOOL_GROUPS = [
     tools: [
       {
         title: "AI Crawler Manager",
-        desc: "Decide which AI companies can train on your content — block GPTBot, ClaudeBot, and 18 more.",
+        desc: "Decide AI training and AI search separately — GPTBot, ClaudeBot, OAI-SearchBot, Google-Extended and more.",
         href: "/ai-crawlers",
         icon: Bot,
         featured: true,
@@ -100,14 +105,16 @@ const LEARN_LINKS: ReadonlyArray<{ href: Route; title: string; desc: string }> =
     desc: "Best practices that help — and the traps that hurt rankings.",
   },
   {
-    href: "/why-robots-txt-is-important",
-    title: "Why it matters",
-    desc: "Crawl budget, AI access, and the cost of getting it wrong.",
+    href: "/robots-txt-vs-noindex",
+    title: "robots.txt vs noindex",
+    desc: "Why blocking a page doesn't remove it from Google.",
   },
 ];
 
-// Phase 19B — direct homepage authority to the highest-intent pages (AI control +
-// the head-term tool landings) so each is one click from home, not buried 5–8 deep.
+// Phase 19B — direct homepage authority to the highest-intent pages so each is one
+// click from home. The tool landings were consolidated into the tools (2026-10), so
+// the second group now points at the platform guides instead of duplicating the
+// tool cards above.
 const RESOURCE_GROUPS: ReadonlyArray<{
   title: string;
   links: ReadonlyArray<{ href: Route; title: string; desc: string }>;
@@ -148,27 +155,27 @@ const RESOURCE_GROUPS: ReadonlyArray<{
     ],
   },
   {
-    title: "Check & build your file",
+    title: "robots.txt by platform",
     links: [
       {
-        href: "/robots-txt-validator",
-        title: "Robots.txt Validator",
-        desc: "Catch syntax errors before they bite.",
+        href: "/wordpress-robots-txt",
+        title: "WordPress robots.txt",
+        desc: "Edit the virtual file safely.",
       },
       {
-        href: "/robots-txt-analyzer",
-        title: "Robots.txt Analyzer",
-        desc: "Score a live file and surface issues.",
+        href: "/shopify-robots-txt",
+        title: "Shopify robots.txt",
+        desc: "Customize robots.txt.liquid.",
       },
       {
-        href: "/robots-txt-generator",
-        title: "Robots.txt Generator",
-        desc: "Build a clean file step by step.",
+        href: "/nextjs-robots-txt",
+        title: "Next.js robots.txt",
+        desc: "Generate it from app/robots.ts.",
       },
       {
-        href: "/robots-txt-tester",
-        title: "Robots.txt Tester",
-        desc: "Check if a URL is blocked or allowed.",
+        href: "/magento-robots-txt",
+        title: "Magento robots.txt",
+        desc: "Tame faceted navigation.",
       },
     ],
   },
@@ -180,19 +187,24 @@ export default function HomePage() {
       {/* Hero */}
       <section className="mx-auto max-w-3xl pt-8 text-center sm:pt-12">
         <Badge variant="brand" className="mx-auto">
-          Crawler Visibility &amp; Permissions Platform
+          Free robots.txt checker
         </Badge>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Who Can See Your Website?
+          Check your robots.txt: who can crawl your site?
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
-          See which search engines and AI bots can access your site — and take control in seconds.
+          Enter a domain to see which search engines, AI search crawlers, and AI training crawlers
+          its robots.txt allows — with every error and a fix.
         </p>
         <QuickAnalyze className="mx-auto mt-8 max-w-xl" />
         <p className="mt-3 text-xs text-muted-foreground">
           or{" "}
+          <Link href="/validate" className="font-medium text-brand hover:underline">
+            paste a file into the validator
+          </Link>{" "}
+          ·{" "}
           <Link href="/generate" className="font-medium text-brand hover:underline">
-            create your robots.txt file
+            create a new one
           </Link>
         </p>
       </section>
@@ -206,7 +218,7 @@ export default function HomePage() {
               <SectionHeader className="mb-3">Your crawler report</SectionHeader>
               <LockedReport
                 title="Unlock your full crawler report"
-                description="Run a free analysis to reveal your visibility score, AI-crawler access, and every robots.txt issue — no sign-up required."
+                description="Run a free analysis to reveal your search visibility score, AI-crawler access, and every robots.txt issue — no sign-up required."
                 action={
                   <>
                     <Link
@@ -293,11 +305,12 @@ export default function HomePage() {
           <div>
             <SectionHeader className="mb-2">AI visibility</SectionHeader>
             <h2 className="text-lg font-semibold text-foreground">
-              Control how AI trains on your content
+              AI training and AI search are separate choices
             </h2>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-              GPTBot, ClaudeBot, PerplexityBot, Google-Extended and more — allow or block each with
-              one click. See the full{" "}
+              Opt out of training (GPTBot, ClaudeBot, Google-Extended) while still letting AI search
+              crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot) cite and link you — or block
+              both. robots.txt is a request to compliant crawlers, not access control. See the full{" "}
               <Link
                 href="/ai-crawlers-directory"
                 className="font-medium text-brand hover:underline"
@@ -325,8 +338,7 @@ export default function HomePage() {
             Popular robots.txt resources
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            The pages people reach for most — controlling AI crawlers, and checking or building a
-            file.
+            Guides for controlling AI crawlers and setting up robots.txt on common platforms.
           </p>
         </div>
         <div className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">

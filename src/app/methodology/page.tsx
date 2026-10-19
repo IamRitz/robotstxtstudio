@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TrustPageLayout, type TrustPage } from "@/components/trust-page-layout";
 import { articleSchema } from "@/lib/seo";
-import { AUTHOR, CONTENT_PUBLISHED, CONTENT_UPDATED } from "@/config/content";
+import { AUTHOR } from "@/config/content";
+import { pageDates } from "@/config/page-dates";
 
 export const metadata: Metadata = {
   title: "Our Methodology — How Robots.txt Analysis Works",
@@ -137,9 +138,11 @@ const page: TrustPage = {
           kind: "list",
           items: [
             "An 8-second timeout and a 512 KiB size cap protect against slow or oversized responses.",
-            "A missing robots.txt (HTTP 404) is treated as 'all crawlers allowed' and reported as such — not as an error.",
-            "Redirects, timeouts, network failures, and non-text content types each produce a distinct, explained result.",
-            "The visibility score combines crawler access, restrictions, and syntax health into one explained number.",
+            "A missing robots.txt (any 4xx except 429) is reported as 'no robots.txt — compliant crawlers treat this as allow-all', following RFC 9309 and Google's documented behavior.",
+            "A timeout, network failure, 429, or 5xx is reported as 'policy unknown' with no score. We never present a failed fetch as allow-all: Google itself treats a 5xx robots.txt as disallow-all for a while.",
+            "Rules served with the wrong content type are still parsed, as crawlers do; an HTML page at /robots.txt is reported as containing no rules.",
+            "The search visibility score is 70% search-engine access and 30% file health. AI search and AI training access are shown separately as policy facts and are not scored — blocking a training crawler is a choice, not a defect.",
+            "robots.txt is an instruction to compliant crawlers. Our results show what a file permits; they are not evidence of actual crawling, indexing, citation, or ranking.",
           ],
         },
         { kind: "cta", tool: "analyzer" },
@@ -165,7 +168,11 @@ const page: TrustPage = {
             ["AI training", "Collects content to train AI models (GPTBot, ClaudeBot, CCBot)."],
             [
               "AI search",
-              "Fetches pages to answer or cite in AI products (PerplexityBot, Google-Extended).",
+              "Fetches pages so AI assistants can surface and link them (OAI-SearchBot, Claude-SearchBot, PerplexityBot). Operators document these as separate from training.",
+            ],
+            [
+              "AI usage control",
+              "A robots.txt token with no crawler of its own that governs AI use of content the operator's search crawler already fetched (Google-Extended, Applebot-Extended). No effect on search inclusion.",
             ],
             ["SEO", "Powers third-party SEO tools (AhrefsBot, SemrushBot)."],
             [
@@ -250,8 +257,8 @@ const page: TrustPage = {
       description:
         "How Robots.txt Studio parses, tests, validates, and audits robots.txt using a deterministic engine built on RFC 9309, and how it classifies crawlers.",
       path: "/methodology",
-      datePublished: CONTENT_PUBLISHED,
-      dateModified: CONTENT_UPDATED,
+      datePublished: pageDates("/methodology")?.published,
+      dateModified: pageDates("/methodology")?.modified,
       authorName: AUTHOR.name,
     }),
   ],

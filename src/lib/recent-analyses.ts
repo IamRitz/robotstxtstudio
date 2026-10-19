@@ -16,6 +16,12 @@ const KEY = "rs:recent-analyses:v1";
 const MAX_ENTRIES = 10;
 /** Snapshots above this are not stored (entry still lists; resume refetches). */
 const MAX_SNAPSHOT_CHARS = 100_000;
+/**
+ * Version of the visibility formula behind `visibility.value`. v2 (2026-10) scores
+ * search access + health only; v1 entries (no field) also counted AI access, so a
+ * delta across versions would be meaningless.
+ */
+export const SCORE_VERSION = 2;
 
 export interface RecentAnalysis {
   /** Normalized domain (the report's own `domain`) — the LRU key. */
@@ -38,6 +44,8 @@ export interface RecentAnalysis {
   readonly workingText?: string;
   /** Visibility at the PREVIOUS fetch of this domain (powers the ▲/▼ delta). */
   readonly previousVisibility?: number;
+  /** {@link SCORE_VERSION} that produced `visibility` (absent = v1). */
+  readonly scoreVersion?: number;
 }
 
 /** Strip scheme/path/case so user input ("https://Example.com/x") matches a stored domain. */
@@ -83,11 +91,14 @@ export function getRecentAnalysis(domainInput: string): RecentAnalysis | undefin
  * visibility as `previousVisibility` (the dashboard delta); updates from the same
  * fetch (fix applied → workingText/scores change) keep the existing delta.
  */
-export function saveRecentAnalysis(entry: Omit<RecentAnalysis, "previousVisibility">): void {
+export function saveRecentAnalysis(
+  entry: Omit<RecentAnalysis, "previousVisibility" | "scoreVersion">,
+): void {
   const rest = read().filter((e) => e.domain !== entry.domain);
   const existing = read().find((e) => e.domain === entry.domain);
+  // Only compare scores produced by the same formula.
   const previousVisibility =
-    existing === undefined
+    existing === undefined || existing.scoreVersion !== SCORE_VERSION
       ? undefined
       : existing.fetchedAt === entry.fetchedAt
         ? existing.previousVisibility
@@ -102,7 +113,10 @@ export function saveRecentAnalysis(entry: Omit<RecentAnalysis, "previousVisibili
     entry.workingText.length <= MAX_SNAPSHOT_CHARS
       ? entry.workingText
       : undefined;
-  write([{ ...entry, source, workingText, previousVisibility }, ...rest]);
+  write([
+    { ...entry, source, workingText, previousVisibility, scoreVersion: SCORE_VERSION },
+    ...rest,
+  ]);
 }
 
 export function removeRecentAnalysis(domain: string): void {

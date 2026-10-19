@@ -262,7 +262,7 @@ export function GeneratorScreen({
     <div>
       <PageHeader
         breadcrumb={["Robots.txt Studio", "Generate"]}
-        title="Generate robots.txt"
+        title="Robots.txt Generator"
         subtitle="Choose which crawlers can access your site — we'll generate the rules automatically."
       />
 

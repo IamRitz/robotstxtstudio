@@ -16,12 +16,15 @@ import type { ExplanationResult } from "./explanation";
 /** Outcome of fetching a remote robots.txt. Distinguishes "missing" from "error". */
 export type FetchStatus =
   | "ok"
-  | "not-found" // 404 → treated as allow-all, shown explicitly (not an error)
+  | "not-found" // 4xx except 429 → no robots.txt; RFC 9309 + Google treat as allow-all
   | "timeout"
   | "redirect-error"
   | "invalid-content-type"
   | "too-large"
   | "network-error";
+
+/** What the fetch lets us conclude about the policy (see `policyStatusOf`). */
+export type PolicyStatus = "verified" | "absent" | "unverified";
 
 /** The result of a server-side robots.txt fetch (Route Handler boundary). */
 export interface FetchResult {
@@ -70,6 +73,12 @@ export interface AnalysisReport {
   /** ISO-8601 timestamp of when the audit ran. */
   readonly fetchedAt: string;
   readonly fetch: FetchResult;
+  /**
+   * `unverified` means the policy is UNKNOWN (fetch failed): `file`, `visibility`
+   * and `breakdown` then describe an empty placeholder and must not be presented
+   * as the site's real access.
+   */
+  readonly policyStatus: PolicyStatus;
   /** Parsed file (empty/allow-all when no robots.txt exists). */
   readonly file: RobotsFile;
   readonly validation: ValidationResult;

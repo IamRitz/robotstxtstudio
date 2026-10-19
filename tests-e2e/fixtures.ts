@@ -12,6 +12,7 @@ export const ANALYSIS_REPORT = {
     robotsExists: true,
     redirected: false,
   },
+  policyStatus: "verified",
   file: {
     source:
       "User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /\nDisallow: /admin/\nCrawl-delay: 0",
@@ -29,7 +30,8 @@ export const ANALYSIS_REPORT = {
     value: 71,
     band: "moderate",
     searchEngineAccess: 100,
-    aiCrawlerAccess: 88,
+    aiSearchAccess: 100,
+    aiTrainingAccess: 80,
     errorRate: 22,
   },
   breakdown: [
@@ -63,4 +65,19 @@ export const ANALYSIS_REPORT = {
     sitemaps: [],
     notes: [],
   },
+};
+
+/** A failed fetch (timeout): the policy is unknown and must not be shown as allow-all. */
+export const UNVERIFIED_REPORT = {
+  ...ANALYSIS_REPORT,
+  domain: "down.example",
+  fetch: {
+    status: "timeout",
+    requestedUrl: "https://down.example/robots.txt",
+    robotsExists: false,
+    redirected: false,
+    error: "The operation was aborted.",
+  },
+  policyStatus: "unverified",
+  file: { ...ANALYSIS_REPORT.file, source: "" },
 };

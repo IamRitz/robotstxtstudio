@@ -5,9 +5,9 @@ import { WILDCARD_USER_AGENT } from "./robots";
 import { SEVERITY_ORDER, compareSeverity } from "./validation";
 
 describe("model vocabulary invariants", () => {
-  it("crawler categories are unique and cover the six design groups", () => {
+  it("crawler categories are unique and cover the seven design groups", () => {
     expect(new Set(CRAWLER_CATEGORIES).size).toBe(CRAWLER_CATEGORIES.length);
-    expect(CRAWLER_CATEGORIES).toHaveLength(6);
+    expect(CRAWLER_CATEGORIES).toHaveLength(7);
   });
 
   it("starter templates are unique and match the approved design set", () => {

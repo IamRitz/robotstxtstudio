@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Minus, TrendingDown, TrendingUp } from "lucide-react";
 import { buildComparison } from "@/features/compare";
+import { isAiCategory } from "@/config/crawlers";
 import type { CrawlerAccessDelta, ScoreDelta } from "@/types";
 import { takeHandoff } from "@/lib/handoff";
 import { PageHeader } from "@/components/page-header";
@@ -94,9 +95,7 @@ export function CompareScreen() {
   }, []);
 
   const cmp = useMemo(() => buildComparison(textA, textB), [textA, textB]);
-  const otherChanges = cmp.crawlerChanges.filter(
-    (r) => r.category !== "ai-training" && r.category !== "ai-search",
-  );
+  const otherChanges = cmp.crawlerChanges.filter((r) => !isAiCategory(r.category));
 
   return (
     <div>

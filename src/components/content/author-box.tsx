@@ -1,5 +1,5 @@
 import { BadgeCheck, CalendarDays } from "lucide-react";
-import { AUTHOR, CONTENT_UPDATED } from "@/config/content";
+import { AUTHOR } from "@/config/content";
 import { Card } from "@/components/ui/card";
 
 function formatDate(iso: string): string {
@@ -11,7 +11,7 @@ function formatDate(iso: string): string {
 }
 
 /** Compact author + last-updated line shown under the page lead (EEAT). */
-export function AuthorByline() {
+export function AuthorByline({ updated }: { updated?: string }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
       <span className="flex items-center gap-1.5">
@@ -20,9 +20,12 @@ export function AuthorByline() {
         </span>
         <span className="font-medium text-foreground">{AUTHOR.name}</span>
       </span>
-      <span className="flex items-center gap-1.5">
-        <CalendarDays className="size-3.5" aria-hidden /> Updated {formatDate(CONTENT_UPDATED)}
-      </span>
+      {updated ? (
+        <span className="flex items-center gap-1.5">
+          <CalendarDays className="size-3.5" aria-hidden /> Updated{" "}
+          <time dateTime={updated}>{formatDate(updated)}</time>
+        </span>
+      ) : null}
       <span className="flex items-center gap-1.5">
         <BadgeCheck className="size-3.5 text-brand" aria-hidden /> {AUTHOR.reviewedBy}
       </span>

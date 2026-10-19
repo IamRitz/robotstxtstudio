@@ -42,6 +42,18 @@ function isAcceptableContentType(contentType: string | undefined): boolean {
   return lower.startsWith("text/");
 }
 
+/**
+ * An HTML document (soft-404 / app shell) rather than a robots.txt body. Looks
+ * anywhere in the first 1 KiB, so a leading comment, BOM, or XML prologue doesn't
+ * hide it. A real robots.txt never contains these tags outside a `#` comment.
+ */
+function looksLikeHtml(body: string): boolean {
+  const start = body.slice(0, 1024);
+  return /<!doctype html|<html[\s>]|<head[\s>]|<body[\s>]/i.test(
+    start.replace(/^[ \t]*#.*$/gm, ""),
+  );
+}
+
 /** Parse a URL, keeping only http(s) targets. Blocks file:/gopher:/data: etc. that
  *  a malicious redirect could use to reach the local filesystem or other schemes. */
 function parseHttpUrl(url: string): URL | null {
@@ -130,22 +142,29 @@ export async function fetchRobots(robotsUrl: string, options: FetchOptions = {})
         contentType: response.headers.get("content-type") ?? undefined,
       };
 
-      if (response.status === 404) {
+      // RFC 9309 §2.3.1.3 / Google: any 4xx except 429 means "no robots.txt" (crawl
+      // freely). 429 and 5xx mean the policy is unavailable — Google then treats the
+      // site as disallowed — so they are failures, never an implicit allow-all.
+      if (response.status >= 400 && response.status < 500 && response.status !== 429) {
         return { status: "not-found", robotsExists: false, ...meta };
       }
       if (!response.ok) {
         return { status: "network-error", robotsExists: false, error: `Server responded ${response.status}`, ...meta };
       }
+
+      const body = await response.text();
       if (!isAcceptableContentType(meta.contentType)) {
+        // Crawlers parse the body regardless of the header, so keep real rules served
+        // with the wrong type; an HTML page simply has no valid rules.
+        const html = looksLikeHtml(body);
         return {
           status: "invalid-content-type",
-          robotsExists: false,
+          robotsExists: !html,
+          ...(html ? {} : { body: body.slice(0, maxBytes) }),
           error: `Unexpected content-type: ${meta.contentType ?? "unknown"}`,
           ...meta,
         };
       }
-
-      const body = await response.text();
       if (body.length > maxBytes) {
         return {
           status: "too-large",
