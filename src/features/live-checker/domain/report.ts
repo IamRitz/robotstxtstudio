@@ -2,9 +2,10 @@
  * The pure analysis pipeline: a {@link FetchResult} → {@link AnalysisReport}.
  *
  * Reuses the existing engines (Parser → Validator → Explainer → Tester) and adds no
- * new robots.txt logic. A missing/failed fetch is analyzed as an empty (allow-all)
- * file, with the real `fetch.status` recorded and a recommendation attached — so the
- * report is always well-formed. No IO here.
+ * new robots.txt logic. A missing/failed fetch is analyzed as an empty file so the
+ * report stays well-formed, but `policyStatus` records what we actually know:
+ * `absent` (genuinely allow-all) vs `unverified` (unknown — never show as allow-all).
+ * No IO here.
  */
 import { parseRobots } from "@/parser";
 import { validateRobots } from "@/features/validator";
@@ -13,6 +14,7 @@ import type { AnalysisReport, FetchResult, ValidationIssue } from "@/types";
 import { computeBreakdown } from "./breakdown";
 import { buildRecommendations } from "./recommendations";
 import { computeVisibility } from "./visibility";
+import { policyStatusOf } from "./policy-status";
 
 /** Build the canonical analysis report from a fetch result. Pure. */
 export function buildAnalysisReport(
@@ -35,6 +37,7 @@ export function buildAnalysisReport(
     domain,
     fetchedAt,
     fetch,
+    policyStatus: policyStatusOf(fetch),
     file,
     validation,
     visibility,

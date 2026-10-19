@@ -10,9 +10,9 @@ const BAND_CHIP: Record<ScoreBand, string> = {
 };
 
 const BAND_TEXT: Record<ScoreBand, string> = {
-  good: "High visibility",
-  moderate: "Moderate visibility",
-  poor: "Low visibility",
+  good: "High search visibility",
+  moderate: "Moderate search visibility",
+  poor: "Low search visibility",
 };
 
 /** "200 OK · text/plain · 0.2 KB · 14:02 UTC · redirected" — fetch provenance. */
@@ -29,8 +29,10 @@ function fetchMeta(fetch: FetchResult, fetchedAt: string, sourceBytes: number): 
 }
 
 /**
- * The Analyzer's executive summary (Phase 17A) — the ONE score surface. Visibility
- * is the headline with the recovery-first reading (`67 NOW → 81 POTENTIAL`); file
+ * The Analyzer's executive summary (Phase 17A) — the ONE score surface. Search
+ * visibility (search-engine access + file health) is the headline; AI access is
+ * stated as policy facts beside it and never scored, because blocking a training
+ * bot is a choice, not a defect. Visibility is the headline with the recovery-first reading (`67 NOW → 81 POTENTIAL`); file
  * health is a contributing metric, never a second hero. The primary action carries
  * its payoff, and fetch provenance replaces the old success callout.
  */
@@ -41,8 +43,10 @@ export function VerdictBand({
   band,
   searchAllowed,
   searchTotal,
-  aiAllowed,
-  aiTotal,
+  aiSearchAllowed,
+  aiSearchTotal,
+  aiTrainingAllowed,
+  aiTrainingTotal,
   healthNow,
   healthPotential,
   fixableCount,
@@ -64,8 +68,12 @@ export function VerdictBand({
   band: ScoreBand;
   searchAllowed: number;
   searchTotal: number;
-  aiAllowed: number;
-  aiTotal: number;
+  /** AI search crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot). */
+  aiSearchAllowed: number;
+  aiSearchTotal: number;
+  /** AI training crawlers + control tokens (Google-Extended, Applebot-Extended). */
+  aiTrainingAllowed: number;
+  aiTrainingTotal: number;
   /** File health (feeds visibility at 0.3 weight) — contributing metric only. */
   healthNow: number;
   healthPotential: number;
@@ -84,16 +92,17 @@ export function VerdictBand({
   onDownload: () => void;
 }) {
   const recoverable = potential - now;
-  const aiBlocked = aiTotal - aiAllowed;
+  const trainingOptedOut = aiTrainingTotal - aiTrainingAllowed;
 
   // The one-sentence verdict: who's in, who's out, what it costs.
   const sentence = [
     searchAllowed === searchTotal
       ? "Search engines see everything"
       : `${searchAllowed} of ${searchTotal} search engines get in`,
-    aiBlocked === 0
-      ? `all ${aiTotal} AI bots allowed`
-      : `${aiBlocked} of ${aiTotal} AI bots blocked`,
+    `AI search ${aiSearchAllowed}/${aiSearchTotal} allowed`,
+    trainingOptedOut === 0
+      ? "no AI training opt-outs"
+      : `AI training opted out for ${trainingOptedOut} of ${aiTrainingTotal}`,
     fixableCount > 0
       ? `${fixableCount} fixable ${fixableCount === 1 ? "issue" : "issues"}${
           recoverable > 0
@@ -112,7 +121,7 @@ export function VerdictBand({
           {/* Name the number — "93" alone doesn't say what is being scored. */}
           <span className="flex flex-col gap-0.5">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Crawler Visibility
+              Search visibility
             </span>
             <span className="flex items-end gap-2" data-testid="score-current">
               <span className="flex items-baseline gap-1">
@@ -182,13 +191,16 @@ export function VerdictBand({
 
       <div className="mt-1 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="tabular-nums">
-          Search {searchAllowed}/{searchTotal} · AI {aiAllowed}/{aiTotal} · File health {healthNow}
+          Search {searchAllowed}/{searchTotal} · File health {healthNow}
           {healthPotential > healthNow ? (
             <>
               {" "}
               → <span className="font-semibold text-status-allowed-fg">{healthPotential}</span>
             </>
-          ) : null}
+          ) : null}{" "}
+          · AI search {aiSearchAllowed}/{aiSearchTotal} · AI training {aiTrainingAllowed}/
+          {aiTrainingTotal}{" "}
+          <span className="text-muted-foreground/80">(your policy — not scored)</span>
           {crossToolNote ? <span className="text-brand"> · {crossToolNote}</span> : null}
         </span>
         <span className="hidden md:inline">

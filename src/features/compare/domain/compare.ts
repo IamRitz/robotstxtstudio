@@ -10,7 +10,7 @@ import { parseRobots } from "@/parser";
 import { buildAudit, validateRobots } from "@/features/validator";
 import { computeBreakdown, computeVisibility } from "@/features/live-checker";
 import { isAllowed } from "@/features/tester";
-import { ALL_CRAWLERS } from "@/config/crawlers";
+import { ALL_CRAWLERS, isAiCategory } from "@/config/crawlers";
 import { compareSeverity } from "@/types";
 import type {
   CrawlerAccessDelta,
@@ -43,7 +43,7 @@ export function buildComparison(leftText: string, rightText: string): RobotsComp
   const b = analyzeOne(rightText);
 
   const overall = delta("overall", "Overall health", a.audit.overall.value, b.audit.overall.value);
-  const visibility = delta("visibility", "Crawler visibility", a.visibility.value, b.visibility.value);
+  const visibility = delta("visibility", "Search visibility", a.visibility.value, b.visibility.value);
   const dimensions = a.audit.dimensions.map((da, i) =>
     delta(da.dimension, da.label, da.value, b.audit.dimensions[i]!.value),
   );
@@ -68,7 +68,7 @@ export function buildComparison(leftText: string, rightText: string): RobotsComp
     return { id: c.id, name: c.name, category: c.category, before, after, changed: before !== after };
   });
   const crawlerChanges = rows.filter((r) => r.changed);
-  const aiCrawlers = rows.filter((r) => r.category === "ai-training" || r.category === "ai-search");
+  const aiCrawlers = rows.filter((r) => isAiCategory(r.category));
 
   return {
     overall,

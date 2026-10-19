@@ -1,7 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FileText, GitCompare, Globe, Megaphone, ScanSearch } from "lucide-react";
+import Link from "next/link";
+import {
+  FileText,
+  GitCompare,
+  Globe,
+  Megaphone,
+  RotateCw,
+  ScanSearch,
+  ShieldCheck,
+} from "lucide-react";
 import { parseRobots } from "@/parser";
 import {
   applyTextEdits,
@@ -12,7 +21,14 @@ import {
   validateRobots,
 } from "@/features/validator";
 import { buildAnalysisReport, computeBreakdown, computeVisibility } from "@/features/live-checker";
-import type { AnalysisReport, ScoreDimension, TextEdit, ValidationIssue } from "@/types";
+import { isAiCategory } from "@/config/crawlers";
+import type {
+  AnalysisReport,
+  FetchResult,
+  ScoreDimension,
+  TextEdit,
+  ValidationIssue,
+} from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeader } from "@/components/section-header";
 import { DiffView } from "@/components/diff-view";
@@ -78,14 +94,81 @@ function restoreState(stored: RecentAnalysis): State {
 }
 
 /** Non-`ok` outcomes change what the report MEANS, so they keep a loud callout;
- *  a successful fetch is just provenance and lives in the verdict band. */
-const FETCH_PROBLEM: Record<string, { status: StatusKey; title: string }> = {
-  "not-found": { status: "warning", title: "No robots.txt found — all crawlers are allowed" },
-  "invalid-content-type": { status: "warning", title: "robots.txt is not plain text" },
-  "too-large": { status: "warning", title: "robots.txt is very large — analyzed a portion" },
-  timeout: { status: "blocked", title: "Fetching robots.txt timed out" },
-  "network-error": { status: "blocked", title: "Could not fetch robots.txt" },
-};
+ *  a successful fetch is just provenance and lives in the verdict band. Failed
+ *  fetches (policy unknown) never reach here — they render {@link UnverifiedReport}. */
+function fetchProblem(fetch: FetchResult): { status: StatusKey; title: string } | undefined {
+  switch (fetch.status) {
+    case "not-found":
+      return {
+        status: "warning",
+        title: `No robots.txt (HTTP ${fetch.httpStatus ?? 404}) — compliant crawlers treat this as allow-all`,
+      };
+    case "invalid-content-type":
+      return fetch.body !== undefined
+        ? {
+            status: "warning",
+            title: "robots.txt is not served as text/plain — rules were still parsed",
+          }
+        : {
+            status: "warning",
+            title: "/robots.txt returns an HTML page — crawlers find no rules (allow-all)",
+          };
+    case "too-large":
+      return { status: "warning", title: "robots.txt is very large — analyzed a portion" };
+    default:
+      return undefined;
+  }
+}
+
+/** Why the policy couldn't be verified, in plain words. */
+function unverifiedReason(fetch: FetchResult): string {
+  if (fetch.status === "timeout") return "The request timed out.";
+  if (fetch.httpStatus === 429) return "The server rate-limited the request (HTTP 429).";
+  if (fetch.httpStatus !== undefined && fetch.httpStatus >= 500)
+    return `The server returned an error (HTTP ${fetch.httpStatus}).`;
+  return fetch.error ?? "The request failed.";
+}
+
+/**
+ * A failed fetch tells us nothing about the policy. Showing a score or an access
+ * matrix here would present an empty placeholder as "everything allowed", which is
+ * false — Google itself treats a 5xx/429 robots.txt as disallow-all for a while.
+ */
+function UnverifiedReport({ report, onRetry }: { report: AnalysisReport; onRetry: () => void }) {
+  const serverError =
+    report.fetch.httpStatus === 429 ||
+    (report.fetch.httpStatus !== undefined && report.fetch.httpStatus >= 500);
+  return (
+    <div className="space-y-4" data-testid="policy-unverified">
+      <Callout
+        status="blocked"
+        title={`Policy unknown — couldn't read ${report.domain}/robots.txt`}
+      >
+        <p>
+          {unverifiedReason(report.fetch)} We can&apos;t say which crawlers this site allows, so no
+          score is shown. This is not the same as having no robots.txt.
+        </p>
+        {serverError ? (
+          <p className="mt-1">
+            While /robots.txt answers with a server error, Google treats the whole site as
+            disallowed and may pause crawling — worth fixing first.
+          </p>
+        ) : null}
+      </Callout>
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={onRetry}>
+          <RotateCw aria-hidden /> Try again
+        </Button>
+        <Link
+          href="/validate"
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-sm font-medium text-foreground hover:bg-muted"
+        >
+          <ShieldCheck className="size-4" aria-hidden /> Paste the file into the Validator
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 function downloadText(text: string, filename = "robots.txt") {
   const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
@@ -138,11 +221,14 @@ export function AnalyzerScreen({
       setState({ kind: "done", report });
       // Drop ?fresh=1 so a refresh of this URL restores instead of refetching.
       window.history.replaceState(null, "", `/analyze?domain=${encodeURIComponent(target)}`);
-      trackRecentAnalysisSaved(report.findings.length);
+      const known = report.policyStatus !== "unverified";
+      if (known) trackRecentAnalysisSaved(report.findings.length);
       trackAnalyzeCompleted({
         fetchStatus: report.fetch.status,
-        visibilityScore: report.visibility.value,
-        visibilityBand: report.visibility.band,
+        policyStatus: report.policyStatus,
+        ...(known
+          ? { visibilityScore: report.visibility.value, visibilityBand: report.visibility.band }
+          : {}),
         healthScore: report.validation.health.value,
         errorCount: report.validation.counts.error,
         warningCount: report.validation.counts.warning,
@@ -179,8 +265,8 @@ export function AnalyzerScreen({
     <div>
       <PageHeader
         breadcrumb={["Robots.txt Studio", "Analyze"]}
-        title="Crawler Visibility Audit"
-        subtitle="Audit any live site, then fix its robots.txt and download the corrected file — all in one place."
+        title="Robots.txt Analyzer"
+        subtitle="Fetch any site's robots.txt, see which search and AI crawlers it allows, then fix it and download the corrected file."
       />
 
       <Card className="mb-8 p-4">
@@ -230,7 +316,11 @@ export function AnalyzerScreen({
 
       {state.kind === "error" ? <ErrorState message={state.message} /> : null}
 
-      {state.kind === "done" ? (
+      {state.kind === "done" && state.report.policyStatus === "unverified" ? (
+        <UnverifiedReport report={state.report} onRetry={() => void run(domain)} />
+      ) : null}
+
+      {state.kind === "done" && state.report.policyStatus !== "unverified" ? (
         <Report
           key={state.report.fetchedAt}
           report={state.report}
@@ -261,7 +351,7 @@ function Report({
   /** Restored working copy (continuity) — defaults to the fetched source. */
   initialWorkingText?: string;
 }) {
-  const fetchProblem = FETCH_PROBLEM[report.fetch.status];
+  const problem = fetchProblem(report.fetch);
   const originalSource = report.file.source ?? report.fetch.body ?? "";
 
   const [workingText, setWorkingText] = useState(initialWorkingText ?? originalSource);
@@ -342,11 +432,12 @@ function Report({
   }, [workingText, derived]);
 
   const search = derived.breakdown.find((b) => b.category === "search-engine");
-  const ai = derived.breakdown.filter(
-    (b) => b.category === "ai-training" || b.category === "ai-search",
+  const aiSearch = derived.breakdown.find((b) => b.category === "ai-search");
+  const aiTraining = derived.breakdown.filter(
+    (b) => isAiCategory(b.category) && b.category !== "ai-search",
   );
-  const aiAllowed = ai.reduce((s, b) => s + b.allowed, 0);
-  const aiTotal = ai.reduce((s, b) => s + b.total, 0);
+  const aiTrainingAllowed = aiTraining.reduce((s, b) => s + b.allowed, 0);
+  const aiTrainingTotal = aiTraining.reduce((s, b) => s + b.total, 0);
 
   const changed = workingText !== originalSource;
 
@@ -455,8 +546,8 @@ function Report({
 
   return (
     <div className="space-y-6">
-      {fetchProblem ? (
-        <Callout status={fetchProblem.status} title={fetchProblem.title}>
+      {problem ? (
+        <Callout status={problem.status} title={problem.title}>
           {report.domain} · {report.fetch.finalUrl ?? report.fetch.requestedUrl}
         </Callout>
       ) : null}
@@ -468,8 +559,10 @@ function Report({
         band={derived.visibility.band}
         searchAllowed={search?.allowed ?? 0}
         searchTotal={search?.total ?? 0}
-        aiAllowed={aiAllowed}
-        aiTotal={aiTotal}
+        aiSearchAllowed={aiSearch?.allowed ?? 0}
+        aiSearchTotal={aiSearch?.total ?? 0}
+        aiTrainingAllowed={aiTrainingAllowed}
+        aiTrainingTotal={aiTrainingTotal}
         healthNow={derived.validation.health.value}
         healthPotential={recovery.potentialHealth}
         fixableCount={recovery.fixableCount}

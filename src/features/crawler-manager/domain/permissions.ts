@@ -2,7 +2,7 @@
  * PolicySet construction and immutable updates. The crawler catalog is the source
  * of truth for ids/categories; presets reuse the Generator's `applyPreset`.
  */
-import { crawlersByCategory } from "@/config/crawlers";
+import { AI_CATEGORIES, crawlersByCategory } from "@/config/crawlers";
 import { applyPreset } from "@/features/generator";
 import type { CrawlerCategory, WebsiteType } from "@/types";
 import type { PermissionState, PolicySet } from "./types";
@@ -37,22 +37,14 @@ export function setCategoryPermission(
   return { ...set, permissions };
 }
 
-/** Block every AI crawler (training + search) — the "Block all AI" preset. */
+/** Block every AI agent (training, search, and control tokens) — the "Block all AI" preset. */
 export function blockAllAiCrawlers(set: PolicySet): PolicySet {
-  return setCategoryPermission(
-    setCategoryPermission(set, "ai-training", "block"),
-    "ai-search",
-    "block",
-  );
+  return AI_CATEGORIES.reduce((acc, cat) => setCategoryPermission(acc, cat, "block"), set);
 }
 
-/** Allow every AI crawler (training + search) — the "Open/Research" preset. */
+/** Allow every AI agent (training, search, and control tokens) — the "Open/Research" preset. */
 export function allowAllAiCrawlers(set: PolicySet): PolicySet {
-  return setCategoryPermission(
-    setCategoryPermission(set, "ai-training", "allow"),
-    "ai-search",
-    "allow",
-  );
+  return AI_CATEGORIES.reduce((acc, cat) => setCategoryPermission(acc, cat, "allow"), set);
 }
 
 /** Seed a policy set from a website preset (maps allow/block intent). */

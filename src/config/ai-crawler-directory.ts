@@ -95,7 +95,8 @@ export const AI_CRAWLERS: readonly AiCrawlerEntry[] = [
     name: "PerplexityBot",
     company: "Perplexity",
     purpose: "Indexes pages for Perplexity's AI answer engine and citations.",
-    training: "partial",
+    // Perplexity's docs: "It is not used to crawl content for AI foundation models."
+    training: "no",
     search: "yes",
     honors: "partial",
     recommendation: "depends",

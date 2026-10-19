@@ -59,12 +59,14 @@ test("edits in Validate reach the Manager; Manager apply flows back to Validate"
   await page.getByRole("switch", { name: "Allow CCBot" }).click();
 
   // Validator: shows the regenerated file with ALL THREE decisions.
+  // Auto-waiting assertions: the working file is restored client-side after
+  // hydration, so a one-shot inputValue() can race it and read the default sample.
   await page.goto("/validate");
-  const after = await page.getByRole("textbox", { name: "robots.txt" }).inputValue();
-  expect(after).toContain("User-agent: ClaudeBot");
-  expect(after).toContain("User-agent: GPTBot");
-  expect(after).toContain("User-agent: CCBot");
-  expect(after).toContain("Disallow: /private/");
+  const after = page.getByRole("textbox", { name: "robots.txt" });
+  await expect(after).toHaveValue(/User-agent: ClaudeBot/);
+  await expect(after).toHaveValue(/User-agent: GPTBot/);
+  await expect(after).toHaveValue(/User-agent: CCBot/);
+  await expect(after).toHaveValue(/Disallow: \/private\//);
 });
 
 test("discarding the working file confirms, then returns tools to their defaults", async ({

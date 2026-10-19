@@ -73,7 +73,7 @@ export interface CrawlerAccessDelta {
 export interface RobotsComparison {
   /** Audit overall score, A→B. */
   readonly overall: ScoreDelta;
-  /** Crawler Visibility score, A→B. */
+  /** Search visibility score (search-engine access + file health), A→B. */
   readonly visibility: ScoreDelta;
   /** The five audit dimensions, A→B. */
   readonly dimensions: readonly ScoreDelta[];

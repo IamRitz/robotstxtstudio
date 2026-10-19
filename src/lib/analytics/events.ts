@@ -63,8 +63,10 @@ export function trackFetchRobots(source: string): void {
 
 export interface AnalyzeCompletedProps {
   readonly fetchStatus: string;
-  readonly visibilityScore: number;
-  readonly visibilityBand: string;
+  /** "verified" | "absent" | "unverified" — scores are omitted when unverified. */
+  readonly policyStatus?: string;
+  readonly visibilityScore?: number;
+  readonly visibilityBand?: string;
   readonly healthScore: number;
   readonly errorCount: number;
   readonly warningCount: number;
@@ -77,6 +79,7 @@ export interface AnalyzeCompletedProps {
 export function trackAnalyzeCompleted(p: AnalyzeCompletedProps): void {
   capture(EVENTS.analyzeCompleted, {
     fetch_status: p.fetchStatus,
+    policy_status: p.policyStatus,
     visibility_score: p.visibilityScore,
     visibility_band: p.visibilityBand,
     health_score: p.healthScore,

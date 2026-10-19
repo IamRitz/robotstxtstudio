@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ANALYSIS_REPORT } from "./fixtures";
+import { ANALYSIS_REPORT, UNVERIFIED_REPORT } from "./fixtures";
 
 // Journey 1 — Analyze Website (network mocked at the API boundary).
 test("analyze a website and view the report", async ({ page }) => {
@@ -45,4 +45,29 @@ test("analyze shows a loading state while fetching", async ({ page }) => {
   });
   await page.goto("/analyze?domain=example.com");
   await expect(page.getByRole("button", { name: /Analyzing/ })).toBeVisible();
+});
+
+// A failed fetch is "policy unknown" — never a 100/100 allow-all report.
+test("a failed fetch shows policy unknown with no score", async ({ page }) => {
+  await page.route("**/api/analyze", (route) => route.fulfill({ json: UNVERIFIED_REPORT }));
+  await page.goto("/analyze?domain=down.example&fresh=1");
+  const notice = page.getByTestId("policy-unverified");
+  await expect(notice).toBeVisible();
+  await expect(notice.getByText(/Policy unknown/)).toBeVisible();
+  await expect(notice.getByText(/not the same as having no robots\.txt/)).toBeVisible();
+  await expect(page.getByTestId("score-current")).toHaveCount(0);
+  await expect(page.getByTestId("access-matrix")).toHaveCount(0);
+  await expect(notice.getByRole("link", { name: /Validator/ })).toHaveAttribute(
+    "href",
+    "/validate",
+  );
+});
+
+test("the verdict band scores search visibility and states AI policy separately", async ({
+  page,
+}) => {
+  await page.route("**/api/analyze", (route) => route.fulfill({ json: ANALYSIS_REPORT }));
+  await page.goto("/analyze?domain=example.com&fresh=1");
+  await expect(page.getByText("Search visibility", { exact: true })).toBeVisible();
+  await expect(page.getByText("(your policy — not scored)")).toBeVisible();
 });

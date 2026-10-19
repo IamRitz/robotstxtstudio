@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  SCORE_VERSION,
   canonicalDomain,
   clearRecentAnalyses,
   getRecentAnalysis,
@@ -74,6 +75,23 @@ describe("saveRecentAnalysis", () => {
       }),
     );
     expect(getRecentAnalysis("a.com")?.previousVisibility).toBe(75);
+  });
+
+  it("shows no delta against a score from the old (v1) formula", () => {
+    // A pre-2026-10 entry: no scoreVersion, value included AI access.
+    localStorage.setItem(
+      "rs:recent-analyses:v1",
+      JSON.stringify([{ ...entry("a.com", { visibility: { value: 60, band: "moderate" } }) }]),
+    );
+    saveRecentAnalysis(
+      entry("a.com", {
+        fetchedAt: "2026-10-20T10:00:00.000Z",
+        visibility: { value: 90, band: "good" },
+      }),
+    );
+    const saved = getRecentAnalysis("a.com");
+    expect(saved?.previousVisibility).toBeUndefined();
+    expect(saved?.scoreVersion).toBe(SCORE_VERSION);
   });
 
   it("omits oversized snapshots but keeps the entry", () => {

@@ -9,11 +9,17 @@
 /**
  * Crawler categories, matching the design's grouping (DESIGN_SYSTEM §6, Screen 5).
  * Declared as a `const` tuple so the union and a runtime list share one source.
+ *
+ * `ai-control` holds robots.txt *product tokens* (Google-Extended,
+ * Applebot-Extended) that never fetch pages themselves: they only tell an operator
+ * whether content its regular crawler already fetched may be used for AI. They are
+ * neither search crawlers nor training crawlers, so they get their own category.
  */
 export const CRAWLER_CATEGORIES = [
   "search-engine",
   "ai-training",
   "ai-search",
+  "ai-control",
   "seo",
   "social",
   "data",

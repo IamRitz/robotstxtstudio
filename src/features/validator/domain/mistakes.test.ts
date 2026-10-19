@@ -51,6 +51,9 @@ describe("Phase 15C.1 — additional mistake detectors", () => {
     expect(codesFor("User-agent: *\nDisallow: /app.js")).toContain("blocks-rendering-assets");
     expect(codesFor("User-agent: *\nDisallow: /wp-includes/")).toContain("blocks-rendering-assets");
     expect(codesFor("User-agent: *\nDisallow: /private/")).not.toContain("blocks-rendering-assets");
+    // Wildcard + end anchor — the common real-world form.
+    expect(codesFor("User-agent: *\nDisallow: /*.css$")).toContain("blocks-rendering-assets");
+    expect(codesFor("User-agent: *\nDisallow: /*.js$")).toContain("blocks-rendering-assets");
   });
 
   it("noindex-unsupported: flags Noindex and is NOT double-counted as unsupported-directive", () => {
