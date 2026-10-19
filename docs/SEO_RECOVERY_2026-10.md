@@ -1,6 +1,6 @@
 # SEO & Indexing Recovery — October 2026
 
-**Prepared:** 2026-10-19 · **Branch:** `seo-recovery-2026-10` (not pushed, not deployed)
+**Prepared:** 2026-10-19 · **Branch:** `seo-recovery-2026-10` · **Deployed:** 2026-10-19 11:04 UTC, merge commit `530848e` (§8a)
 **Supersedes:** `INDEXATION_AUDIT.md` (Phase 19E). Older SEO docs describe June 2026 state.
 
 This sprint consolidates duplicate-intent URLs, fixes the indexing signals that were actually
@@ -377,7 +377,7 @@ Source: the 2026-10-18 Performance export (last 3 months, web) and the 2026-06-1
 4. *(Vercel dashboard, your call)* Domains → `www.robotstxtstudio.com` → redirect to
    `robotstxtstudio.com` with **308 Permanent** instead of 307.
 
-**D0 (deploy day) — record the date here: ________**
+**D0 (deploy day): 2026-10-19.** Steps 5–8 are done (see §8a). Steps 9–11 are for you in GSC.
 5. Review the branch: `git log --oneline main..seo-recovery-2026-10` (4 commits). Re-run
    `pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && pnpm build`.
 6. Merge and deploy the way you normally do, e.g. `git checkout main && git merge --no-ff
@@ -410,6 +410,37 @@ Source: the 2026-10-18 Performance export (last 3 months, web) and the 2026-06-1
   their cache clears. Google re-crawls and picks up the restored 200 on its own schedule.
   The analyzer score and catalog changes have no data to migrate; reverting the code
   restores the old behaviour.
+
+### 8a. Deployment record
+
+| Item | Value |
+| --- | --- |
+| Date (D0) | 2026-10-19. Pushed 11:02 UTC; Vercel production ready 11:04:45 UTC |
+| Commit | Merge `530848e` (`--no-ff`) of `seo-recovery-2026-10` (6 commits, `944df09`..`a7820f0`) into `main`, from `3c24407` |
+| Vercel | Production deployment of `530848e`, GitHub deployment id 7172055282, status success (`robotstxtstudio-5k8rrfbjt-ritesh-studio.vercel.app`) |
+| Pre-push checks | `pnpm lint`, `pnpm typecheck` pass; `pnpm test` 354/354. No code change since the full validation in §5 (build, e2e 126/126, local audit 0/0) |
+
+**Production verification (2026-10-19, after deploy):**
+
+| Check | Result |
+| --- | --- |
+| `pnpm seo:audit https://robotstxtstudio.com` | 0 errors, 0 warnings (48 URLs, 48 link targets, 9 redirects) |
+| Sitemap | 48 `<loc>`; real lastmod dates (Jun 10–18; 15 pages 2026-10-19); no changefreq/priority |
+| robots.txt | allow `/`, disallow `/dev` and `/api/`, Sitemap line, no `Host:` |
+| Redirects | e.g. `/robots-txt-checker` → 308 `/validate`; all 9 single-hop (audit) |
+| Head metadata | title + canonical in `<head>` on `/analyze`, `/generate`, `/ai-crawlers` for Googlebot and Chrome user-agents |
+| `/api/analyze` | `google.com` → `policyStatus: verified`; unresolvable `.invalid` domain → `unverified`; breakdown includes `ai-control` |
+| Browser flows (Chrome, 1280px and 390px) | home → analyze google.com → "Search visibility" + access matrix; validator; URL tester trace; generator with "AI usage controls"; no horizontal overflow; no JS errors |
+
+**Known, accepted:**
+- For `unverified` fetches, the `/api/analyze` JSON still contains a placeholder
+  `visibility` object. The UI never shows it, and no public client consumes the API.
+- The `www` → apex redirect is still a 307. It was intentionally left unchanged in this
+  release.
+
+**Still to do (you, in GSC):** steps 9–11 above, plus a 28-day page and query export
+(Performance → Search results → Last 28 days → Export) saved as the page-level pre-deploy
+baseline. Its window ends before D0 because of GSC's ~2-day lag.
 
 ---
 
